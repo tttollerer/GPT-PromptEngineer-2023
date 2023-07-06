@@ -36,7 +36,7 @@ InputArt, InputDaten, InputZielgruppe, InputAutor, InputKeywords, InputCode, Inp
       <checkbox>
         <label> Text formatieren </label>
         <id> formateText </id>
-        <value> Formate the text with headlines (#, ##, ###) and highlight important words in bold. </value>
+        <value></value>
         <additionals></additionals>        <additionalsHide />
      </checkbox>
       <checkbox>
@@ -153,7 +153,7 @@ InputArt, InputDaten, InputZielgruppe, InputAutor, InputKeywords, InputCode, Inp
             <option>
               <label>Twitter Post</label>
               <id>twitterpost</id>
-              <value> Act as a social media professional. Generate a Twitter post with a maximum of 250 characters from the text, URL or transcript. If the content provided is extensive, you can create up to 4 related posts. If post have a subpost, the last character should be a "👇". </value>
+              <value></value>
               <additionals></additionals>              <additionalsHide />
               <id />
            </option>
@@ -281,37 +281,37 @@ InputArt, InputDaten, InputZielgruppe, InputAutor, InputKeywords, InputCode, Inp
             </option>
             <option>
                <label>90 Zeichen (Google Ads Description)</label>
-               <value>Gib mir gut convertierenden Description zum Thema mit maximal 90 Zeichen. Gib mir 5 Ideen aus.</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
             <option>
                <label>Kurz und pregnant</label>
-               <value>Ich werde es kurz und knapp halten.</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
             <option>
                <label>10 Bulletpoints</label>
-               <value>Hiersind 10 Punkte, die ich gerne ansprechen möchte:</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
             <option>
                <label>Beitrag mit 2000 Wörtern</label>
-               <value>Ich habe einen ausführlichen Beitrag vorbereitet, der ungefähr 2000 Wörter umfasst.</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
             <option>
                <label>Google Ads Title -  29 Zeichen</label>
-               <value>Ich habe eine Google-Anzeige erstellt, die maximal 29 Zeichen enthält. erstelle 5 Alternativen für einen convertierenden Google Ads Title</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
             <option>
                <label>Google Ads Beschreibung - 90 Zeichen</label>
-               <value>Ich habe eine Google-Anzeige erstellt, die maximal 90 Zeichen enthält.</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
@@ -329,31 +329,31 @@ InputArt, InputDaten, InputZielgruppe, InputAutor, InputKeywords, InputCode, Inp
             </option>
             <option>
                <label>Gut lesbar und saubere Formatierung</label>
-               <value>Schreibe gut lesbar und übersichtlich formatiert. Mache sinnvolle Absätze. Strukturiere den Inhalt.</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
             <option>
                <label>Einleitend eine 6-Punkte-Zusammenfassung</label>
-               <value>Ich beginne mit einer kurzen Zusammenfassung, die aus 6 Punkten besteht. Diese Punkte sind die wichtigsten Erkenntnisse aus dem Text.</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
             <option>
                <label>Formatierung mit hervorgehobenen Schlüsselwörtern</label>
-               <value>Ich habe wichtige Schlüsselwörter hervorgehoben, um sie leichter erkennbar zu machen. Strukturiere den Text sinnvoll mit Absätzen.</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
             <option>
                <label>Code</label>
-               <value>Gib den Code in der Sprache aus wie du den bekommen hast. der Fokus liegt auf dem ausgegebenen Code. Erkläre den Code. Füge pre Absatz eine Erklärung hinzu was der Abschnitt genau macht.</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
             <option>
                <label>Code schnell</label>
-               <value>Gib den Code in der Sprache aus wie du den bekommen hast. halte den Code so kurz wie möglich. Keine Kommentare oder Erklärungen. Halte den Code möglichst kurz. Wichtig, die Funktionalität sollte gleichbleibend sein.</value>
+               <value></value>
                <id />
                <additionals></additionals>               <additionalsHide />
             </option>
@@ -367,7 +367,7 @@ InputArt, InputDaten, InputZielgruppe, InputAutor, InputKeywords, InputCode, Inp
             <option>
                <label>Kreativität</label>
                <value />
-               <id></id>
+               <id>Creativity</id>
                <additionals></additionals>               <additionalsHide />
             </option>
             <option>
@@ -378,7 +378,7 @@ InputArt, InputDaten, InputZielgruppe, InputAutor, InputKeywords, InputCode, Inp
             </option>
             <option>
                <label>Ausgewogen (0.6)</label>
-               <label>temperatureMedium</label>
+               <id>temperatureMedium</id>
                <value></value>
                <additionals></additionals>               <additionalsHide />
             </option>

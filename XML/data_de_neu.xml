@@ -1,0 +1,567 @@
+<data>
+  <checkboxes>
+     <checkbox>
+        <label> Short Answer </label>
+        <id>ShortAnswer</id>
+        <value />
+        <additionals />
+        <additionalsHide />
+     </checkbox>
+     <checkbox>
+        <label> Formate Text </label>
+        <id> formateText </id>
+        <value />
+        <additionals />
+        <additionalsHide />
+     </checkbox>
+     <checkbox>
+        <label> Bullet Points </label>
+        <id>PointAnswer</id>
+        <value />
+        <additionals />
+        <additionalsHide />
+     </checkbox>
+     <checkbox>
+        <label> Queries </label>
+        <id>AskQuestions</id>
+        <value />
+        <additionals />
+        <additionalsHide />
+     </checkbox>
+
+     <checkbox>
+        <label> 100% Human </label>
+        <id>aiproof</id>
+        <value />
+        <additionals />
+        <additionalsHide />
+     </checkbox>
+     <checkbox>
+        <label>Simple As Possible</label>
+        <id>foolproof</id>
+        <value />
+        <additionals />
+        <additionalsHide />
+     </checkbox>
+     
+     <checkbox>
+        <label> DAN Mode </label>
+        <id>danmode</id>
+        <value />
+        <additionals />
+        <additionalsHide />
+     </checkbox>
+  </checkboxes>
+  <dropdowns>
+     <dropdown>
+        <label> Employees </label>
+        <id>Staff, NeverHide</id>
+        <options>
+           <option>
+              <id>optionEmpty</id>
+              <label> Employees </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+            <option>
+               <id>andrewtate</id>
+               <label>Andrew Tate</label>
+               <value />
+               <additionals />
+               <additionalsHide />
+            </option>
+           <option>
+              <id>option_programmer</id>
+              <label>Programmers</label>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> SEO Expert </label>
+              <id>seoExpert</id>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Google Ads Specialist </label>
+              <id>GAdsExpert</id>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <id>option_business_coach</id>
+              <label> Business Coach </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <id>option_marketing_advertising</id>
+              <label> Marketing and advertising professional </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <id>option_social_media_expert</id>
+              <label> Social Media Expert </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <id>option_copy_writer</id>
+              <label> Copy Writer </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <id>optionSummyry</id>
+              <label> Project summary </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+               <label>ProductGPT - Product Assistant</label>
+               <value />
+               <additionals />
+               <additionalsHide />
+               <id>productgpt</id>
+            </option>
+           <option>
+              <id>optionLawyer</id>
+              <label> Lawyer </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+        </options>
+     </dropdown>
+     <dropdown>
+        <label> Task </label>
+        <id> output, NeverHide </id>
+        <options>
+           <option>
+              <label> Task </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Summary </label>
+              <id>summary</id>
+              <value />
+              <additionals />
+              <additionalsHide />
+              <id />
+           </option>
+           <option>
+              <label> Read correction </label>
+              <id>ReadCorrection</id>
+              <value />
+              <additionals />
+              <additionalsHide />
+              <id />
+           </option>
+           <option>
+              <label>Twitter Post</label>
+              <id>twitterpost</id>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label>Check Repository</label>
+              <id>repository</id>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label>Check Repository (working)</label>
+              <id>repositoryWorking</id>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+            <option>
+              <label>Check GPT Plugin</label>
+              <id>CheckGPTPlugin</id>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+               <label> Monolog </label>
+               <id>monolog</id>
+               <value />
+              <additionals />
+              <additionalsHide />
+           </option>   
+           <option>
+               <label>GPT Prompt generieren</label>
+               <id>promtgenerator</id>
+               <value />
+               <additionals />
+               <additionalsHide />
+            </option>
+           <option>
+              <label> GPT Plugin description </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+              <id />
+           </option>
+           <option>
+              <label> Business Letter </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+              <id />
+           </option>
+           <option>
+              <label> Social Media Post </label>
+              <id>SocialMediaPost</id>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Blog Post </label>
+              <id>blogPost</id>
+              <value />
+              <additionals />
+              <additionalsHide />
+              <id>blogPost</id>
+           </option>
+           <option>
+              <label> Code / Programming </label>
+              <value />
+              <additionals />
+              <additionalsHide> formatting </additionalsHide>
+              <id />
+           </option>
+           <option>
+               <label>Midjourney5 Prompt generieren (eng)</label>
+               <id>midjourneypromtgenerator</id>
+               <value />
+               <additionals />
+               <additionalsHide />
+            </option>
+           
+           <option>
+              <label> Compare code </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+              <id />
+           </option>
+           <option>
+              <label> Keywords from text </label>
+              <value />
+              <additionals />
+              <additionalsHide />
+              <id />
+           </option>
+           <option>
+              <label> Step-by-step instructions </label>
+              <id> Instructions </id>
+              <value />
+              <additionals />
+              <additionalsHide />
+           </option>
+        </options>
+     </dropdown>
+     <dropdown>
+        <label> Special cases </label>
+        <id> cases </id>
+        <options>
+           <option>
+              <label> Special cases </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+            <option>
+               <label>Generate GPT/LLM Prompt</label>
+               <value />
+               <id>promtgenerator</id>
+               <additionals />
+               <additionalsHide />
+            </option>
+           <option>
+              <label> Summarize YT Transcript </label>
+              <value /> in a new paragraph
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           
+           
+           
+        </options>
+     </dropdown>
+     <dropdown>
+        <label> Scope </label>
+        <id> Scope </id>
+        <options>
+           <option>
+              <label> Scope </label>              
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+             <option>
+              <label> Twitter Tweet 240 Characters</label>
+              <value />
+              <id>TwitterTweet</id>
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> 29 Characters (Google Ads Title) </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> 90 Characters (Google Ads Description) </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Short and Pregnant </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> 10 Bullet Points </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> 2000 Word Post </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Google Ads Title - 29 characters </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Google Ads Description - 90 characters </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+        </options>
+     </dropdown>
+     <dropdown>
+        <label> Formatting </label>
+        <id> formatting </id>
+        <options>
+           <option>
+              <label> Formatting </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Easy to Read and Clean Formatting </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Introductory 6-Point Summary </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Formatting with highlighted keywords </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Code </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Code Fast </label>
+              <value />
+              <id />
+              <additionals />
+              <additionalsHide />
+           </option>
+        </options>
+     </dropdown>
+    <dropdown>
+         <label>Creativity</label>
+         <id>temperature</id>
+         <options>
+            <option>
+               <label>Creativity</label>
+               <value />
+               <id />
+               <additionals />
+               <additionalsHide />
+            </option>
+            <option>
+               <label>Creativ (0.9)</label>
+               <value />
+               <id>temperatureLow</id>&gt;
+               <additionals />
+               <additionalsHide />
+            </option>
+            <option>
+               <label>Balanced (0.5)</label>
+               <label>temperatureMedium</label>
+               <value />
+               <additionals />
+               <additionalsHide />
+            </option>
+            <option>
+               <label>Default (0.8)</label>
+               <label>temperatureDefault</label>
+               <value />
+               <additionals />
+               <additionalsHide />
+            </option>
+            <option>
+               <label>Exact / Strict (0.2)</label>
+               <label>temperatureHigh</label>
+               <value />
+               <additionals />
+               <additionalsHide />
+            </option>
+         </options>
+      </dropdown>
+  </dropdowns>
+  <inputs>
+     <input>
+        <label> Type of Input (e.g. business letter, code, coordinates) </label>
+        <id> InputArt </id>
+        <class> prompt-generator-input </class>
+     </input>
+     <input>
+        <label> URL / Link / Repository </label>
+        <id>LinkOrURL</id>
+        <class> LinkOrURL </class>
+        <valueBefore>Here is the URL of the Repository: {{LinkOrURL}} == "</valueBefore>
+        <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label>Plugin Name</label>
+        <id>PluginName</id>
+        <class>PluginName</class>
+        <valueBefore>The plugin is: {{PluginName}} == "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label>Country</label>
+        <id>Country</id>
+        <class>Country</class>
+        <valueBefore>You are a specialist in the laws of this country: "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label>Practice Area</label>
+        <id>PracticeArea</id>
+        <class>PracticeArea</class>
+        
+     </input>
+     <input>
+        <label> Input data (e.g. entire business letter) </label>
+        <id> InputData </id>
+        <class> prompt-generator-input </class>
+     </input>
+     <input>
+        <label> The Target Group </label>
+        <id> InputTargetGroup </id>
+        <class> prompt-generator-input </class>
+     </input>
+     <input>
+        <label> Describe The Author </label>
+        <id> InputAuthor </id>
+        <class> prompt-generator-input </class>
+     </input>
+     <input>
+        <label> The Keywords </label>
+        <id> InputKeywords </id>
+        <class> prompt-generator-input </class>
+     </input>
+     <input>
+        <label> Code I </label>
+        <id> InputCode </id>
+        <class> prompt-generator-input </class>
+     </input>
+     <input>
+        <label> Code II </label>
+        <id> InputCode2 </id>
+        <class> prompt-generator-input </class>
+     </input>
+     <input>
+        <label> Programming Language </label>
+        <id> CodeLang </id>
+        <class> prompt-generator-input </class>
+     </input>
+     <input>
+        <label> My Text </label>
+        <id>text</id>
+        <class> prompt-generator-input </class>
+        <valueBefore>Here is the Text: "</valueBefore>
+        <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label> Person </label>
+        <id>person</id>
+        <class> prompt-generator-input </class>
+        <valueBefore>You are a "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label> Topic </label>
+        <id>topic</id>
+        <class> prompt-generator-input </class>
+        <valueBefore> Your topic is "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label> Input Language </label>
+        <id>inputLanguage</id>
+        <class> prompt-generator-input </class>
+        <valueBefore> Input language is {{inputLanguage}} == "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+  </inputs>
+</data>

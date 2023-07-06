@@ -15,15 +15,15 @@ translations = {
 }
 
 # Extrahieren Sie die Übersetzungen aus der englischen XML-Datei
-for checkbox in root_en.findall('checkboxes/checkbox'):
-    label = checkbox.find('label').text
-    value = checkbox.find('value').text
+for element in root_en.findall('.//checkbox') + root_en.findall('.//dropdown'):
+    label = element.find('label').text
+    value = element.find('value').text
     translations['en'][label] = value
 
 # Extrahieren Sie die Übersetzungen aus der deutschen XML-Datei
-for checkbox in root_de.findall('checkboxes/checkbox'):
-    label = checkbox.find('label').text
-    value = checkbox.find('value').text
+for element in root_de.findall('.//checkbox') + root_de.findall('.//dropdown'):
+    label = element.find('label').text
+    value = element.find('value').text
     translations['de'][label] = value
 
 # Speichern Sie die Übersetzungen in einer JSON-Datei
