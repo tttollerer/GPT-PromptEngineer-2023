@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+InputArt: Art des Inputs (zB Geschäftsbrief, Code, Koordinaten)
+InputDaten: Input Daten (z.B. gesamter Geschäftsbrief)
+InputZielgruppe: Die Zielgruppe
+InputAutor: Beschreibe den Autor
+InputKeywords: Die Keywords
+InputCode: Code
+InputCode2: Code II
+CodeLang: Programmiersprache
+Text: Mein Text
+-->
+<!-->
+InputArt, InputDaten, InputZielgruppe, InputAutor, InputKeywords, InputCode, InputCode2, CodeLang, Text, Umfang, Formatierung, Schreibstil
+-->
+<data>
+   <checkboxes>
+      <checkbox>
+         <label>Kurze Antwort</label>
+         <id>ShortAnswer</id>
+         <value></value>
+         <additionals></additionals>         <additionalsHide />
+      </checkbox>
+      <checkbox>
+         <label>Stichpunkte</label>
+         <id>PointAnswer</id>
+         <value></value>
+         <additionals></additionals>         <additionalsHide />
+      </checkbox>
+      <checkbox>
+         <label>Rückfragen</label>
+         <id>AskQuestions</id>
+         <value></value>
+         <additionals></additionals>         <additionalsHide />
+      </checkbox>
+      <checkbox>
+        <label> Text formatieren </label>
+        <id> formateText </id>
+        <value> Formate the text with headlines (#, ##, ###) and highlight important words in bold. </value>
+        <additionals></additionals>        <additionalsHide />
+     </checkbox>
+      <checkbox>
+         <label>100% Menschlich</label>
+         <id>aiproof</id>
+         <value></value>
+         <additionals></additionals>         <additionalsHide />
+      </checkbox>
+      <checkbox>
+         <label>Kinderleicht</label>
+         <id>foolproof</id>
+         <value></value>
+         <additionals></additionals>         <additionalsHide />
+      </checkbox>
+      <checkbox>
+        <label> DAN Mode </label>
+        <id>danmode</id>
+        <value></value>
+        <additionals></additionals>        <additionalsHide />
+     </checkbox>
+      
+   </checkboxes>
+   <dropdowns>
+      <dropdown>
+         <label>Mitarbeiter</label>
+         <id>Staff, NeverHide</id>
+         <options>
+            <option>
+               <id>optionEmpty</id>
+               <label>Mitarbeiter</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <id>andrewtate</id>
+               <label>Andrew Tate</label>
+               <value></value>
+              <additionals></additionals>              <additionalsHide />
+           </option>
+            <option>
+               <id>option_programmer</id>
+               <label>Programmierer</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>SEO Experte</label>
+               <id>seoExpert</id>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+              <label> Google Ads Spezialist </label>
+              <id>GAdsExpert</id>
+              <value></value>
+              <additionals></additionals>              <additionalsHide />
+           </option>
+            <option>
+               <id>option_business_coach</id>
+               <label>Business Coach</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <id>option_marketing_advertising</id>
+               <label>Marketing und Werbeprofi</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <id>option_social_media_expert</id>
+               <label>Social Media Expert</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <id>option_copy_writer</id>
+               <label>Copy Writer</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+        
+            <option>
+               <id>optionLawyer</id>
+               <label>Anwalt</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+         </options>
+      </dropdown>
+      <dropdown>
+         <label>Aufgabe</label>
+         <id>Ausgabe, NeverHide</id>
+         <options>
+            <option>
+               <label>Aufgabe</label>
+               <value />
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Zusammenfassung</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+               <id />
+            </option>
+            <option>
+              <label> Korrektur lesen </label>
+              <id>ReadCorrection</id>
+              <value></value>
+              <additionals></additionals>              <additionalsHide />
+              <id />
+           </option>
+            <option>
+              <label>Twitter Post</label>
+              <id>twitterpost</id>
+              <value> Act as a social media professional. Generate a Twitter post with a maximum of 250 characters from the text, URL or transcript. If the content provided is extensive, you can create up to 4 related posts. If post have a subpost, the last character should be a "👇". </value>
+              <additionals></additionals>              <additionalsHide />
+              <id />
+           </option>
+           <option>
+              <label>Check Repository</label>
+              <id>repository</id>
+              <value></value>
+              <additionals></additionals>              <additionalsHide />
+           </option>
+            <option>
+              <label>Check Repository (working)</label>
+              <id>repositoryWorking</id>
+              <value></value>
+              <additionals></additionals>              <additionalsHide />
+           </option>
+             <option>
+              <label>Check GPT Plugin</label>
+              <id>CheckGPTPlugin</id>
+              <value></value>
+              <additionals></additionals>              <additionalsHide />
+           </option>
+            <option>
+               <label>Projekt Zusammenfassung</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+               <id />
+            </option>
+            <option>
+               <label>ProductGPT - Assistent für Produkte</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+               <id>productgpt</id>
+            </option>
+            <option>
+               <label>Social Media Post</label>
+               <id>SocialMediaPost</id>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+              
+            </option>
+            <option>
+               <label>Blog Beitrag</label>
+               <id>blogPost</id>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+               
+            </option>
+            <option>
+               <label>Code / Programmierung</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide>Formatierung</additionalsHide>
+               <id />
+            </option>
+            
+            <option>
+               <label>Code Vergleichen</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+               <id />
+            </option>
+                   <option>
+               <label> Monolog </label>
+               <id>monolog</id>
+               <value></value>
+              <additionals></additionals>              <additionalsHide />
+           </option> 
+            <option>
+               <label>Keywords aus Text</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+               <id />
+            </option>
+         </options>
+      </dropdown>
+      <dropdown>
+         <label>Besondere Fälle</label>
+         <id>Faelle</id>
+         <options>
+            <option>
+               <label>Spezialfälle</label>
+               <value />
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>GPT Prompt generieren</label>
+               <id>promtgenerator</id>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Midjourney5 Prompt generieren (eng)</label>
+               <id>midjourneypromtgenerator</id>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>YT Transscript zusammenfassen</label>
+               <value></value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+         </options>
+      </dropdown>
+      <dropdown>
+         <label>Umfang</label>
+         <id>Umfang</id>
+         <options>
+            <option>
+               <label>Umfang</label>               
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+               <option>
+              <label> Twitter Tweet 240 Zeichen</label>
+              <value></value>
+              <id>TwitterTweet</id>
+              <additionals></additionals>              <additionalsHide />
+           </option>
+            <option>
+               <label>29 Zeichen (Google Ads Title)</label>
+               <value></value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>90 Zeichen (Google Ads Description)</label>
+               <value>Gib mir gut convertierenden Description zum Thema mit maximal 90 Zeichen. Gib mir 5 Ideen aus.</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Kurz und pregnant</label>
+               <value>Ich werde es kurz und knapp halten.</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>10 Bulletpoints</label>
+               <value>Hiersind 10 Punkte, die ich gerne ansprechen möchte:</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Beitrag mit 2000 Wörtern</label>
+               <value>Ich habe einen ausführlichen Beitrag vorbereitet, der ungefähr 2000 Wörter umfasst.</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Google Ads Title -  29 Zeichen</label>
+               <value>Ich habe eine Google-Anzeige erstellt, die maximal 29 Zeichen enthält. erstelle 5 Alternativen für einen convertierenden Google Ads Title</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Google Ads Beschreibung - 90 Zeichen</label>
+               <value>Ich habe eine Google-Anzeige erstellt, die maximal 90 Zeichen enthält.</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+         </options>
+      </dropdown>
+      <dropdown>
+         <label>Formatierung</label>
+         <id>Formatierung</id>
+         <options>
+            <option>
+               <label>Formatierung</label>
+               <value />
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Gut lesbar und saubere Formatierung</label>
+               <value>Schreibe gut lesbar und übersichtlich formatiert. Mache sinnvolle Absätze. Strukturiere den Inhalt.</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Einleitend eine 6-Punkte-Zusammenfassung</label>
+               <value>Ich beginne mit einer kurzen Zusammenfassung, die aus 6 Punkten besteht. Diese Punkte sind die wichtigsten Erkenntnisse aus dem Text.</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Formatierung mit hervorgehobenen Schlüsselwörtern</label>
+               <value>Ich habe wichtige Schlüsselwörter hervorgehoben, um sie leichter erkennbar zu machen. Strukturiere den Text sinnvoll mit Absätzen.</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Code</label>
+               <value>Gib den Code in der Sprache aus wie du den bekommen hast. der Fokus liegt auf dem ausgegebenen Code. Erkläre den Code. Füge pre Absatz eine Erklärung hinzu was der Abschnitt genau macht.</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Code schnell</label>
+               <value>Gib den Code in der Sprache aus wie du den bekommen hast. halte den Code so kurz wie möglich. Keine Kommentare oder Erklärungen. Halte den Code möglichst kurz. Wichtig, die Funktionalität sollte gleichbleibend sein.</value>
+               <id />
+               <additionals></additionals>               <additionalsHide />
+            </option>
+         </options>
+      </dropdown>
+     
+        <dropdown>
+         <label>Tempurature</label>
+         <id>temperature</id>
+         <options>
+            <option>
+               <label>Kreativität</label>
+               <value />
+               <id></id>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Kreativ (0.3)</label>
+               <value></value>
+               <id>temperatureLow</id>>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Ausgewogen (0.6)</label>
+               <label>temperatureMedium</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Default (0.7)</label>
+               <label>temperatureDefault</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+            <option>
+               <label>Genau / Strikt (0.9)</label>
+               <label>temperatureHigh</label>
+               <value></value>
+               <additionals></additionals>               <additionalsHide />
+            </option>
+         </options>
+      </dropdown>
+   </dropdowns>
+   <inputs>
+  <input>
+    <label>Art des Inputs (zB Geschäftsbrief, Code, Koordinaten)</label>
+    <id>InputArt</id>
+    <class>prompt-generator-input</class>
+    <valueBefore></valueBefore>
+    <valueAfter></valueAfter>
+  </input>
+  <input>
+        <label> URL / Link / Repository </label>
+        <id>LinkOrURL</id>
+        <class> LinkOrURL </class>
+        <valueBefore>Here is the URL of the Repository: {{LinkOrURL}} == "</valueBefore>
+        <valueAfter>". </valueAfter>
+     </input>
+  <input>
+    <label>Input Daten (z.B. gesamter Geschäftsbrief)</label>
+    <id>InputDaten</id>
+    <class>prompt-generator-input</class>
+    <valueBefore></valueBefore>
+    <valueAfter></valueAfter>
+  </input>
+  <input>
+    <label>Die Zielgruppe</label>
+    <id>InputZielgruppe</id>
+    <class>prompt-generator-input</class>
+    <valueBefore></valueBefore>
+    <valueAfter></valueAfter>
+  </input>
+  <input>
+    <label>Beschreibe den Autor</label>
+    <id>InputAutor</id>
+    <class>prompt-generator-input</class>
+    <valueBefore></valueBefore>
+    <valueAfter></valueAfter>
+  </input>
+  <input>
+    <label>Die Keywords</label>
+    <id>InputKeywords</id>
+    <class>prompt-generator-input</class>
+    <valueBefore></valueBefore>
+    <valueAfter></valueAfter>
+  </input>
+  <input>
+    <label>Code</label>
+    <id>InputCode</id>
+    <class>prompt-generator-input</class>
+    <valueBefore>```</valueBefore>
+    <valueAfter>```</valueAfter>
+  </input>
+  <input>
+    <label>Code II</label>
+    <id>InputCode2</id>
+    <class>prompt-generator-input</class>
+    <valueBefore>```</valueBefore>
+    <valueAfter>```</valueAfter>
+  </input>
+  <input>
+    <label>Programmiersprache</label>
+    <id>CodeLang</id>
+    <class>prompt-generator-input</class>
+    <valueBefore></valueBefore>
+    <valueAfter></valueAfter>
+  </input>
+  <input>
+    <label>Mein Text</label>
+    <id>Text</id>
+    <class>prompt-generator-input</class>
+    <valueBefore></valueBefore>
+    <valueAfter></valueAfter>
+  </input>
+    <input>
+        <label> Person </label>
+        <id>person</id>
+        <class> prompt-generator-input </class>
+        <valueBefore>You are a "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+      <input>
+        <label>Plugin Name</label>
+        <id>PluginName</id>
+        <class>PluginName</class>
+        <valueBefore>The plugin is: {{PluginName}} == "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label> Topic </label>
+        <id>topic</id>
+        <class> prompt-generator-input </class>
+        <valueBefore> Your topic is "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label> Sprache des Dokuments </label>
+        <id>inputLanguage</id>
+        <class> prompt-generator-input </class>
+        <valueBefore> Input language is {{inputLanguage}} == "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+</inputs>
+
+</data>
