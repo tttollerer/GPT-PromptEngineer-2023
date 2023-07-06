@@ -22,6 +22,7 @@
       "js": [
         "settings.js", 
         "input_field_creation.js",
+        "XML/translations.json",
         "fetch_data.js", 
         "build_ui.js",
         "language_switcher.js",
@@ -47,6 +48,7 @@
       "XML/data_de.xml", 
       "XML/data_ch.xml", 
       "XML/data_sch.xml", 
+      "XML/translations.json",
       "images/logo.png",
       "images/icon128.png",
       "images/icon48.png",

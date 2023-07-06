@@ -10,12 +10,8 @@ async function fetchFallbackXml() {
 }
 
 async function fetchDropdownData(lang) {
-  let url;
-  if(lang) {
-    url = chrome.runtime.getURL(`data_${lang}.xml`);
-  } else {
-    url = chrome.runtime.getURL(`data_en.xml`);
-  }
+  // Immer die englische XML-Datei laden
+  const url = chrome.runtime.getURL(`data_en.xml`);
 
   const response = await fetch(url);
   const data = await response.text();
@@ -40,7 +36,9 @@ async function fetchDropdownData(lang) {
       }
 
       const id = idNode.textContent;
-      if (!node.textContent || node.textContent.trim() === "") {
+      if (nodeToCheck === 'label' && translations[lang][id]) {
+        node.textContent = translations[lang][id];
+      } else {
         if (fallbackXml) {
           const elementTypes = ["checkbox", "dropdown", "option", "input"];
           let fallbackNode;
@@ -58,7 +56,8 @@ async function fetchDropdownData(lang) {
               /* Fehlermeldungen nur für "Value" Nodes */
               if (nodeToCheck !== "additionals" && nodeToCheck !== "additionalsHide") {
                 console.log(`Fallback ${nodeToCheck} found for id ${id} but it is empty.`);
-            }            }
+              }
+            }
           } else {
             console.log(`No fallback ${nodeToCheck} node found for id ${id}.`);
           }
@@ -69,6 +68,7 @@ async function fetchDropdownData(lang) {
   
   return xml;
 }
+
 
 
 
