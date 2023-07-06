@@ -120,7 +120,7 @@ clearContainer(container);
 
 
     const image = document.createElement('img');
-image.src = chrome.runtime.getURL('logo.png');
+image.src = chrome.runtime.getURL('Images/logo.png');
 image.classList.add('prompt-generator-image');
 container.appendChild(image);
 
@@ -139,7 +139,7 @@ toggleButton.classList.add('toggle-button');
 toggleButton.onclick = toggleContainer;
 
 const toggleButtonImage = document.createElement('img');
-toggleButtonImage.src = chrome.runtime.getURL('OnOff.png');
+toggleButtonImage.src = chrome.runtime.getURL('Images/OnOff.png');
 toggleButtonImage.width = 128;
 toggleButtonImage.height = 128;
 toggleButton.appendChild(toggleButtonImage);

@@ -4,9 +4,9 @@
   "version": "0.6",
   "description": "WRITE LESS, GET MORE - faster ChatGPT prompts. Prebuild Prompts for fast use.",
   "icons": {
-    "16": "images/icon16.png",
-    "48": "images/icon48.png",
-    "128": "images/icon128.png"
+    "16": "Images/icon16.png",
+    "48": "Images/icon48.png",
+    "128": "Images/icon128.png"
   },
   
   "permissions": [
@@ -26,7 +26,6 @@
         "fetch_data.js", 
         "build_ui.js",
         "language_switcher.js",
-        "styles.js",
         "content_script.js"
       ],
       "css": [
@@ -49,11 +48,11 @@
       "XML/data_ch.xml", 
       "XML/data_sch.xml", 
       "XML/translations.json",
-      "images/logo.png",
-      "images/icon128.png",
-      "images/icon48.png",
-      "images/icon16.png",
-      "images/OnOff.png",
+      "Images/logo.png",
+      "Images/icon128.png",
+      "Images/icon48.png",
+      "Images/icon16.png",
+      "Images/OnOff.png",
       "content_script.js"],
     "run_at": "document_idle",
     "use_dynamic_url": false,

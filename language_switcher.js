@@ -2,10 +2,13 @@ const initialLang = 'en';
 
 let translations;
 
-fetch(chrome.runtime.getURL('translations.json'))
+fetch(chrome.runtime.getURL('XML/translations.json'))
   .then(response => response.json())
   .then(data => {
     translations = data;
+  })
+  .catch(error => {
+    console.error('Fehler beim Laden der translations.json Datei:', error);
   });
 
 

@@ -10,8 +10,8 @@ window.languageMapping = {
 
   window.SETTINGS = {
     LANGUAGE_DROPDOWN_OPTIONS: `
-    <option value="de" data-src="data_de.xml">🇩🇪 Deutsch</option>
-    <option value="en" data-src="data_en.xml">🇺🇸 English</option>
+    <option value="de" data-src="XML/data_de.xml">🇩🇪 Deutsch</option>
+    <option value="en" data-src="XML/data_en.xml">🇺🇸 English</option>
     
     `,
   };

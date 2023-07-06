@@ -1,7 +1,7 @@
 let preferLocalizedLabel = true;
 
 async function fetchFallbackXml() {
-  const url = chrome.runtime.getURL('data_en.xml');
+  const url = chrome.runtime.getURL('XML/data_en.xml');
   const response = await fetch(url);
   const data = await response.text();
   const parser = new DOMParser();
@@ -11,7 +11,7 @@ async function fetchFallbackXml() {
 
 async function fetchDropdownData(lang) {
   // Immer die englische XML-Datei laden
-  const url = chrome.runtime.getURL(`data_en.xml`);
+  const url = chrome.runtime.getURL(`XML/data_en.xml`);
 
   const response = await fetch(url);
   const data = await response.text();
@@ -68,9 +68,4 @@ async function fetchDropdownData(lang) {
   
   return xml;
 }
-
-
-
-
-
 window.fetchDropdownData = fetchDropdownData;
