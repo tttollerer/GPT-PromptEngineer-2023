@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 const xml2js = require('xml2js');
 
@@ -46,4 +45,3 @@ function saveJSONFile(filename, data) {
   a.click();
   URL.revokeObjectURL(url);  
 }
-
