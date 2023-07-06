@@ -1,43 +1,18 @@
 const initialLang = 'en';
 
-let translations;
-
-fetch(chrome.runtime.getURL('XML/translations.json'))
-  .then(response => response.json())
-  .then(data => {
-    translations = data;
-  })
-  .catch(error => {
-    console.error('Fehler beim Laden der translations.json Datei:', error);
-  });
-
-
 function clearContainer(container) {
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
 }
 
-/*async function loadLanguageData(lang) {
-  if (!lang) {
-    console.warn('Language code is undefined. Using initial language.');
-    lang = initialLang;
-  }
-
-  const response = await fetch(chrome.runtime.getURL(`data_${lang}.xml`));
-  const text = await response.text();
-  const parser = new DOMParser();
-  const xmlData = parser.parseFromString(text, 'application/xml');
-  return xmlData;
-}*/
 async function loadLanguageData(lang) {
   if (!lang) {
     console.warn('Language code is undefined. Using initial language.');
     lang = initialLang;
   }
 
-  // Always load the English XML data
-  const response = await fetch(chrome.runtime.getURL('data_en.xml'));
+  const response = await fetch(chrome.runtime.getURL(`XML/data_${lang}.xml`));
   const text = await response.text();
   const parser = new DOMParser();
   const xmlData = parser.parseFromString(text, 'application/xml');
@@ -61,22 +36,6 @@ async function updateUI(lang) {
   }
 
   const xmlData = await fetchDropdownData(lang); // Verwenden Sie fetchDropdownData statt loadLanguageData
-
-  // Ersetzen Sie die Labels in der XML-Datei durch die entsprechenden Übersetzungen
-  const labels = xmlData.evaluate('//label', xmlData, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-  for (let i = 0; i < labels.snapshotLength; i++) {
-    const label = labels.snapshotItem(i);
-    const idNode = label.parentNode.querySelector('id');
-    if (!idNode || !idNode.textContent) {
-      continue;
-    }
-
-    const id = idNode.textContent;
-    if (translations[lang][id]) {
-      label.textContent = translations[lang][id];
-    }
-  }
-
   const container = document.getElementById('prompt-generator-container');
   clearContainer(container);
   await buildUI(xmlData);
@@ -89,7 +48,6 @@ async function updateUI(lang) {
   }
   updateLanguageDropdown(lang); 
 }
-
 
 
 function handleLanguageChange(event) {

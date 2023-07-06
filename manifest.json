@@ -42,6 +42,7 @@
   {
     "resources": [
       "settings.js", 
+      "XML/translations.json",
       "input_field_creation.js", 
       "XML/data_en.xml", 
       "XML/data_de.xml", 
