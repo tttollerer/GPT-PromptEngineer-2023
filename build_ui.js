@@ -1,3 +1,7 @@
+window.attributionHTML = attributionHTML;
+
+
+
 (async function() {
   const inputFieldCreation = {
     createInputField: function(type, data) {
@@ -232,7 +236,7 @@ targetNode.parentElement.insertBefore(container, targetNode);
 
 
     const attribution = document.createElement('div');
-    attribution.innerHTML = 'Supported by <a href="https://www.ritterwagner.de/?utm_source=promptEngineer&utm_medium=chromeExtension" tabindex="-1" <font style="text-decoration:underline;">RitterWagner</a> Germany with ❤ at night in Tenerife. <font style="text-decoration:underline;"><a href="https://paypal.me/PromptEngineer?country.x=DE&locale.x=de_DE" tabindex="-1">PayPal Donation</a></font> or <font style="text-decoration:underline;"><a href="https://amzn.to/3qdpAY4" tabindex="-1">Affiliate Support (free)</a></font>';
+    attribution.innerHTML = window.attributionHTML;
     attribution.classList.add('prompt-generator-attribution');
     
     createInputs(container, xmlData);
