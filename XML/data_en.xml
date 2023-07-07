@@ -582,6 +582,35 @@ InputArt, InputData, InputTarget Group, InputKeywords, Writing Style, Scope
               <id>blogPost</id>
            </option>
            <option>
+              <label> Google Chrome Extension Publish </label>
+              <id>ChromeExtension</id>
+              <value>You act like a Google Chrome Extensions expert.
+
+               I will first give you the requirements and the links where to read the rules for the release requirements. You go through step by step and give me the information I need for each step.
+
+               Step1::
+               1.1 Package Name
+               1.2 Summary of the package in a maximum of 132 characters
+               1.3 Description of the package in a maximum of 16000 characters
+               1.4 Suggest me a category. The choices are: Choose a category: Accessibility, Blogs, Developer Tools, Photos, News & Weather, Productivity, Shopping, Social Networking & Communication, Fun, Sports, Search Tools.
+               1.5 Suggest a language. If you are unsure or if there are several languages to choose from. Choose English.
+
+               Step2:: Privacy Policy:
+               2.1 Sole Purpose
+                   Information on this: https://developer.chrome.com/webstore/program_policies#extensions
+               2.2 Describe the sole purpose in a maximum of 1000 characters.
+               2.3.0 Reasons for Eligibility. Requirements: A permission is either a list of well-known strings such as "activeTab" or a matching pattern that allows access to one or more hosts.
+Remove any permissions not required for the sole purpose of the extension. If you request unnecessary permissions, this version will be rejected.
+                2.3.1 Reason for activeTab in a maximum of 1000 characters.
+                2.3.2 Justification for host authorization in a maximum of 1000 characters. Requirement: A host permission is any match pattern specified in the permissions and content_scripts fields of the extension manifest. {{Match pattern}} == https://developer.chrome.com/extensions/match_patterns
+                2.3.3 Do you use remote code?
+                Explanation: Any JS, Wasm or CSS code that is not part of the extension's package is remote code. This includes references to external files in <script> tags, modules that reference external files, and strings evaluated via eval().
+                Explain this in a maximum of 1000 characters.</value>
+              <additionals>text, LinkOrURL</additionals>
+              <additionalsHide />
+              <id>blogPost</id>
+           </option>
+           <option>
               <label> Code / Programming </label>
               <value> As an experienced copywriter, deliver an exceptional copy that captures the essence of a well-structured and well-annotated code. Your copy should highlight the code's organization, with a focus on individual paragraphs as well as the overall structure. In a separate paragraph, also include details about the programming language and the number of lines in the code. Please present your copy in a clear, concise, and easily understood format, using headings, subheadings, and paragraphs to structure your content. Emphasize important details or key points in bold and avoid unnecessary introductions or conclusions. </value>
               <additionals>

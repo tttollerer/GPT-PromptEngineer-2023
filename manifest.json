@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "ChatGPT PromptEngineer 2023",
-  "version": "0.6",
-  "description": "WRITE LESS, GET MORE, IN A CLICK - Specify Your Topic, Share Your Needs, And Receive Personalized, Non-Random Results Instantly. Available For Various Topics In Lot Of Languages",
+  "version": "1.3",
+  "description": "WRITE LESS, GET MORE, PER CLICK - Specify U´r Topic | Share U´ŕ Needs | Receive Personalized No Random Results | A Lot Languages",
   "icons": {
     "16": "Images/icon16.png",
     "48": "Images/icon48.png",
