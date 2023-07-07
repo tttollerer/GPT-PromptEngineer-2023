@@ -108,7 +108,6 @@ if (targetNode) {
     
   }
 
-  /*console.log('Das targetNode-Element wurde gefunden.');*/
 } else {
   console.log('Das targetNode-Element wurde nicht gefunden.');
 }
