@@ -33,6 +33,11 @@ async function fetchDropdownData(lang) {
   let parser = new DOMParser();
   let xml = parser.parseFromString(data, 'application/xml');
 
+  // Load the fallback XML file (English)
+  const fallbackResponse = await fetch(chrome.runtime.getURL(`XML/data_en.xml`));
+  const fallbackData = await fallbackResponse.text();
+  const fallbackXml = parser.parseFromString(fallbackData, 'application/xml');
+
   const nodesToCheck = ["label"];
 
   for (const nodeToCheck of nodesToCheck) {
@@ -40,19 +45,20 @@ async function fetchDropdownData(lang) {
     for (let i = 0; i < nodeSnapshot.snapshotLength; i++) {
       const node = nodeSnapshot.snapshotItem(i);
       const label = node.textContent.trim();
-      if (translations[lang][label]) {
+      if (translations && translations[lang] && label in translations[lang]) {
         node.textContent = translations[lang][label];
       } else {
-        console.log(`No translation found for label "${label}" in language ${lang}.`);
+        // If no translation found, try to get the value from the fallback XML
+        const fallbackNode = fallbackXml.evaluate(`//${nodeToCheck}[text()="${label}"]`, fallbackXml, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        if (fallbackNode && fallbackNode.textContent) {
+          node.textContent = fallbackNode.textContent;
+        } else {
+          console.log(`No translation found for label "${label}" in language ${lang}.`);
+        }
       }
     }
   }
 
   return xml;
 }
-
-
-
-
-
 window.fetchDropdownData = fetchDropdownData;
