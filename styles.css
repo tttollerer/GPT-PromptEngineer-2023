@@ -328,8 +328,18 @@
   transition: transform 0.5s ease-in-out;
   border-radius: 50%;
   box-shadow: 0 0 5px rgba(5, 71, 239, 0);
-  transition: transform 0.5s, box-shadow 0.5s;
-  transform: rotate(-90deg);
+  transform: rotate(+270deg);
+}
+
+.toggle-button:active {
+  animation: bounce 1s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes bounce {
+  0% {transform: rotate(270deg);}
+  50% {transform: rotate(270deg) translateX(-25px);}
+  100% {transform: rotate(270deg);}
 }
 
 .toggle-button:hover {
@@ -416,6 +426,7 @@ input:focus::placeholder {
 #prompt-generator-container {
   box-shadow: 0 0 5px #016bff !important;
   animation: glow 3s ease-in-out !important;
+  
 
 }
 
