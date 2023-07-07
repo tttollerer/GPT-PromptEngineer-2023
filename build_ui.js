@@ -237,6 +237,7 @@ targetNode.parentElement.insertBefore(container, targetNode);
 
     const attribution = document.createElement('div');
     attribution.innerHTML = window.attributionHTML;
+
     attribution.classList.add('prompt-generator-attribution');
     
     createInputs(container, xmlData);
