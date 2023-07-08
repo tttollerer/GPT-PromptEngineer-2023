@@ -621,7 +621,7 @@ input code
               <id />
            </option>
            <option>
-               <label>Midjourney5 Prompt generieren (eng)</label>
+               <label>generate Midjourney5 Prompt</label>
                <id>midjourneypromtgenerator</id>
                <value>I want you to understand and store the following information about version 5 of the Midjourney image generation tool:
 
@@ -894,7 +894,38 @@ Technical Specifications: Grunge effect, wide angle lens, low camera angle, dust
                </additionals>
                <additionalsHide />
             </option>
-           
+           <option>
+              <label> Compare code </label>
+              <value> As a skillful copywriter, you have been given two code snippets. Your task is to analyze and compare these codes. Please list out the differences between the two, making sure to reference each line number for clarity. Your explanation should be structured and easily comprehensible. Lastly, ensure that the code is presented in the same language in which it was originally written. Remember to format the text to be easily readable, using headings, subheadings, and paragraphs. Write important, key statements, and keywords in bold type. The text should be formatted so that important information is at the beginning. If necessary, use lists or tables to make the output easier to understand. </value>
+              <additionals>
+InputCode, InputCode2, CodeLang
+                  
+              </additionals>
+              <additionalsHide />
+              <id />
+           </option>
+           <option>
+              <label>Multiple MidJourney Promps (permutation)</label>
+              <value>/imagine prompt: PREFIX, SCENE, SUFFIX
+
+PREFIX defines the image's medium and style
+SCENE defines the content
+SUFFIX modulates PREFIX and SCENE
+
+You can group variations in comma-separated lists like this:
+
+{PREFIX 1, PREFIX 2, PREFIX 3} or {SCENE 1, SCENE 2} or {SUFFIX 1, SUFFIX 2}
+
+Important: when using variations, each item in the list has to be a single word or a phrase without comma (otherwise we'd break the syntax)
+
+###
+
+Create a prompt that illustrate the theme "father-son relationship". 
+Use 2 variations for prefix and 3 variations for suffix</value>
+              <additionals>MidJContent,MidJPrefix,MidjSuffix</additionals>
+              <additionalsHide />
+              <id />
+           </option>
            <option>
               <label> Compare code </label>
               <value> As a skillful copywriter, you have been given two code snippets. Your task is to analyze and compare these codes. Please list out the differences between the two, making sure to reference each line number for clarity. Your explanation should be structured and easily comprehensible. Lastly, ensure that the code is presented in the same language in which it was originally written. Remember to format the text to be easily readable, using headings, subheadings, and paragraphs. Write important, key statements, and keywords in bold type. The text should be formatted so that important information is at the beginning. If necessary, use lists or tables to make the output easier to understand. </value>
@@ -1300,6 +1331,27 @@ InputCode, CodeLang
         <id>inputLanguage</id>
         <class> prompt-generator-input </class>
         <valueBefore> Input language is {{inputLanguage}} == "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label>Describe the desired image style (E.g. "Vintage sepia photograph")</label>
+        <id>MidJprefix</id>
+        <class> prompt-generator-input </class>
+        <valueBefore> {{prefix}} == "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label>What should be represented (E.g. "A father teaching his son")</label>
+        <id>MidJcontent</id>
+        <class> prompt-generator-input </class>
+        <valueBefore> {{content}} == "</valueBefore>
+         <valueAfter>". </valueAfter>
+     </input>
+     <input>
+        <label>Scene description (E.g. "With a sense of nostalgia, Kodak camera")</label>
+        <id>MidJsuffix</id>
+        <class> prompt-generator-input </class>
+        <valueBefore> {{suffix}} == "</valueBefore>
          <valueAfter>". </valueAfter>
      </input>
   </inputs>
