@@ -1,0 +1,63 @@
+<data>
+<checkboxes>
+     <checkbox>
+        <label> Short Answer </label>
+        <id>ShortAnswer</id>
+        <value> Give me a short, concise answer that contains all the important information. Write in a way that is easy to understand. Write in lass than 5 sentences. Generate a # headline and a ## subheadline. </value>
+        <additionals></additionals>
+        <additionalsHide />
+     </checkbox>
+     <checkbox>
+        <label> Formate Text </label>
+        <id> formateText </id>
+        <value> Formate the text with headlines (#, ##, ###) and highlight important words in bold. </value>
+        <additionals>
+            
+        </additionals>
+        <additionalsHide />
+     </checkbox>
+     <checkbox>
+        <label> Bullet Points </label>
+        <id>PointAnswer</id>
+        <value> Compose a succinct summary of the key points and unique selling propositions (USPs) that characterize your subject, presented in a maximum of seven bullet points. The summary should be brief, impactful, and must include the most crucial key point. Provide the output in a well-structured and easily readable format. </value>
+        <additionals>
+            
+        </additionals>
+        <additionalsHide />
+     </checkbox>
+     <checkbox>
+        <label> Queries </label>
+        <id>AskQuestions</id>
+        <value> Ask me questions to better understand my problem and provide me with a better answer. Give me suggestions on what to ask.  </value>
+        <additionals>
+            
+        </additionals>
+        <additionalsHide />
+     </checkbox>
+
+     <checkbox>
+        <label> 100% Human </label>
+        <id>aiproof</id>
+        <value> Compose a piece of content with distinct emphasis on 'perplexity' and 'burstiness,' two vital elements in human writing. The 'perplexity' represents the complexity of the text, and 'burstiness' reflects the variations in sentence length and structure. Your content should have a human-like mix of both elements, interspersing shorter sentences with more complex ones.
+
+A significant aspect of your task is to embed the author's personality in the writing style, making it indistinguishable from human writing. You need to be sensitive to the author's nuances and idiosyncrasies to ensure this authenticity. Once the content is prepared, please evaluate its recognizability as machine-generated text. Use a scale from 1 to 100, with 100 implying complete recognizability as machine text.
+
+The content should be well-structured and reader-friendly. Use headings and subheadings, and divide the text into easily readable paragraphs. Important statements and keywords should be bolded for emphasis, and the most critical information should be positioned at the beginning of the text. If necessary for clarity, use lists or tables.
+
+Finally, to give the text a more personal and human touch, incorporate any available samples of the author's writing, details about their personality, age, profession, or any other information that might contribute to a more authentic representation of the author's voice. Ask for those in a list.  </value>
+        <additionals>
+            
+        </additionals>
+        <additionalsHide />
+     </checkbox>
+     <checkbox>
+        <label>Simple As Possible</label>
+        <id>foolproof</id>
+        <value> Generate a well-structured text that could be easily understood by a 9-year-old child. It should be written in an accessible language, and the use of familiar foreign words or anglicisms is allowed. To enhance readability, ensure the text includes headings, subheadings, and clear paragraphs. Start with a summary that captures the main ideas in no more than five bullet points. Avoid unnecessary introductory or concluding remarks. The text should be designed such that important information is conveyed right at the beginning. If needed, use lists or tables to enhance understanding. </value>
+        <additionals>
+            
+        </additionals>
+        <additionalsHide />
+     </checkbox>
+  </checkboxes>
+  </data>

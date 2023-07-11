@@ -62,3 +62,5 @@ async function fetchDropdownData(lang) {
   return xml;
 }
 window.fetchDropdownData = fetchDropdownData;
+
+

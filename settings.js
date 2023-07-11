@@ -17,12 +17,12 @@ window.languageMapping = {
     LANGUAGE_DROPDOWN_OPTIONS: `
     <option value="en" data-src="XML/data_en.xml">🇺🇸 English</option>
     <option value="zh" data-src="XML/data_en.xml">🇨🇳 Chinese</option>
-    <option value="pt" data-src="XML/data_en.xml">🇪🇸 Spanish</option>
+    <option value="es" data-src="XML/data_en.xml">🇪🇸 Spanish</option>
     <option value="hi" data-src="XML/data_en.xml">🇮🇳 Hindi</option>
     <option value="fr" data-src="XML/data_en.xml">🇫🇷 French</option>
     <option value="de" data-src="XML/data_de.xml">🇩🇪 German</option>
     <option value="ru" data-src="XML/data_en.xml">🇷🇺 Russian</option>
-    <option value="es" data-src="XML/data_en.xml">🇵🇹 Portuguese</option>
+    <option value="pt" data-src="XML/data_en.xml">🇵🇹 Portuguese</option>
     <option value="it" data-src="XML/data_en.xml">🇮🇹 Italian</option>
     <option value="th" data-src="XML/data_en.xml">🇹🇭 Thai</option>
     <option value="" data-src="XML/data_en.xml">Dialects:</option>
