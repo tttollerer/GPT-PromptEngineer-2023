@@ -10,33 +10,36 @@ loadTranslations();
 
 let preferLocalizedLabel = true;
 
-async function fetchFallbackXml() {
-  const url = chrome.runtime.getURL('XML/data_en.xml');
-  const response = await fetch(url);
-  const data = await response.text();
-  const parser = new DOMParser();
-  const xml = parser.parseFromString(data, 'application/xml');
-  return xml;
+async function fetchAllXml() {
+  const xmls = await Promise.all(window.XML_FILES.map(async (file) => {
+    const url = chrome.runtime.getURL(file);
+    const response = await fetch(url);
+    const data = await response.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(data, 'application/xml');
+    return xml;
+  }));
+
+  // Merge all XMLs into one
+  const mergedXml = xmls[0];
+  const mergedRoot = mergedXml.documentElement;
+  for (let i = 1; i < xmls.length; i++) {
+    const xml = xmls[i];
+    const root = xml.documentElement;
+    while (root.firstChild) {
+      mergedRoot.appendChild(root.firstChild);
+    }
+  }
+
+  return mergedXml;
 }
 
 async function fetchDropdownData(lang) {
-  // Stellen Sie sicher, dass die Übersetzungen geladen sind
   if (!translations) {
     await loadTranslations();
   }
 
-  // Immer die englische XML-Datei laden
-  const url = chrome.runtime.getURL(`XML/data_en.xml`);
-
-  const response = await fetch(url);
-  const data = await response.text();
-  let parser = new DOMParser();
-  let xml = parser.parseFromString(data, 'application/xml');
-
-  // Load the fallback XML file (English)
-  const fallbackResponse = await fetch(chrome.runtime.getURL(`XML/data_en.xml`));
-  const fallbackData = await fallbackResponse.text();
-  const fallbackXml = parser.parseFromString(fallbackData, 'application/xml');
+  let xml = await fetchAllXml();
 
   const nodesToCheck = ["label"];
 
@@ -48,13 +51,7 @@ async function fetchDropdownData(lang) {
       if (translations && translations[lang] && label in translations[lang]) {
         node.textContent = translations[lang][label];
       } else {
-        // If no translation found, try to get the value from the fallback XML
-        const fallbackNode = fallbackXml.evaluate(`//${nodeToCheck}[text()="${label}"]`, fallbackXml, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-        if (fallbackNode && fallbackNode.textContent) {
-          node.textContent = fallbackNode.textContent;
-        } else {
-          console.log(`No translation found for label "${label}" in language ${lang}.`);
-        }
+        console.log(`No translation found for label "${label}" in language ${lang}.`);
       }
     }
   }
@@ -62,5 +59,3 @@ async function fetchDropdownData(lang) {
   return xml;
 }
 window.fetchDropdownData = fetchDropdownData;
-
-

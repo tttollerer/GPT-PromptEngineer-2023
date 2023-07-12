@@ -1,0 +1,37 @@
+<dropdowns>
+
+<dropdown>
+        <label> Clients </label>
+        <id>Staff, NeverHide</id>
+        <options>
+           <option>
+              <id>optionEmpty</id>
+              <label> Clients </label>
+              <value></value>
+              <additionals></additionals>
+              <additionalsHide />
+           </option>
+            <option>
+               <id>sehhaus</id>
+               <label>SEHhaus</label>
+               <value>
+</value>
+               <additionals>
+                  <!--InputArt, InputDaten, InputZielgruppe, InputAutor, InputKeywords, InputCode, InputCode2, CodeLang, Text, Umfang, Formatierung, Schreibstil-->
+               </additionals>
+               <additionalsHide />
+            </option>
+             <option>
+               <id>ralinenladle</id>
+               <label>Pralinenlädle</label>
+               <value>
+</value>
+               <additionals>
+                  <!--InputArt, InputDaten, InputZielgruppe, InputAutor, InputKeywords, InputCode, InputCode2, CodeLang, Text, Umfang, Formatierung, Schreibstil-->
+               </additionals>
+               <additionalsHide />
+            </option>
+</options>
+</dropdown>
+</dropdowns>
+       

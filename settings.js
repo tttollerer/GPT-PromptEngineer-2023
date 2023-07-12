@@ -12,6 +12,14 @@ window.languageMapping = {
     'pt': 'Portuguese'
   };
 
+  window.XML_FILES = [
+    'XML/data_dropdown_employee.xml',
+    'XML/data_dropdown_clients.xml',
+    'XML/data_dropdown_tasks.xml',
+    'XML/data_dropdowns.xml',
+    'XML/data_inputs.xml',
+    'XML/data_checkboxes.xml'
+  ];
 
   window.SETTINGS = {
     LANGUAGE_DROPDOWN_OPTIONS: `
