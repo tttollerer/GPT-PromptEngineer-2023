@@ -20,16 +20,16 @@
         "https://www.bing.com/*"
       ],
       "js": [
-        "settings.js", 
-        "input_field_creation.js",
-        "XML/translations.json",
-        "fetch_data.js", 
-        "build_ui.js",
-        "language_switcher.js",
-        "content_script.js"
+        "settings/settings.js", 
+        "engine/input_field_creation.js",
+        "translation/translations.json",
+        "engine/fetch_data.js", 
+        "engine/build_ui.js",
+        "engine/language_switcher.js",
+        "engine/content_script.js"
       ],
       "css": [
-        "styles.css"
+        "styles/styles.css"
       ],
       "run_at": "document_idle"
     }
@@ -41,22 +41,22 @@
   "web_accessible_resources": [
   {
     "resources": [
-      "settings.js", 
-      "XML/translations.json",
-      "input_field_creation.js", 
-      "XML/data_en.xml",
-      "XML/data_inputs.xml",
-      "XML/data_checkboxes.xml",
-      "XML/data_dropdowns.xml",
-      "XML/data_dropdown_employee.xml",
-      "XML/data_dropdown_tasks.xml",
-      "XML/data_dropdown_clients.xml",  
+      "settings/settings.js", 
+      "translation/translations.json",
+      "engine/input_field_creation.js", 
+      "data_en.xml",
+      "data_inputs.xml",
+      "data_checkboxes.xml",
+      "data_dropdowns.xml",
+      "data_dropdown_employee.xml",
+      "data_dropdown_tasks.xml",
+      "data_dropdown_clients.xml",  
       "Images/logo.png",
       "Images/icon128.png",
       "Images/icon48.png",
       "Images/icon16.png",
       "Images/OnOff.png",
-      "content_script.js"],
+      "engine/content_script.js"],
     "run_at": "document_idle",
     "use_dynamic_url": false,
     "matches": [

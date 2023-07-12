@@ -329,7 +329,7 @@
   border-radius: 50%;
   box-shadow: 0 0 5px rgba(5, 71, 239, 0);
   transition: transform 0.5s, box-shadow 0.5s;
-  transform: rotate(-90deg);
+  transform: rotate(90deg);
 }
 
 .toggle-button:hover {
@@ -338,7 +338,7 @@
 
 
 .toggle-button.rotated {
-  transform: rotate(90deg);
+  transform: rotate(-90deg);
 }
 
 .prompt-generator-container {

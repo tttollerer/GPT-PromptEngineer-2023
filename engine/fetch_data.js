@@ -1,7 +1,7 @@
 let translations;
 
 async function loadTranslations() {
-  const url = chrome.runtime.getURL('XML/translations.json');
+  const url = chrome.runtime.getURL('translation/translations.json');
   const response = await fetch(url);
   translations = await response.json();
 }
@@ -50,9 +50,7 @@ async function fetchDropdownData(lang) {
       const label = node.textContent.trim();
       if (translations && translations[lang] && label in translations[lang]) {
         node.textContent = translations[lang][label];
-      } else {
-        console.log(`No translation found for label "${label}" in language ${lang}.`);
-      }
+      } 
     }
   }
 

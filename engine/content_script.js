@@ -48,7 +48,7 @@ function addEventListeners(container) {
 
 
   window.submitForm = function(xmlData){
-    
+    console.log("enter");
     let originalText = targetNode.value.trim();
     let dropdownTexts = '';
     for (const select of document.querySelectorAll('.prompt-generator-container select')) {
