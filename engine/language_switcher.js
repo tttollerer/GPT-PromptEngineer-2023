@@ -75,12 +75,13 @@ async function initLanguageSwitcher() {
   
 }
 
+/*
 (async function () {
   const selectedLanguage = localStorage.getItem('selectedLanguage');
   await updateUI(selectedLanguage || initialLang);
   initLanguageSwitcher();
 })();
-
+*/
 
 function updateLanguageDropdown(lang) {
   const dropdown = document.getElementById("language-selector");
@@ -98,4 +99,4 @@ function updateLanguageDropdown(lang) {
 
 window.initLanguageSwitcher = initLanguageSwitcher;
 window.fetchDropdownData = fetchDropdownData;
-window.buildUI = buildUI;
+//window.buildUI = buildUI;

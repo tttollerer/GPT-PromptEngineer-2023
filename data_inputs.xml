@@ -95,7 +95,7 @@
            <valueBefore> Input language is {{inputLanguage}} == "</valueBefore>
             <valueAfter>". </valueAfter>
         </input>
-        <input>
+        <!--<input>
            <label>Describe the desired image style e.g. 'Vintage sepia photograph'</label>
            <id>MidJprefix</id>
            <class> prompt-generator-input </class>
@@ -122,7 +122,7 @@
            <class> prompt-generator-input </class>
            <valueBefore> {{Variations}} == "</valueBefore>
             <valueAfter>". </valueAfter>
-        </input>
+        </input>-->
         <input>
          <id>fileUpload</id>
          <label>File Upload</label>

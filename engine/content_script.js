@@ -28,7 +28,7 @@ async function init() {
 
 
 
-  window.buildUI(xmlData);
+  //window.buildUI(xmlData);
   window.buildUIElements(container);
   addEventListeners(container);
 }

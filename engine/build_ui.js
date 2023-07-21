@@ -7,10 +7,7 @@ window.attributionHTML = attributionHTML;
     createInputField: function(type, data) {
       let inputField;
       if (type === 'input') {
-        inputField = document.createElement('input');
-        
-        console.log(`Creating input field with type: ${data.type}`);  // Loggen Sie den Typ
-      
+        inputField = document.createElement('input');      
         if (data.type === 'file') {
           inputField.type = 'file';
           inputField.accept = '.txt';  // Dateitypen, die akzeptiert werden sollen
