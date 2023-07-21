@@ -66,7 +66,9 @@ function buildUIElements(container) {
   window.createInput = function createInput(inputData) {
     const inputDiv = document.createElement('div');
     inputDiv.classList.add('prompt-generator-input-div');
-    inputDiv.classList.add('HideInput');
+    if (inputData.type !== 'file') {
+      inputDiv.classList.add('HideInput');
+  }
 
     const label = document.createElement('label');
     label.textContent = inputData.label;

@@ -8,8 +8,21 @@ window.attributionHTML = attributionHTML;
       let inputField;
       if (type === 'input') {
         inputField = document.createElement('input');
-        inputField.type = data.type;
+        
+        console.log(`Creating input field with type: ${data.type}`);  // Loggen Sie den Typ
+      
+        if (data.type === 'file') {
+          inputField.type = 'file';
+          inputField.accept = '.txt';  // Dateitypen, die akzeptiert werden sollen
+        } else {
+          inputField.type = data.type;
+        }
         inputField.id = data.id;
+      
+        
+
+
+        
       } else if (type === 'select') {
         inputField = document.createElement('select');
         data.options.forEach((option) => {
@@ -17,6 +30,8 @@ window.attributionHTML = attributionHTML;
             const opt = document.createElement('option');
             if (option.label) {
               opt.textContent = option.label;
+            } else {
+              console.warn("Warnung: option.label ist null oder undefined.");
             }
             if (option.text) {
               opt.dataset.text = option.text;
@@ -28,7 +43,6 @@ window.attributionHTML = attributionHTML;
           }
         });
       }
-
       return inputField;
     },
 
@@ -73,22 +87,27 @@ window.attributionHTML = attributionHTML;
     createInput: function(inputData) {
       const inputDiv = document.createElement('div');
       inputDiv.classList.add('prompt-generator-input-div');
-      inputDiv.classList.add('HideInput');
-
+      if (inputData.id !== 'fileUpload') {
+        inputDiv.classList.add('HideInput');
+    }    
       const label = document.createElement('label');
       label.textContent = inputData.label;
       inputDiv.appendChild(label);
-
-      const inputElement = this.createInputField('input', { type: 'text', id: inputData.id });
-      inputElement.classList.add('prompt-generator-input');
+    
+      const inputElement = this.createInputField('input', { type: inputData.type, id: inputData.id });
+      if (inputData.type === 'file') {
+        inputElement.classList.add('prompt-generator-input');
+      } else {
+        inputElement.classList.add('prompt-generator-input');
+      }
       inputDiv.appendChild(inputElement);
-
+    
       return inputDiv;
     },
   };
   let lastSelectedLanguageIndex = 0;
   async function buildUI(xmlData) {
-
+      console.warn("buildUI");
       if (!xmlData) {console.error('xmlData is null');
         return;
       }
@@ -211,19 +230,32 @@ toggleButtonAdded = true;
 
 /*funktioniert */
 const inputContainer = document.createElement('div');
-inputContainer.classList.add('prompt-generator-input-container');
-container.appendChild(inputContainer);
+//inputContainer.classList.add('prompt-generator-input-container');
+//container.appendChild(inputContainer);
 
 Array.from(inputs).forEach((input) => {
+  const labelElement = input.querySelector('label');
+  const idElement = input.querySelector('id');
+  const typeElement = input.querySelector('type');
   const inputData = {
-    label: input.querySelector('label').textContent,
-    id: input.querySelector('id').textContent,
+    label: labelElement ? labelElement.textContent : '',
+    id: idElement ? idElement.textContent : '',
+    type: typeElement ? typeElement.textContent : 'text',  // Standard auf 'text' setzen, wenn kein Typ definiert ist
   };
+
+
+  if (!labelElement || !idElement) {
+    console.warn("Warnung: Ein oder mehrere benötigte Elemente wurden nicht gefunden.");
+    return;
+  }
+
+  
 
   const inputElement = inputFieldCreation.createInput(inputData);
   const inputField = inputElement.querySelector('input');
   inputField.placeholder = inputData.label;
   inputContainer.appendChild(inputElement);
+  console.log(inputData.label);
 });
 
 targetNode.parentElement.insertBefore(container, targetNode);
@@ -261,12 +293,14 @@ targetNode.parentElement.insertBefore(container, targetNode);
     Array.from(inputs).forEach((input) => {
       const labelElement = input.querySelector('label');
       const idElement = input.querySelector('id');
+      const typeElement = input.querySelector('type');  // Lese das 'type' Element aus den XML-Daten
       const valueBeforeElement = input.querySelector('valueBefore');
       const valueAfterElement = input.querySelector('valueAfter');
   
       const inputData = {
         label: labelElement ? labelElement.textContent : '',
         id: idElement ? idElement.textContent : '',
+        type: typeElement ? typeElement.textContent : 'text',  // Setze den 'type' Wert in inputData
         valueBefore: valueBeforeElement ? valueBeforeElement.textContent : '',
         valueAfter: valueAfterElement ? valueAfterElement.textContent : '',
       };
@@ -335,7 +369,3 @@ function hideAdditionalInputs() {
     }
   });
 }
-
-
-
-

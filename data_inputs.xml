@@ -123,5 +123,12 @@
            <valueBefore> {{Variations}} == "</valueBefore>
             <valueAfter>". </valueAfter>
         </input>
-     </inputs>
+        <input>
+         <id>fileUpload</id>
+         <label>File Upload</label>
+         <class>prompt-generator-input, NeverHide</class>
+         <type>file</type>
+
+
+       </input>     </inputs>
 </data>

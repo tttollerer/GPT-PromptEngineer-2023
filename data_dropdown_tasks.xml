@@ -226,7 +226,20 @@ writing style, scope
            <option>
               <label> Social Media Post </label>
               <id>SocialMediaPost</id>
-              <value> As a proficient social media expert with comprehensive knowledge of platforms such as TikTok, Instagram, Facebook, Pinterest, LinkedIn, and Xing, provide useful tips and tricks for effectively utilizing these platforms. Please ensure that your response is concise, clear, and easy to understand. Use headings, subheadings, and paragraphs to format your response, and emphasize important details or key points in bold. Avoid unnecessary preambles or conclusions. Finally, summarize your advice in a four-sentence recommendation paragraph at the end. </value>
+              <value> Act as an experienced social media expert with extensive knowledge of platforms such as TikTok, Instagram, Facebook, Pinterest, LinkedIn and Xing, provide useful tips and tricks for using these platforms effectively. Make sure your response is concise, clear and easy to understand. 
+
+Write a post for a social media platform. Write in an exciting way. 
+Use a few emojis. Add a call-to-action at the end. 
+Add a single"Arrow Right"-Icon before the Call-to-Action. 
+Add a line break before and after the call-to-action. 
+Add five keywords that match the post's content at the very end. Write three of that posts. 
+Use this icon "👁️‍🗨️" as a synonym for the company's logo.
+
+After that ask me questions of your choice to make a better post in the next step. write above each post a headline (##headline) like "Social Media Post 1", "social Media Post 2" and so on.
+
+
+The Topic of the Posts is: 
+</value>
               <additionals>
 InputArt, InputData, InputTarget Group, InputKeywords, Writing Style, Scope
                   

@@ -102,10 +102,11 @@ function addEventListeners(container) {
     } else {
       combinedText = `${dropdownTexts}\n${checkboxTexts}\n${inputTexts}\n\n${originalText}`;
       if (selectedLanguageCode && selectedLanguageCode !== "en") {
-        combinedText += `\n\nAnswer all the time in ${selectedLanguageName}.`;
+        combinedText += `\n\nAnswer in ${selectedLanguageName} all the time.`;
       }
     }
     targetNode.value = combinedText.trim();
+    console.log("targetNode.value: " + targetNode.value);
 
     const sendButton = document.getElementById('PromptButton');
     if (sendButton) {
