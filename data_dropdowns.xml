@@ -110,6 +110,26 @@ formatting
               <additionalsHide />
            </option>
            <option>
+            <label>100% Human Text</label>
+            <value>When it comes to writing content, two factors are crucial, "perplexity" and "burstiness." Perplexity measures the complexity of text. Separately, burstiness compares the variations of sentences. Humans tend to write with greater burstiness, for example, with some longer or complex sentences alongside shorter ones. AI sentences tend to be more uniform. Therefore, when writing the following content I am going to ask you to create, I need it to have a good amount of perplexity and burstiness. Do you understand?"
+
+               As a language model trained by OpenAI, ChatGPT is capable of generating a wide range of responses to various prompts. However, not all prompts are created equal, and some may be more likely to trigger AI detectors or get flagged as non-human responses. In order to generate a prompt that can pass AI detectors such as GPT zero and get a 100% human score, there are several key factors to consider.
+               
+               First and foremost, the prompt should be specific and focused, rather than broad or open-ended. Open-ended prompts are more likely to result in generic or formulaic responses that could be flagged as non-human. By contrast, a specific prompt that requires a more targeted response is more likely to elicit a thoughtful and nuanced answer that will be less likely to raise red flags.
+               
+               Secondly, the prompt should be written in natural, human language, rather than technical jargon or complex terminology. AI detectors are trained to look for patterns that are associated with machine-generated text, and the use of technical language or syntax could trigger these patterns. Therefore, it is important to phrase the prompt in a way that is clear and easily understandable to a human reader.
+               
+               Thirdly, the prompt should be relevant and engaging to the reader. If the prompt is not interesting or engaging, then the response is more likely to be formulaic or generic, which could be flagged as non-human. By contrast, a prompt that is thought-provoking or emotionally resonant is more likely to elicit a human-like response.
+               
+               To illustrate these principles, let's consider an example of a prompt that could pass AI detectors and get a 100% human score. Imagine that the prompt is "Tell me about a time when you faced a difficult decision in your personal life.</value>
+            <id>100humantext</id>
+            <additionals>
+formatting
+                
+            </additionals>
+            <additionalsHide />
+         </option>
+           <option>
               <label> Easy to Read and Clean Formatting </label>
               <value> Write legibly and clearly formatted. Make meaningful paragraphs. Structure the content. </value>
               <id />

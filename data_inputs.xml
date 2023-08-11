@@ -38,7 +38,7 @@
            <class> prompt-generator-input </class>
         </input>
         <input>
-           <label> The Target Group </label>
+           <label> Target Group </label>
            <id> InputTargetGroup </id>
            <class> prompt-generator-input </class>
         </input>
@@ -95,6 +95,13 @@
            <valueBefore> Input language is {{inputLanguage}} == "</valueBefore>
             <valueAfter>". </valueAfter>
         </input>
+        <input>
+         <label>Additional company information</label>
+         <id>AdditionalCompanyInformation</id>
+         <class> prompt-generator-input </class>
+         <valueBefore> Your additional company information is {{AdditionalCompanyInformation}} == "</valueBefore>
+          <valueAfter>". </valueAfter>
+      </input>
         <!--<input>
            <label>Describe the desired image style e.g. 'Vintage sepia photograph'</label>
            <id>MidJprefix</id>
@@ -123,12 +130,5 @@
            <valueBefore> {{Variations}} == "</valueBefore>
             <valueAfter>". </valueAfter>
         </input>-->
-        <input>
-         <id>fileUpload</id>
-         <label>File Upload</label>
-         <class>prompt-generator-input, NeverHide</class>
-         <type>file</type>
-
-
-       </input>     </inputs>
+        </inputs>
 </data>

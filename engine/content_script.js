@@ -47,25 +47,24 @@ function addEventListeners(container) {
   const targetNode = document.querySelector(window.getSelector());
 
 
-  window.submitForm = function(xmlData){
-    console.log("enter");
+  window.submitForm = async function(xmlData) {
     let originalText = targetNode.value.trim();
     let dropdownTexts = '';
     for (const select of document.querySelectorAll('.prompt-generator-container select')) {
       const selectedText = select.options[select.selectedIndex].dataset.text;
       dropdownTexts += selectedText ? ' ' + selectedText : '';
     }
-
+  
     let inputTexts = '';
     for (const input of document.querySelectorAll('.prompt-generator-container input[type="text"]')) {
       if (input.value) {
         inputTexts += ' ' + input.getAttribute('valueBefore') + input.value + input.getAttribute('valueAfter');
       }
     }
-
+  
     let checkboxTexts = '';
     let additionalIds = [];
-
+  
     for (const checkbox of document.querySelectorAll('.prompt-generator-container input[type="checkbox"]')) {
       if (checkbox.checked) {
         checkboxTexts += ' ' + checkbox.value;
@@ -88,43 +87,61 @@ function addEventListeners(container) {
         }
       }
     }
-
+  
     function getLanguageName(langCode) {
       return languageMapping[langCode] || langCode;
     }
-
+  
     const currentLanguageDropdown = document.getElementById('language-selector');
     const selectedLanguageCode = currentLanguageDropdown.value;
     const selectedLanguageName = getLanguageName(selectedLanguageCode);
-
+  
+    // Neue Codezeile: Dateiinhalt lesen und in Konsole ausgeben
+    const fileInput = document.querySelector("#fileUpload");
+    let fileContent = '';
+    if (fileInput.files[0]) {
+      fileContent = await new Promise((resolve, reject) => {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+          resolve(e.target.result); // Löst das Versprechen mit dem Dateiinhalt als Wert auf
+        }
+        reader.onerror = reject; // Falls ein Fehler beim Lesen der Datei auftritt
+        reader.readAsText(fileInput.files[0]);
+      });
+    }
+  
     if (container.classList.contains('hidden')) {
       combinedText = originalText;
     } else {
-      combinedText = `${dropdownTexts}\n${checkboxTexts}\n${inputTexts}\n\n${originalText}`;
+      combinedText = `${dropdownTexts}\n${checkboxTexts}\n${inputTexts}\n\n${fileContent}\n\n${originalText}`;
       if (selectedLanguageCode && selectedLanguageCode !== "en") {
         combinedText += `\n\nAnswer in ${selectedLanguageName} all the time.`;
       }
     }
     targetNode.value = combinedText.trim();
-    console.log("targetNode.value: " + targetNode.value);
-
+  
     const sendButton = document.getElementById('PromptButton');
     if (sendButton) {
       sendButton.click();
 
+      setTimeout(function() {
+        sendButton.click();
+  
       setTimeout(function () {
         targetNode.value = '';
       }, 2000);
-
+  
       setTimeout(() => {
         if (isContainerOpen()) {
           toggleContainerVisibility();
         }
-      }, 300);
-    } else {
+      }, 10000);
+    }, 10000);  // Hinzugefügt: Warte 500 ms bevor das Senden ausgelöst wird
+  } else {
       console.log("Send button not found");
     }
   }
+  
 
 
 

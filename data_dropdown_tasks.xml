@@ -161,9 +161,84 @@ Write a Twitter tweet to promote the video with the monologue later on twitter.
                    
               </additionals>
               <additionalsHide />
-           </option>   
+           </option>
            <option>
-               <label>GPT Prompt generieren</label>
+            <label>Check GPT Plugin</label>
+            <id>CheckGPTPlugin</id>
+            <value>What does the {{PluginName}} plugin do and what parameters does it provide?</value>
+            <additionals>
+                PluginName
+                
+            </additionals>
+            <additionalsHide />
+         </option>
+         <option>
+             <label>Company Description / Positioning</label>
+             <id>CompanyDesc</id>
+             <value>Act as a professional for business consulting. I'll provide you with all the information I have. This could be text, websites, or URLs. You'll inquire about any further information you need from me. The goal, for example, is to create a company description or business positioning. Essentials for a company description or business positioning:
+               A company description and positioning are essential elements in business communication and strategy development. They help provide a clear picture of the company and its offerings to both internal and external stakeholders.
+                     Company Description:
+               The company description offers an overview of the company and its field of business. It should cover the following content:
+                  •	Foundation: When and by whom was the company founded?
+                  •	History: A brief outline of the company's major milestones.
+                  •	Mission and Vision: What are the company's long-term goals and purpose?
+                  •	Products/Services: An overview of what the company offers.
+                  •	Target Market: Who are the company's main target groups?
+                  •	Corporate Culture: What values and principles are important to the company?
+                  •	Team: Introduction of key individuals or departments.
+                  •	Locations: Where is the headquarters and are there any other branches?
+                  •	Economic Data: Revenue, number of employees, growth rates, etc. (if these are to be shared publicly).
+                     Business Positioning:
+               Business positioning defines how a company positions itself in the market compared to its competitors. It should include the following aspects:
+                  •	USP (Unique Selling Proposition): What makes the company or its products/services unique?
+                  •	Target Audience Approach: How does the company address its target groups and what needs does it fulfill?
+                  •	Market Definition: In which market segment or industry does the company operate?
+                  •	Competitive Analysis: Who are the main competitors and how does the company differ from them?
+                  •	Brand Personality: If the company were portrayed as a person, what characteristics would it have?
+                  •	Value Proposition: What specific benefits does the company offer its customers?
+                  •	Price Positioning: Is the company positioned in the premium segment, mid-range, or low-cost segment?
+                  •	Communication Strategy: Through which channels and with what message does the company communicate?
+               
+               
+               What we aim to achieve further:
+               Prompt:
+               "Based on the provided links, please create a comprehensive company description and positioning. If certain information is not contained in the links, please ask the user for further details."
+               Links:
+               [Main Website Page]
+               [About Us Page]
+               [Products/Services Page]
+               [Contact Page]
+               [Other Relevant Subpages]
+               After the LLM has analyzed the content of the links, it might respond as:
+               "Based on the provided links, I've drafted the following preliminary company description and positioning:
+               Company Description:
+               [Description is inserted based on information from the links]
+               Business Positioning:
+               [Positioning is inserted based on information from the links]
+               However, I'm missing some information to create a complete picture:
+               Can you tell me more about your company's mission and vision?
+               Who are your main competitors in the market?
+               Which price segment are your products or services positioned in?
+               Are there specific values or principles particularly important to your company?
+               Please provide me with this information so I can complete the description and positioning."
+               
+               Ensure that while using this framework, you provide as much detail as possible, as the more specific and comprehensive your data input, the more accurate and tailored the output will be. Collaboration is essential in this process. Think of the LLM as a tool that enhances and refines the data you feed it, optimizing it for your business needs.
+               
+               **Usage Tips**:
+               
+               1. **Consistency**: Always provide data in a consistent manner. If using URLs, ensure they're all accessible and relevant. 
+               2. **Feedback Loop**: After receiving the initial company description and positioning, review and provide feedback. The LLM can adjust its subsequent outputs based on your feedback.
+               3. **Updates**: As your company evolves, ensure that the information you provide is updated. This ensures that the company's portrayal remains current and relevant.
+               4. **Confidentiality**: Be wary of sharing highly confidential data. While the LLM is designed to handle information securely, always prioritize your company's security and confidentiality protocols.
+               5. **Integration**: Consider integrating this process into your regular business review cycles. This ensures that your company's portrayal to stakeholders remains fresh and aligned with current strategies and objectives.
+               
+               Remember, the effectiveness of the LLM in creating a company description and positioning relies heavily on the quality and comprehensiveness of the data you provide. Collaborate actively, review regularly, and ensure that the final output resonates with your company's ethos and vision.
+               </value>
+            <additionals>LinkOrURL, InputTargetGroup, AdditionalCompanyInformation</additionals>
+            <additionalsHide />
+         </option>   
+           <option>
+               <label>Generate GPT Prompt</label>
                <id>promtgenerator</id>
                <value>Start all Prompts with "act as" and then the professionalization. Read all the instructions below and if you understand them, your next answer will start with the h1 heading: # GPTPromptGenerator.
  
@@ -612,6 +687,28 @@ InputKeywords
               <additionalsHide />
               <id />
            </option>
+           <option>
+            <label>SEO Strategy</label>
+            <id>SEOstrategy</id>
+            <value>As an SEO expert specializing in keyword research, your objective is to create a well-rounded content plan for a specific target keyword. This task involves the creation of a comprehensive and strategic content plan drawn from your expertise in SEO and compliance with recent Google Quality guidelines and Google E-A-T rules.
+
+               Your content plan should encompass the following components:
+               
+               1. Under the header “Meta Title”, you’re required to write a 60 to 75-character meta title involving the main keyword. Be sure to implement attention-grabbing, click-through-rate (CTR) driven titles. Refrain from using quotation marks around the content.
+               
+               2. Under “Meta Description”, craft a 175 to 200-character CTR-driven meta description for this page based on the provided data. Create a description that draws attention and encourages a click. Please do not add quotation marks around the content.
+               3. Create a list of FAQs associated with the primary keyword, display them as an unordered list, and label them under the header “FAQs”.
+               4. Prepare an unordered list of related search queries connected to the primary keyword, and title this section “Related Queries”.
+               5. List prime long-tail keywords that are plausible to rank due to the lack of quality content in the top positions, according to recent Google Quality Guidelines and on-page SEO efforts. Share this as an unordered list and title it “Long Tail Keywords”.
+               6. Collate the top 15 keywords and incorporate them into a structured markdown table. The first column should contain the keyword, the second the keyword intent, and the final column should specify how many times you recommend using the keyword, expressed as an integer. Denote this section with “Keywords”.
+               7. Lastly, create an unordered list of 10 SEO entities applicable to the primary keyword and label them as “Entities”.
+               
+               Bear in mind, the end reader will find the content beneficial, instantly valuable, and easy to read. Your plan should lure clicks and promptly answer the searcher’s intent. Retain your creativity and attention to detail while adhering to all specified guidelines and requirements.</value>
+            <additionals>
+               InputKeywords, PracticeArea, AdditionalCompanyInformation
+            </additionals>
+            <additionalsHide />
+         </option>
            <option>
               <label> Step-by-step instructions </label>
               <id> Instructions </id>
