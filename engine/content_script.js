@@ -96,24 +96,12 @@ function addEventListeners(container) {
     const selectedLanguageCode = currentLanguageDropdown.value;
     const selectedLanguageName = getLanguageName(selectedLanguageCode);
   
-    // Neue Codezeile: Dateiinhalt lesen und in Konsole ausgeben
-    const fileInput = document.querySelector("#fileUpload");
-    let fileContent = '';
-    if (fileInput.files[0]) {
-      fileContent = await new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.onload = function(e) {
-          resolve(e.target.result); // Löst das Versprechen mit dem Dateiinhalt als Wert auf
-        }
-        reader.onerror = reject; // Falls ein Fehler beim Lesen der Datei auftritt
-        reader.readAsText(fileInput.files[0]);
-      });
-    }
+   
   
     if (container.classList.contains('hidden')) {
       combinedText = originalText;
     } else {
-      combinedText = `${dropdownTexts}\n${checkboxTexts}\n${inputTexts}\n\n${fileContent}\n\n${originalText}`;
+      combinedText = `${dropdownTexts}\n${checkboxTexts}\n${inputTexts}\n\n${originalText}`;
       if (selectedLanguageCode && selectedLanguageCode !== "en") {
         combinedText += `\n\nAnswer in ${selectedLanguageName} all the time.`;
       }
