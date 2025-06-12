@@ -6,6 +6,21 @@ let toggleButtonAdded = false;
 let xmlData;
 let combinedText;
 
+const languageMapping = {
+  "en": "English",
+  "de": "German",
+  "es": "Spanish",
+  "fr": "French",
+  "it": "Italian",
+  "pt": "Portuguese",
+  "ru": "Russian",
+  "zh": "Chinese",
+  "ja": "Japanese",
+  "ko": "Korean",
+  "ar": "Arabic",
+  "hi": "Hindi"
+};
+
 
 
 async function init() {
@@ -21,7 +36,7 @@ async function init() {
     const container = createContainer();
     document.body.appendChild(container);
     window.initLanguageSwitcher();
-    xmlData = await window.fetchDropdownData();
+    xmlData = await window.PromptEngineData.fetchDropdownData();
 
     if (!xmlData) {
       console.error('Failed to fetch XML data');

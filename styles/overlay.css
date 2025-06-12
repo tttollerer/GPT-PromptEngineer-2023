@@ -1,38 +1,12 @@
-/* Prompt Engineer Overlay - Clean Theme System */
+/* ========================================
+   AI Platform Style Integration
+   Seamlessly adapts to ChatGPT, Claude, and Gemini design languages
+======================================== */
 
-/* Base CSS Variables - will be overridden by themes */
-:root {
-  /* Original Theme Colors */
-  --pe-light-grey: #c9c9c9;
-  --pe-dark-grey: #282828;
-  --pe-grey: #424242;
-  --pe-white: #f0f0f0;
-  --pe-light-green: #016bff;
-  
-  /* Semantic Colors */
-  --pe-bg-primary: #282828;
-  --pe-bg-secondary: #424242;
-  --pe-bg-hover: #4a4a4a;
-  --pe-text-primary: #f0f0f0;
-  --pe-text-secondary: #c9c9c9;
-  --pe-text-muted: #a49f9f;
-  --pe-border-default: #424242;
-  --pe-border-active: #016bff;
-  --pe-border-glow: #1776d969;
-  --pe-accent-primary: #016bff;
-  --pe-accent-hover: #0080ff;
-  --pe-glow-color: #9ecaed;
-  
-  /* Properties */
-  --pe-border-radius: 8px;
-  --pe-transition-speed: 0.5s;
-  --pe-glow-animation: pe-glow 3s ease-in-out infinite;
-  --pe-shadow-glow: 0 0 5px #016bff;
-  --pe-shadow-hover: 0 0 15px rgba(10, 98, 212, 0.8);
-  --pe-checkbox-size: 18px;
-}
+/* ========================================
+   🎯 BASE RESET & FOUNDATION
+======================================== */
 
-/* Reset and base styles */
 #prompt-engineer-toggle,
 #prompt-engineer-overlay,
 #prompt-engineer-overlay * {
@@ -41,88 +15,83 @@
   padding: 0;
 }
 
-/* Animations */
-@keyframes pe-glow {
-  0%, 100% {
-    box-shadow: 0 0 10px var(--pe-glow-color);
-  }
-  50% {
-    box-shadow: 0 0 20px var(--pe-glow-color), 0 0 30px var(--pe-glow-color);
-  }
-}
+/* ========================================
+   🔘 ADAPTIVE TOGGLE BUTTON
+======================================== */
 
-@keyframes pe-glow-light {
-  0%, 100% {
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
-  }
-  50% {
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
-  }
-}
-
-/* Toggle Button - Original Style */
 .pe-toggle-button {
   position: fixed;
-  bottom: 55px;
-  right: 30px;
-  width: 64px;
-  height: 64px;
+  bottom: var(--pe-space-6, 24px);
+  right: var(--pe-space-6, 24px);
+  width: 56px;
+  height: 56px;
   border: none;
   outline: none;
   cursor: pointer;
   z-index: 1000000;
   
-  border-radius: 50%;
-  background: transparent;
-  transition: transform var(--pe-transition-speed), box-shadow var(--pe-transition-speed);
-  transform: rotate(90deg);
+  /* Platform-adaptive styling */
+  background: var(--pe-accent-primary, #007acc);
+  border-radius: var(--pe-border-radius, 8px);
+  box-shadow: var(--pe-shadow-lg, 0 4px 8px rgba(0, 0, 0, 0.15));
+  transition: all 0.2s ease;
   
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--pe-font-family, system-ui);
 }
 
 .pe-toggle-button:hover {
-  box-shadow: var(--pe-shadow-hover);
+  background: var(--pe-accent-hover, #005a9e);
+  transform: translateY(-2px);
+  box-shadow: var(--pe-shadow-lg, 0 6px 12px rgba(0, 0, 0, 0.2));
 }
 
-.pe-toggle-button.pe-rotated {
-  transform: rotate(-90deg);
+.pe-toggle-button img,
+.pe-toggle-button svg {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
 }
 
-/* Main Overlay Container - Original Style */
+/* ========================================
+   📱 MAIN OVERLAY - PLATFORM ADAPTIVE
+======================================== */
+
 .pe-overlay {
   position: fixed;
   z-index: 999999;
-  background-color: var(--pe-bg-primary);
-  color: var(--pe-text-primary);
-  border: 1px solid var(--pe-border-glow);
-  border-radius: var(--pe-border-radius);
-  transition: all var(--pe-transition-speed) ease-in-out;
-  animation: var(--pe-glow-animation);
-  box-shadow: var(--pe-shadow-glow);
   
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
+  /* Platform-adaptive foundation */
+  background: var(--pe-bg-primary, #ffffff);
+  border: 1px solid var(--pe-border-color, #ddd);
+  border-radius: var(--pe-border-radius-lg, 12px);
+  box-shadow: var(--pe-shadow-lg, 0 4px 8px rgba(0, 0, 0, 0.15));
+  
+  font-family: var(--pe-font-family, system-ui);
+  font-size: var(--pe-font-size-base, 16px);
+  line-height: var(--pe-line-height, 1.5);
+  color: var(--pe-text-primary, #333);
+  
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  /* Enhanced text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
+
+/* ===== RESPONSIVE LAYOUTS ===== */
 
 /* Desktop Layout */
 .pe-desktop.pe-overlay {
   top: 50%;
-  right: 30px;
+  right: var(--pe-space-6, 24px);
   transform: translateY(-50%);
   width: 380px;
   max-height: 80vh;
-  overflow: hidden;
-}
-
-/* Tablet Layout */
-.pe-tablet.pe-overlay {
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
-  width: 320px;
-  max-height: 80vh;
-  overflow: hidden;
 }
 
 /* Mobile Layout */
@@ -130,66 +99,62 @@
   bottom: 0;
   left: 0;
   right: 0;
-  transform: translateY(0);
   width: 100%;
   max-height: 70vh;
-  border-radius: var(--pe-border-radius) var(--pe-border-radius) 0 0;
+  border-radius: var(--pe-border-radius-lg, 12px) var(--pe-border-radius-lg, 12px) 0 0;
   border-bottom: none;
 }
 
-/* Collapsed State */
+/* ===== OVERLAY STATES ===== */
+
 .pe-overlay.pe-collapsed {
   opacity: 0;
   pointer-events: none;
-}
-
-.pe-desktop.pe-collapsed,
-.pe-tablet.pe-collapsed {
-  transform: translateY(-50%) translateX(100%);
+  transform: translateY(-50%) translateX(20px) scale(0.95);
 }
 
 .pe-mobile.pe-collapsed {
   transform: translateY(100%);
 }
 
-/* Expanded State */
 .pe-overlay.pe-expanded {
   opacity: 1;
   pointer-events: all;
 }
 
-/* Header - Original Style */
+/* ========================================
+   📄 HEADER - CLEAN & MINIMAL
+======================================== */
+
 .pe-header {
-  padding: 15px 20px;
-  border-bottom: 1px solid var(--pe-border-default);
-  background-color: var(--pe-bg-primary);
-  border-radius: var(--pe-border-radius) var(--pe-border-radius) 0 0;
-  position: relative;
+  padding: var(--pe-space-4, 16px) var(--pe-space-5, 20px);
+  border-bottom: 1px solid var(--pe-border-color, #ddd);
+  background: var(--pe-bg-primary, #ffffff);
+  border-radius: var(--pe-border-radius-lg, 12px) var(--pe-border-radius-lg, 12px) 0 0;
 }
 
 .pe-header-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: var(--pe-space-3, 12px);
 }
 
-.pe-title {
-  font-size: 1.2rem;
-  font-weight: 300;
-  color: var(--pe-border-glow);
-  text-align: center;
-  flex: 1;
+.pe-header-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--pe-space-2, 8px);
 }
 
 .pe-close-btn {
   width: 32px;
   height: 32px;
   border: none;
-  background: var(--pe-bg-secondary);
-  border-radius: var(--pe-border-radius);
-  color: var(--pe-text-primary);
+  background: var(--pe-bg-secondary, #f5f5f5);
+  border-radius: var(--pe-border-radius-sm, 6px);
+  color: var(--pe-text-secondary, #666);
   cursor: pointer;
-  transition: all var(--pe-transition-speed) ease-in-out;
+  transition: all 0.2s ease;
   
   display: flex;
   align-items: center;
@@ -197,369 +162,483 @@
 }
 
 .pe-close-btn:hover {
-  background-color: var(--pe-bg-hover);
-  border: 1px solid var(--pe-accent-primary);
+  background: var(--pe-bg-hover, #ebebeb);
+  color: var(--pe-text-primary, #333);
 }
 
-/* Content Area */
+/* ========================================
+   📝 CONTENT AREA
+======================================== */
+
 .pe-content {
-  padding: 15px 20px;
+  padding: var(--pe-space-5, 20px);
   overflow-y: auto;
   max-height: calc(80vh - 80px);
+  scrollbar-width: thin;
+  scrollbar-color: var(--pe-border-color, #ddd) transparent;
+}
+
+.pe-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pe-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pe-content::-webkit-scrollbar-thumb {
+  background: var(--pe-border-color, #ddd);
+  border-radius: 3px;
 }
 
 .pe-mobile .pe-content {
   max-height: calc(70vh - 80px);
-  padding: 15px;
+  padding: var(--pe-space-4, 16px);
 }
 
-/* Loading State - Original Style */
-.pe-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  text-align: center;
-}
+/* ========================================
+   📋 FORM SYSTEM - PLATFORM ADAPTIVE
+======================================== */
 
-.pe-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--pe-border-default);
-  border-top: 3px solid var(--pe-accent-primary);
-  border-radius: 50%;
-  animation: pe-spin 1s linear infinite;
-  margin-bottom: 16px;
-}
-
-@keyframes pe-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.pe-loading p {
-  color: var(--pe-text-secondary);
-  margin: 0;
-}
-
-/* Error State */
-.pe-error {
-  text-align: center;
-  padding: 40px 20px;
-}
-
-.pe-error-icon {
-  font-size: 48px;
-  margin-bottom: 16px;
-}
-
-.pe-error-message {
-  color: var(--pe-text-secondary);
-  margin-bottom: 20px;
-}
-
-.pe-retry-btn {
-  background: var(--pe-bg-secondary);
-  color: var(--pe-text-primary);
-  border: 1px solid var(--pe-border-default);
-  padding: 8px 16px;
-  border-radius: var(--pe-border-radius);
-  cursor: pointer;
-  transition: all var(--pe-transition-speed) ease-in-out;
-}
-
-.pe-retry-btn:hover {
-  background-color: var(--pe-bg-hover);
-  border: 1px solid var(--pe-accent-primary);
-}
-
-/* Form Styles - Original Design */
 .pe-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--pe-space-6, 24px);
 }
 
-.pe-section {
+/* ========================================
+   💎 CARD SYSTEM - CLEAN & MINIMAL
+======================================== */
+
+.pe-card {
+  background: var(--pe-bg-secondary, #f5f5f5);
+  border: 1px solid var(--pe-border-color, #ddd);
+  border-radius: var(--pe-border-radius, 8px);
+  padding: var(--pe-space-5, 20px);
+  transition: all 0.2s ease;
+}
+
+.pe-card:hover {
+  border-color: var(--pe-border-hover, #ccc);
+  box-shadow: var(--pe-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.pe-card-header {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--pe-space-1, 4px);
+  margin-bottom: var(--pe-space-4, 16px);
+  padding-bottom: var(--pe-space-3, 12px);
+  border-bottom: 1px solid var(--pe-border-color, #ddd);
 }
 
-.pe-section-title {
-  font-size: 0.7em;
-  font-weight: 400;
-  text-transform: uppercase;
-  color: var(--pe-text-primary);
+.pe-card-title {
+  font-size: var(--pe-font-size-base, 16px);
+  font-weight: var(--pe-font-weight-semibold, 600);
+  color: var(--pe-text-primary, #333);
+  margin: 0;
+}
+
+.pe-card-subtitle {
+  font-size: var(--pe-font-size-sm, 14px);
+  font-weight: var(--pe-font-weight-normal, 400);
+  color: var(--pe-text-secondary, #666);
+  margin: 0;
+}
+
+.pe-card-content {
+  position: relative;
+}
+
+/* ========================================
+   💊 CHECKBOX SYSTEM - PLATFORM ADAPTIVE
+======================================== */
+
+.pe-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--pe-space-3, 12px);
+}
+
+.pe-checkbox-field {
+  position: relative;
+  width: 100%;
+}
+
+.pe-checkbox-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pe-space-3, 12px) var(--pe-space-4, 16px);
+  background: var(--pe-bg-primary, #ffffff);
+  border: 1px solid var(--pe-border-color, #ddd);
+  border-radius: var(--pe-border-radius, 8px);
+  cursor: pointer;
+  font-size: var(--pe-font-size-sm, 14px);
+  font-weight: var(--pe-font-weight-medium, 500);
+  color: var(--pe-text-secondary, #666);
+  transition: all 0.2s ease;
   text-align: center;
-  margin-bottom: 5px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--pe-border-default);
+  min-height: 44px;
+}
+
+.pe-checkbox-label:hover {
+  border-color: var(--pe-border-hover, #ccc);
+  background: var(--pe-bg-hover, #f1f1f1);
+  color: var(--pe-text-primary, #333);
+}
+
+.pe-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* Platform-specific checkbox selected states */
+
+/* ChatGPT Style */
+.pe-platform-chatgpt .pe-checkbox:checked + .pe-checkbox-label,
+.pe-platform-chatgpt .pe-checkbox-field:has(.pe-checkbox:checked) .pe-checkbox-label {
+  background: var(--pe-accent-primary, #10a37f);
+  border-color: var(--pe-accent-primary, #10a37f);
+  color: white;
+}
+
+/* Claude Style */
+.pe-platform-claude .pe-checkbox:checked + .pe-checkbox-label,
+.pe-platform-claude .pe-checkbox-field:has(.pe-checkbox:checked) .pe-checkbox-label {
+  background: var(--pe-accent-primary, #d97706);
+  border-color: var(--pe-accent-primary, #d97706);
+  color: white;
+}
+
+/* Gemini Style - Material pill design */
+.pe-platform-gemini .pe-checkbox-label {
+  border-radius: var(--pe-border-radius-pill, 20px);
+}
+
+.pe-platform-gemini .pe-checkbox:checked + .pe-checkbox-label,
+.pe-platform-gemini .pe-checkbox-field:has(.pe-checkbox:checked) .pe-checkbox-label {
+  background: var(--pe-accent-primary, #1a73e8);
+  border-color: var(--pe-accent-primary, #1a73e8);
+  color: white;
+}
+
+/* ========================================
+   📋 DROPDOWN SYSTEM - PLATFORM ADAPTIVE
+======================================== */
+
+.pe-dropdowns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--pe-space-4, 16px);
+}
+
+.pe-select {
+  width: 100%;
+  background: var(--pe-bg-primary, #ffffff);
+  color: var(--pe-text-primary, #333);
+  border: 1px solid var(--pe-border-color, #ddd);
+  padding: var(--pe-space-3, 12px) var(--pe-space-4, 16px);
+  border-radius: var(--pe-border-radius, 8px);
+  font-size: var(--pe-font-size-base, 16px);
+  font-family: var(--pe-font-family, system-ui);
+  transition: all 0.2s ease;
+  appearance: none;
+  cursor: pointer;
+  min-height: 44px;
+  
+  /* Custom dropdown arrow */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right var(--pe-space-3, 12px) center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+.pe-select:hover {
+  border-color: var(--pe-border-hover, #ccc);
+  background-color: var(--pe-bg-hover, #f9f9f9);
+}
+
+.pe-select:focus {
+  border-color: var(--pe-accent-primary, #007acc);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.1);
+}
+
+/* Platform-specific dropdown styles */
+.pe-platform-gemini .pe-select {
+  border-radius: var(--pe-border-radius-sm, 4px);
+}
+
+/* ========================================
+   📝 INPUT FIELDS - PLATFORM ADAPTIVE
+======================================== */
+
+.pe-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--pe-space-4, 16px);
 }
 
 .pe-field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--pe-space-2, 8px);
 }
 
 .pe-field label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--pe-text-secondary);
-  display: none; /* Hidden like in original */
-}
-
-/* Dropdowns - Original Style */
-.pe-dropdowns {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.pe-dropdowns .pe-field {
-  flex: 0 0 calc(33.33% - 10px);
-  margin-bottom: 15px;
-}
-
-.pe-select {
-  width: 100%;
-  background-color: var(--pe-bg-secondary);
-  color: var(--pe-text-primary);
-  border: 1px solid var(--pe-border-default);
-  padding: 5px 2px 5px 5px;
-  border-radius: var(--pe-border-radius);
-  font-size: 14px;
-  transition: border-color var(--pe-transition-speed);
-  appearance: none;
-}
-
-.pe-select:focus,
-.pe-select:hover {
-  border: 1px solid var(--pe-accent-primary);
-  outline: none;
-}
-
-.pe-select option {
-  background-color: var(--pe-bg-secondary);
-  color: var(--pe-text-primary);
-}
-
-.pe-select option:first-child {
-  color: var(--pe-bg-primary);
-}
-
-/* Checkboxes - Original Style exactly like old checkbox_btn */
-.pe-checkboxes {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 20px;
-  gap: 10px;
-}
-
-.pe-checkbox-field {
-  flex: 0 0 auto;
-  margin: 0;
-}
-
-.pe-checkbox-label {
-  display: inline-block;
-  padding: 5px 15px;
-  background-color: var(--pe-bg-secondary);
-  border: 1px solid var(--pe-border-default);
-  border-radius: var(--pe-border-radius);
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--pe-text-primary);
-  text-align: center;
-  transition: all var(--pe-transition-speed) ease-in-out;
-  white-space: nowrap;
-}
-
-.pe-checkbox-label:hover {
-  border: 1px solid var(--pe-accent-primary);
-}
-
-.pe-checkbox-label:active,
-.pe-checkbox:checked ~ .pe-checkbox-text,
-.pe-checkbox-field:has(.pe-checkbox:checked) .pe-checkbox-label {
-  background-color: var(--pe-accent-primary);
-  border-color: var(--pe-accent-primary);
-  color: var(--pe-text-primary);
-}
-
-.pe-checkbox {
-  -webkit-appearance: none;
-  width: var(--pe-checkbox-size);
-  height: var(--pe-checkbox-size);
-  border-radius: 50%;
-  border: 1px solid var(--pe-accent-primary);
-  background: transparent;
-  margin-left: 8px;
-  margin-bottom: 2px;
-}
-
-.pe-checkbox:checked {
-  background-color: var(--pe-accent-hover);
-  border-color: var(--pe-accent-hover);
-}
-
-.pe-checkbox-text {
-  font-size: 14px;
-  color: inherit;
-}
-
-/* Inputs - Original Style */
-.pe-inputs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.pe-inputs .pe-field {
-  flex: 0 0 calc(50% - 5px);
-  margin-bottom: 15px;
+  font-size: var(--pe-font-size-sm, 14px);
+  font-weight: var(--pe-font-weight-medium, 500);
+  color: var(--pe-text-secondary, #666);
 }
 
 .pe-input {
   width: 100%;
-  background-color: var(--pe-bg-secondary);
-  color: var(--pe-text-primary);
-  border: 1px solid var(--pe-border-default);
-  padding: 5px;
-  border-radius: var(--pe-border-radius);
-  font-size: 14px;
-  transition: border-color var(--pe-transition-speed);
+  background: var(--pe-bg-primary, #ffffff);
+  color: var(--pe-text-primary, #333);
+  border: 1px solid var(--pe-border-color, #ddd);
+  padding: var(--pe-space-3, 12px) var(--pe-space-4, 16px);
+  border-radius: var(--pe-border-radius, 8px);
+  font-size: var(--pe-font-size-base, 16px);
+  font-family: var(--pe-font-family, system-ui);
+  transition: all 0.2s ease;
+  min-height: 44px;
 }
 
-.pe-input:focus,
 .pe-input:hover {
-  border: 1px solid var(--pe-accent-primary);
+  border-color: var(--pe-border-hover, #ccc);
+}
+
+.pe-input:focus {
+  border-color: var(--pe-accent-primary, #007acc);
   outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.1);
 }
 
 .pe-input::placeholder {
-  color: var(--pe-text-muted);
+  color: var(--pe-text-muted, #999);
 }
 
-/* Language Selector - Original Style */
-.pe-language-field {
-  position: relative;
-  height: 0;
-  margin-bottom: 0;
+/* Platform-specific input styles */
+.pe-platform-gemini .pe-input {
+  border-radius: var(--pe-border-radius-sm, 4px);
 }
 
-.pe-language-field .pe-select {
-  background: inherit;
-  position: absolute;
-  right: 30px;
-  top: -50px;
-  padding: 5px 5px !important;
-  padding-right: 12px !important;
-  border-radius: var(--pe-border-radius);
-  text-align: center;
-  font-size: 12px;
-  color: var(--pe-text-muted);
-  width: auto;
-  z-index: 10;
-}
+/* ========================================
+   🌐 HEADER CONTROLS - PLATFORM ADAPTIVE
+======================================== */
 
-.pe-language-field .pe-select option {
-  font-size: 1.5rem !important;
-}
-
-/* Actions - Original Style */
-.pe-actions {
+.pe-language-selector {
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  padding-top: 15px;
-  border-top: 1px solid var(--pe-border-default);
+  align-items: center;
+  gap: var(--pe-space-1, 4px);
+  background: var(--pe-bg-secondary, #f5f5f5);
+  border: 1px solid var(--pe-border-color, #ddd);
+  border-radius: var(--pe-border-radius-sm, 6px);
+  padding: var(--pe-space-1, 4px) var(--pe-space-2, 8px);
+  transition: all 0.2s ease;
 }
 
-.pe-btn-primary {
-  background-color: var(--pe-bg-secondary);
-  color: var(--pe-text-primary);
-  border: 1px solid var(--pe-border-default);
-  padding: 5px 15px;
-  border-radius: var(--pe-border-radius);
-  font-size: 14px;
-  font-weight: normal;
+.pe-language-selector:hover {
+  background: var(--pe-bg-hover, #ebebeb);
+}
+
+.pe-icon-globe {
+  width: 16px;
+  height: 16px;
+  stroke: var(--pe-text-secondary, #666);
+}
+
+.pe-language-select {
+  background: transparent;
+  border: none;
+  color: var(--pe-text-primary, #333);
+  font-size: var(--pe-font-size-sm, 14px);
+  font-family: var(--pe-font-family, system-ui);
   cursor: pointer;
-  transition: all var(--pe-transition-speed) ease-in-out;
+  outline: none;
+  appearance: none;
+}
+
+.pe-theme-button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--pe-border-color, #ddd);
+  background: var(--pe-bg-secondary, #f5f5f5);
+  border-radius: var(--pe-border-radius-sm, 6px);
+  cursor: pointer;
+  transition: all 0.2s ease;
   
   display: flex;
   align-items: center;
-  gap: 8px;
-}
-
-.pe-btn-primary:hover {
-  background-color: var(--pe-bg-hover);
-  border: 1px solid var(--pe-accent-primary);
-}
-
-.pe-btn-primary:active {
-  background-color: var(--pe-accent-primary);
-  border-color: var(--pe-accent-primary);
-}
-
-/* Logo/Image */
-.pe-logo-container {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.pe-logo {
-  margin: 10px auto 20px auto;
-  max-width: 100%;
-  height: auto;
-}
-
-/* Attribution - Original Style */
-.pe-attribution {
-  font-size: 11px;
-  margin-top: 10px;
-  text-align: center;
-  color: var(--pe-text-muted);
-}
-
-/* Theme Selector */
-.pe-theme-field {
-  position: relative;
-  margin-bottom: 20px;
-  display: flex;
   justify-content: center;
 }
 
-.pe-theme-field .pe-select {
-  background: var(--pe-bg-secondary);
-  border: 1px solid var(--pe-border-default);
-  padding: 8px 12px;
-  border-radius: var(--pe-border-radius);
-  font-size: 14px;
-  color: var(--pe-text-primary);
-  width: auto;
-  min-width: 160px;
+.pe-theme-button:hover {
+  background: var(--pe-bg-hover, #ebebeb);
+  border-color: var(--pe-border-hover, #ccc);
+}
+
+.pe-icon-sun,
+.pe-icon-moon {
+  width: 16px;
+  height: 16px;
+  stroke: var(--pe-text-secondary, #666);
+}
+
+/* ========================================
+   🎯 PRIMARY BUTTON - PLATFORM ADAPTIVE
+======================================== */
+
+.pe-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--pe-space-6, 24px);
+  padding-top: var(--pe-space-5, 20px);
+  border-top: 1px solid var(--pe-border-color, #ddd);
+}
+
+.pe-btn-primary {
+  background: var(--pe-accent-primary, #007acc);
+  color: white;
+  border: none;
+  padding: var(--pe-space-3, 12px) var(--pe-space-6, 24px);
+  border-radius: var(--pe-border-radius, 8px);
+  font-size: var(--pe-font-size-base, 16px);
+  font-weight: var(--pe-font-weight-medium, 500);
+  font-family: var(--pe-font-family, system-ui);
   cursor: pointer;
-  transition: border-color var(--pe-transition-speed);
+  transition: all 0.2s ease;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--pe-space-2, 8px);
+  
+  min-height: 44px;
+  min-width: 120px;
 }
 
-.pe-theme-field .pe-select:hover {
-  border-color: var(--pe-accent-primary);
+.pe-btn-primary:hover {
+  background: var(--pe-accent-hover, #005a9e);
+  transform: translateY(-1px);
+  box-shadow: var(--pe-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
-.pe-theme-field .pe-select:focus {
-  border-color: var(--pe-accent-primary);
-  outline: none;
+.pe-btn-primary:active {
+  transform: translateY(0);
 }
 
-.pe-theme-field label {
-  display: none !important;
+.pe-btn-primary svg {
+  width: 16px;
+  height: 16px;
 }
 
-/* Hidden utilities */
+/* Platform-specific button styles */
+.pe-platform-gemini .pe-btn-primary {
+  border-radius: var(--pe-border-radius-pill, 20px);
+}
+
+/* ========================================
+   ⏳ LOADING & ERROR STATES
+======================================== */
+
+.pe-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--pe-space-6, 24px);
+  text-align: center;
+}
+
+.pe-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--pe-border-color, #ddd);
+  border-top: 2px solid var(--pe-accent-primary, #007acc);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--pe-space-3, 12px);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pe-loading p {
+  color: var(--pe-text-secondary, #666);
+  font-size: var(--pe-font-size-sm, 14px);
+  margin: 0;
+}
+
+.pe-error {
+  text-align: center;
+  padding: var(--pe-space-6, 24px);
+}
+
+.pe-error-message {
+  color: var(--pe-text-secondary, #666);
+  margin-bottom: var(--pe-space-4, 16px);
+  font-size: var(--pe-font-size-sm, 14px);
+}
+
+.pe-retry-btn {
+  background: var(--pe-bg-secondary, #f5f5f5);
+  color: var(--pe-text-primary, #333);
+  border: 1px solid var(--pe-border-color, #ddd);
+  padding: var(--pe-space-2, 8px) var(--pe-space-4, 16px);
+  border-radius: var(--pe-border-radius, 8px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: var(--pe-font-size-sm, 14px);
+}
+
+.pe-retry-btn:hover {
+  background: var(--pe-bg-hover, #ebebeb);
+  border-color: var(--pe-border-hover, #ccc);
+}
+
+/* ========================================
+   🏷️ BRANDING
+======================================== */
+
+.pe-logo-container {
+  text-align: center;
+  margin-bottom: var(--pe-space-4, 16px);
+}
+
+.pe-logo {
+  max-width: 100px;
+  height: auto;
+  opacity: 0.8;
+}
+
+.pe-attribution {
+  font-size: var(--pe-font-size-sm, 14px);
+  margin-top: var(--pe-space-4, 16px);
+  text-align: center;
+  color: var(--pe-text-muted, #999);
+}
+
+.pe-attribution a {
+  color: var(--pe-accent-primary, #007acc);
+  text-decoration: none;
+}
+
+.pe-attribution a:hover {
+  text-decoration: underline;
+}
+
+/* ========================================
+   🔧 UTILITY CLASSES
+======================================== */
+
 .pe-hidden {
   display: none !important;
 }
@@ -580,56 +659,113 @@
   border: 0;
 }
 
-/* Mobile Specific Adjustments */
+/* ========================================
+   📱 RESPONSIVE DESIGN
+======================================== */
+
 @media (max-width: 480px) {
   .pe-toggle-button {
-    bottom: 20px;
-    right: 20px;
+    bottom: var(--pe-space-4, 16px);
+    right: var(--pe-space-4, 16px);
+    width: 52px;
+    height: 52px;
   }
   
   .pe-content {
-    padding: 12px;
+    padding: var(--pe-space-4, 16px);
   }
   
-  .pe-header {
-    padding: 12px 16px;
+  .pe-checkboxes {
+    grid-template-columns: 1fr;
+    gap: var(--pe-space-2, 8px);
   }
   
-  .pe-dropdowns .pe-field {
-    flex: 0 0 calc(50% - 5px);
+  .pe-dropdowns,
+  .pe-inputs {
+    grid-template-columns: 1fr;
+    gap: var(--pe-space-3, 12px);
   }
   
-  .pe-inputs .pe-field {
-    flex: 0 0 100%;
+  .pe-btn-primary {
+    width: 100%;
   }
 }
 
-/* Theme-specific overrides */
-.pe-theme-modern {
-  /* Modern theme gets subtle shadows */
-}
+/* ========================================
+   ♿ ACCESSIBILITY
+======================================== */
 
-.pe-theme-modern .pe-overlay {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .pe-overlay,
-  .pe-toggle-button,
-  .pe-close-btn,
-  .pe-select,
-  .pe-input,
-  .pe-btn-primary,
-  .pe-checkbox-label {
-    transition: none;
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-  
-  .pe-spinner {
-    animation: none;
-  }
-  
-  :root {
-    --pe-glow-animation: none;
-  }
+}
+
+/* Focus visible for keyboard navigation */
+.pe-checkbox:focus-visible,
+.pe-select:focus-visible,
+.pe-input:focus-visible,
+.pe-btn-primary:focus-visible,
+.pe-close-btn:focus-visible {
+  outline: 2px solid var(--pe-accent-primary, #007acc);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   🌙 DARK MODE SUPPORT
+======================================== */
+
+/* Dark theme overrides */
+.pe-theme-dark .pe-overlay {
+  --pe-bg-primary: var(--pe-bg-primary, #1a1a1a);
+  --pe-bg-secondary: var(--pe-bg-secondary, #2d2d2d);
+  --pe-text-primary: var(--pe-text-primary, #ffffff);
+  --pe-text-secondary: var(--pe-text-secondary, #cccccc);
+  --pe-border-color: var(--pe-border-color, #404040);
+}
+
+/* Platform-specific dark mode adaptations */
+.pe-platform-chatgpt.pe-theme-dark .pe-overlay {
+  --pe-bg-primary: #2d3748;
+  --pe-bg-secondary: #4a5568;
+  --pe-text-primary: #f7fafc;
+  --pe-text-secondary: #e2e8f0;
+  --pe-border-color: #4a5568;
+}
+
+.pe-platform-claude.pe-theme-dark .pe-overlay {
+  --pe-bg-primary: #1a1a1a;
+  --pe-bg-secondary: #2d2d2d;
+  --pe-text-primary: #f4f1eb;
+  --pe-text-secondary: #d6d0c8;
+  --pe-border-color: #3d3d3d;
+}
+
+.pe-platform-gemini.pe-theme-dark .pe-overlay {
+  --pe-bg-primary: #202124;
+  --pe-bg-secondary: #303134;
+  --pe-text-primary: #e8eaed;
+  --pe-text-secondary: #9aa0a6;
+  --pe-border-color: #3c4043;
+}
+
+/* ========================================
+   🎨 PLATFORM-SPECIFIC REFINEMENTS
+======================================== */
+
+/* ChatGPT platform refinements */
+.pe-platform-chatgpt .pe-overlay {
+  /* ChatGPT-specific tweaks can go here */
+}
+
+/* Claude platform refinements */
+.pe-platform-claude .pe-overlay {
+  /* Claude-specific tweaks can go here */
+}
+
+/* Gemini platform refinements */
+.pe-platform-gemini .pe-overlay {
+  /* Gemini-specific tweaks can go here */
 }

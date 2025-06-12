@@ -9,10 +9,10 @@
 #prompt-generator-container {
   background-color: var(--dark-grey);
   color: var(--white);
-  padding: 15px !important;
-  padding-bottom: 15px !important;
+  padding: 20px !important;
+  padding-bottom: 20px !important;
   border-radius: 8px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   margin-right: 15px;
   border: 1px solid #1776d969;
   transition: all 0.5s ease-in-out;
@@ -37,12 +37,13 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 3px;
+  margin-bottom: 25px;
+  gap: 8px;
 }
 
 #prompt-generator-container .prompt-generator-checkbox-container .prompt-generator-label-div {
-  margin-right: 10px;
-  margin-bottom: 15px;
+  margin-right: 12px;
+  margin-bottom: 20px;
 }
 
 #prompt-generator-container .prompt-generator-dropdown-container {
@@ -52,8 +53,8 @@
 }
 
 #prompt-generator-container .prompt-generator-dropdown-wrapper {
-  flex: 0 0 calc(50% - 5px);
-  margin-bottom: 15px;
+  flex: 0 0 calc(50% - 8px);
+  margin-bottom: 18px;
 }
 
 #prompt-generator-container .prompt-generator-dropdown {
@@ -89,7 +90,7 @@
 
 #prompt-generator-container .checkbox_btn {
   display: inline-block;
-  padding: 5px 15px;
+  padding: 10px 20px;
   background-color: var(--grey);
   border: 1px solid var(--grey);
   border-radius: 8px;
@@ -97,7 +98,11 @@
   font-size: 14px;
   color: var(--white);
   text-align: center;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #prompt-generator-container .checkbox_btn input {
@@ -107,12 +112,29 @@
 
 #prompt-generator-container .checkbox_btn:hover {
   border: 1px solid var(--light-green);
+  background-color: rgba(1, 107, 255, 0.1);
+  transform: translateY(-1px);
 }
 
 #prompt-generator-container .checkbox_btn:active {
   background-color: var(--light-green);
   border-color: var(--light-green);
   color: var(--white);
+  transform: translateY(0);
+}
+
+#prompt-generator-container .checkbox_btn.selected {
+  background-color: var(--light-green);
+  border-color: var(--light-green);
+  color: var(--white);
+  box-shadow: 0 2px 8px rgba(1, 107, 255, 0.3);
+}
+
+#prompt-generator-container .checkbox_btn.selected:hover {
+  background-color: var(--light-green);
+  border-color: var(--light-green);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(1, 107, 255, 0.4);
 }
 
 #prompt-generator-container .checkbox_btn label {
@@ -199,7 +221,7 @@
 }
 
 #prompt-generator-container .prompt-generator-input-div {
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
 #prompt-generator-container label {
@@ -222,7 +244,8 @@
   font-weight: 400;
   text-align: center;
   font-size: 0.7em;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  margin-top: 15px;
 }
 
 #prompt-generator-container .HideInput {

@@ -12,34 +12,55 @@
     
     init() {
       console.log('PromptEngineer: Initializing Overlay UI...');
-      this.loadGoogleFonts();
-      this.detectMode();
-      this.createToggleButton();
-      this.createOverlayContainer();
-      this.bindEvents();
-      this.applyTheme();
-      console.log('PromptEngineer: Overlay UI initialized in', currentMode, 'mode');
+      
+      // Wait for platform detection to complete
+      this.waitForPlatformDetection().then(() => {
+        // Initialize language system
+        const savedLanguage = localStorage.getItem('pe-language') || 'en';
+        this.loadTranslations(savedLanguage).then(() => {
+          this.loadPlatformFonts();
+          this.detectMode();
+          this.createToggleButton();
+          this.createOverlayContainer();
+          this.bindEvents();
+          this.applyPlatformTheme();
+          console.log('PromptEngineer: Overlay UI initialized in', currentMode, 'mode for platform:', window.PROMPT_ENGINEER_PLATFORM);
+        });
+      });
     },
 
-    loadGoogleFonts() {
-      // Add Inter font for DaisyUI theme
-      if (!document.querySelector('link[href*="fonts.googleapis.com/css2?family=Inter"]')) {
-        const link = document.createElement('link');
-        link.rel = 'preconnect';
-        link.href = 'https://fonts.googleapis.com';
-        document.head.appendChild(link);
+    async waitForPlatformDetection() {
+      // Wait for platform detector to initialize
+      let attempts = 0;
+      while (!window.PromptPlatformDetector && attempts < 10) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+      }
+      
+      if (window.PromptPlatformDetector) {
+        return window.PromptPlatformDetector.init();
+      }
+      
+      console.warn('PromptEngineer: Platform detector not found, using default styling');
+      return 'default';
+    },
 
-        const link2 = document.createElement('link');
-        link2.rel = 'preconnect';
-        link2.href = 'https://fonts.gstatic.com';
-        link2.crossOrigin = 'anonymous';
-        document.head.appendChild(link2);
-
+    loadPlatformFonts() {
+      const platform = window.PROMPT_ENGINEER_PLATFORM || 'default';
+      
+      // Load platform-specific fonts
+      if (platform === 'claude' && !document.querySelector('link[href*="fonts.googleapis.com/css2?family=Inter"]')) {
+        // Claude uses Inter font
         const fontLink = document.createElement('link');
         fontLink.rel = 'stylesheet';
-        fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap';
+        fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap';
         document.head.appendChild(fontLink);
+      } else if (platform === 'gemini' && !document.querySelector('link[href*="fonts.googleapis.com/css2?family=Google+Sans"]')) {
+        // Gemini uses Google Sans (fallback to system fonts if not available)
+        // Note: Google Sans is typically not publicly available, so we'll rely on system fonts
+        console.log('PromptEngineer: Using system fonts for Gemini platform');
       }
+      // ChatGPT uses system fonts, no additional loading needed
     },
 
     detectMode() {
@@ -101,12 +122,14 @@
       header.className = 'pe-header';
       header.innerHTML = `
         <div class="pe-header-content">
-          <h3 class="pe-title">Prompt Engineer</h3>
-          <button class="pe-close-btn" aria-label="Close">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-            </svg>
-          </button>
+          <div class="pe-header-controls">
+            ${this.buildHeaderControls()}
+            <button class="pe-close-btn" aria-label="Close">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+              </svg>
+            </button>
+          </div>
         </div>
       `;
 
@@ -684,16 +707,148 @@
       });
     },
 
+    buildHeaderControls() {
+      // Get current theme to determine icons
+      const currentTheme = window.PromptThemeManager ? window.PromptThemeManager.getCurrentTheme() : 'modern';
+      const isDark = currentTheme === 'original' || currentTheme.includes('dark');
+      
+      // Modern Lucide-style SVG icons
+      const globeIcon = `
+        <svg class="pe-icon-globe" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      `;
+      
+      const sunIcon = `
+        <svg class="pe-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      `;
+      
+      const moonIcon = `
+        <svg class="pe-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      `;
+      
+      // Language options with text labels for accessibility
+      const languageOptions = window.SETTINGS?.LANGUAGE_DROPDOWN_OPTIONS || `
+        <option value="en">English</option>
+        <option value="de">Deutsch</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+      `;
+      
+      return `
+        <div class="pe-language-selector">
+          ${globeIcon}
+          <select id="pe-language" class="pe-language-select" title="Language / Sprache" aria-label="Select Language">
+            ${languageOptions}
+          </select>
+        </div>
+        <button type="button" id="pe-theme-toggle" class="pe-theme-button" 
+                title="Toggle Theme" aria-label="Toggle Theme">
+          ${isDark ? moonIcon : sunIcon}
+        </button>
+      `;
+    },
+
     bindThemeSelector() {
-      const themeSelector = overlayContainer.querySelector('#pe-theme-selector');
-      if (themeSelector) {
-        themeSelector.addEventListener('change', (e) => {
-          const selectedTheme = e.target.value;
+      const themeToggle = overlayContainer.querySelector('#pe-theme-toggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          // Toggle between original (dark) and modern (light) themes
+          const currentTheme = window.PromptThemeManager ? window.PromptThemeManager.getCurrentTheme() : 'modern';
+          const newTheme = currentTheme === 'original' ? 'modern' : 'original';
+          
           if (window.PromptThemeManager) {
-            window.PromptThemeManager.applyTheme(selectedTheme);
+            const platform = window.PROMPT_ENGINEER_PLATFORM || 'default';
+            window.PromptThemeManager.applyTheme(newTheme, platform);
+            
+            // Update the icon with modern SVG
+            const isDark = newTheme === 'original' || newTheme.includes('dark');
+            const sunIcon = `
+              <svg class="pe-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            `;
+            const moonIcon = `
+              <svg class="pe-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            `;
+            themeToggle.innerHTML = isDark ? moonIcon : sunIcon;
           }
         });
       }
+      
+      // Handle language selector
+      const languageSelector = overlayContainer.querySelector('#pe-language');
+      if (languageSelector) {
+        // Set current language
+        const currentLanguage = localStorage.getItem('pe-language') || 'en';
+        languageSelector.value = currentLanguage;
+        
+        languageSelector.addEventListener('change', (e) => {
+          const newLanguage = e.target.value;
+          console.log('Language changed to:', newLanguage);
+          
+          // Save language preference
+          localStorage.setItem('pe-language', newLanguage);
+          
+          // Load and apply translations
+          this.loadTranslations(newLanguage).then(() => {
+            // Rebuild the form with new translations
+            this.loadFormContent();
+          });
+        });
+      }
+    },
+
+    async loadTranslations(language) {
+      try {
+        const response = await fetch(chrome.runtime.getURL('translation/translations.json'));
+        const translations = await response.json();
+        
+        // Store translations globally
+        window.CURRENT_LANGUAGE = language;
+        window.TRANSLATIONS = translations[language] || {};
+        
+        console.log(`PromptEngineer: Loaded translations for ${language}`);
+        return true;
+      } catch (error) {
+        console.error('PromptEngineer: Failed to load translations:', error);
+        // Fallback to English
+        window.CURRENT_LANGUAGE = 'en';
+        window.TRANSLATIONS = {};
+        return false;
+      }
+    },
+
+    translateText(text) {
+      // Simple translation function
+      if (window.TRANSLATIONS && window.TRANSLATIONS[text]) {
+        return window.TRANSLATIONS[text];
+      }
+      return text; // Return original text if no translation found
     },
 
     updateMode() {
@@ -719,13 +874,43 @@
       });
     },
 
-    applyTheme() {
-      // Detect if website uses dark mode
-      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches ||
-                     document.documentElement.classList.contains('dark') ||
-                     document.body.classList.contains('dark');
+    applyPlatformTheme() {
+      const platform = window.PROMPT_ENGINEER_PLATFORM || 'default';
       
-      document.body.classList.toggle('pe-dark-theme', isDark);
+      // Detect platform's color scheme if possible
+      const isDark = this.detectPlatformColorScheme(platform);
+      
+      // Apply platform-specific theme classes
+      document.body.classList.remove('pe-theme-light', 'pe-theme-dark');
+      document.body.classList.add(isDark ? 'pe-theme-dark' : 'pe-theme-light');
+      
+      console.log(`PromptEngineer: Applied ${platform} theme (${isDark ? 'dark' : 'light'} mode)`);
+    },
+
+    detectPlatformColorScheme(platform) {
+      // Platform-specific dark mode detection
+      switch (platform) {
+        case 'chatgpt':
+          // ChatGPT dark mode detection
+          return document.documentElement.classList.contains('dark') ||
+                 document.body.classList.contains('dark') ||
+                 getComputedStyle(document.body).backgroundColor === 'rgb(33, 41, 60)';
+        
+        case 'claude':
+          // Claude typically uses light mode with warm colors
+          return false;
+        
+        case 'gemini':
+          // Gemini dark mode detection
+          return document.documentElement.getAttribute('data-theme') === 'dark' ||
+                 window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        default:
+          // Fallback dark mode detection
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ||
+                 document.documentElement.classList.contains('dark') ||
+                 document.body.classList.contains('dark');
+      }
     },
 
     // Utility function

@@ -17,12 +17,15 @@
       "matches": [
         "https://chat.openai.com/*",
         "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
         "https://bard.google.com/*",
         "https://www.bing.com/*"
       ],
       "js": [
         "engine/fetch_data.js",
         "settings/settings.js", 
+        "engine/ui/platform-detector.js",
         "engine/ui/theme-manager.js",
         "engine/ui/form-builder.js",
         "engine/ui/overlay-manager.js"
@@ -42,6 +45,7 @@
     "resources": [
       "settings/settings.js", 
       "translation/translations.json",
+      "engine/ui/platform-detector.js",
       "engine/ui/theme-manager.js",
       "engine/ui/form-builder.js",
       "engine/ui/overlay-manager.js",
@@ -60,6 +64,8 @@
     "matches": [
       "https://chat.openai.com/*",
       "https://chatgpt.com/*",
+      "https://claude.ai/*",
+      "https://gemini.google.com/*",
       "https://bard.google.com/*",
       "https://www.bing.com/*"]
   }]

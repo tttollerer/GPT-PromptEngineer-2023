@@ -36,7 +36,7 @@ async function updateUI(lang) {
     lang = selectedLanguage || initialLang;
   }
 
-  const xmlData = await window.fetchDropdownData(lang);
+  const xmlData = await window.PromptEngineData.fetchDropdownData(lang);
   const container = document.getElementById('prompt-generator-container');
   clearContainer(container);
   await window.buildUI(xmlData);

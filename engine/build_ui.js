@@ -57,6 +57,15 @@
       input.setAttribute('additionals', checkboxData.additionals);
       input.setAttribute('additionalsHide', checkboxData.additionalsHide);
 
+      // Add change event listener for styling
+      input.addEventListener('change', function() {
+        if (this.checked) {
+          label.classList.add('selected');
+        } else {
+          label.classList.remove('selected');
+        }
+      });
+
       label.appendChild(input);
       return labelDiv;
     },

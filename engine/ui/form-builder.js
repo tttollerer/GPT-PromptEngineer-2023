@@ -13,8 +13,6 @@
         <div class="pe-logo-container">
           <img src="${chrome.runtime.getURL('Images/logo.png')}" alt="Prompt Engineer" class="pe-logo">
         </div>
-        ${this.buildLanguageSelector()}
-        ${this.buildThemeSelector()}
         <form class="pe-form">
           ${this.buildCheckboxes(xmlData)}
           ${this.buildDropdowns(xmlData)}
@@ -30,15 +28,15 @@
     buildLanguageSelector() {
       // Use the existing language options from settings
       const options = window.SETTINGS?.LANGUAGE_DROPDOWN_OPTIONS || `
-        <option value="en">🇺🇸 English</option>
-        <option value="de">🇩🇪 German</option>
-        <option value="es">🇪🇸 Spanish</option>
-        <option value="fr">🇫🇷 French</option>
+        <option value="en">🇺🇸</option>
+        <option value="de">🇩🇪</option>
+        <option value="es">🇪🇸</option>
+        <option value="fr">🇫🇷</option>
       `;
 
       return `
         <div class="pe-field pe-language-field">
-          <select id="pe-language" class="pe-select">
+          <select id="pe-language" class="pe-select" title="Language / Sprache">
             ${options}
           </select>
         </div>
@@ -49,7 +47,14 @@
       const dropdowns = xmlData.querySelectorAll('dropdown');
       if (!dropdowns.length) return '';
 
-      let html = '<div class="pe-section pe-dropdowns">';
+      let html = `
+        <div class="pe-card">
+          <div class="pe-card-header">
+            <h3 class="pe-card-title">${this.translateText('Selections')}</h3>
+            <span class="pe-card-subtitle">${this.translateText('Choose your preferences')}</span>
+          </div>
+          <div class="pe-card-content">
+            <div class="pe-section pe-dropdowns">`;
       
       dropdowns.forEach((dropdown, index) => {
         const label = dropdown.querySelector('label')?.textContent || `Option ${index + 1}`;
@@ -58,9 +63,9 @@
 
         html += `
           <div class="pe-field">
-            <label for="pe-${id}">${this.escapeHtml(label)}:</label>
+            <label for="pe-${id}">${this.escapeHtml(this.translateText(label))}:</label>
             <select id="pe-${id}" class="pe-select">
-              <option value="">Select ${this.escapeHtml(label)}</option>
+              <option value="">Select ${this.escapeHtml(this.translateText(label))}</option>
         `;
 
         options.forEach(option => {
@@ -72,7 +77,7 @@
             <option value="${this.escapeHtml(optionValue)}" 
                     data-text="${this.escapeHtml(optionValue)}"
                     data-additionals="${this.escapeHtml(additionals)}">
-              ${this.escapeHtml(optionLabel)}
+              ${this.escapeHtml(this.translateText(optionLabel))}
             </option>
           `;
         });
@@ -83,7 +88,11 @@
         `;
       });
 
-      html += '</div>';
+      html += `
+            </div>
+          </div>
+        </div>
+      `;
       return html;
     },
 
@@ -91,7 +100,14 @@
       const checkboxes = xmlData.querySelectorAll('checkbox');
       if (!checkboxes.length) return '';
 
-      let html = '<div class="pe-section pe-checkboxes">';
+      let html = `
+        <div class="pe-card">
+          <div class="pe-card-header">
+            <h3 class="pe-card-title">${this.translateText('Options')}</h3>
+          </div>
+          <div class="pe-card-content">
+            <div class="pe-section pe-checkboxes">
+      `;
       
       checkboxes.forEach((checkbox, index) => {
         const label = checkbox.querySelector('label')?.textContent || `Option ${index + 1}`;
@@ -103,7 +119,7 @@
         html += `
           <div class="pe-field pe-checkbox-field">
             <div class="pe-checkbox-label">
-              <span class="pe-checkbox-text">${this.escapeHtml(label)}</span>
+              <span class="pe-checkbox-text">${this.escapeHtml(this.translateText(label))}</span>
               <input type="checkbox" 
                      id="pe-${id}" 
                      value="${this.escapeHtml(value)}"
@@ -115,7 +131,11 @@
         `;
       });
 
-      html += '</div>';
+      html += `
+            </div>
+          </div>
+        </div>
+      `;
       return html;
     },
 
@@ -123,8 +143,14 @@
       const inputs = xmlData.querySelectorAll('input');
       if (!inputs.length) return '';
 
-      let html = '<div class="pe-section pe-inputs">';
-      html += '<h4 class="pe-section-title">Custom Inputs:</h4>';
+      let html = `
+        <div class="pe-card">
+          <div class="pe-card-header">
+            <h3 class="pe-card-title">${this.translateText('Custom Inputs')}</h3>
+            <span class="pe-card-subtitle">${this.translateText('Add your specific requirements')}</span>
+          </div>
+          <div class="pe-card-content">
+            <div class="pe-section pe-inputs">`;
       
       inputs.forEach((input, index) => {
         const label = input.querySelector('label')?.textContent || `Input ${index + 1}`;
@@ -138,10 +164,10 @@
 
         html += `
           <div class="pe-field pe-input-field pe-hidden">
-            <label for="pe-${id}">${this.escapeHtml(label)}:</label>
+            <label for="pe-${id}">${this.escapeHtml(this.translateText(label))}:</label>
             <input type="text" 
                    id="pe-${id}" 
-                   placeholder="${this.escapeHtml(label)}"
+                   placeholder="${this.escapeHtml(this.translateText(label))}"
                    data-before="${this.escapeHtml(valueBefore)}"
                    data-after="${this.escapeHtml(valueAfter)}"
                    class="pe-input">
@@ -149,7 +175,11 @@
         `;
       });
 
-      html += '</div>';
+      html += `
+            </div>
+          </div>
+        </div>
+      `;
       return html;
     },
 
@@ -160,9 +190,9 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
             </svg>
-            <span>Generate Prompt</span>
+            <span>${this.translateText('Generate Prompt')}</span>
           </button>
-          <div id="submit-help" class="sr-only">Generate AI prompt based on your selections</div>
+          <div id="submit-help" class="sr-only">${this.translateText('Generate AI prompt based on your selections')}</div>
         </div>
       `;
     },
@@ -184,20 +214,26 @@
 
       const currentTheme = window.PromptThemeManager ? window.PromptThemeManager.getCurrentTheme() : 'original';
       
-      let optionsHTML = '';
-      themes.forEach(theme => {
-        const selected = theme.id === currentTheme ? 'selected' : '';
-        optionsHTML += `<option value="${theme.id}" ${selected}>${theme.name}</option>`;
-      });
-
+      // Determine icon based on current theme
+      const isDark = currentTheme === 'original' || currentTheme.includes('dark');
+      const themeIcon = isDark ? '🌙' : '☀️';
+      
       return `
         <div class="pe-field pe-theme-field">
-          <label for="pe-theme-selector">Theme:</label>
-          <select id="pe-theme-selector" class="pe-select pe-theme-select">
-            ${optionsHTML}
-          </select>
+          <button type="button" id="pe-theme-toggle" class="pe-theme-button" 
+                  title="Toggle Theme" aria-label="Toggle Theme">
+            ${themeIcon}
+          </button>
         </div>
       `;
+    },
+
+    translateText(text) {
+      // Use translation from global scope if available
+      if (window.TRANSLATIONS && window.TRANSLATIONS[text]) {
+        return window.TRANSLATIONS[text];
+      }
+      return text;
     },
 
     escapeHtml(text) {
