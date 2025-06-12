@@ -1,4 +1,5 @@
 const initialLang = 'en';
+window.initialLang = initialLang;
 
 function clearContainer(container) {
   while (container.firstChild) {
@@ -35,10 +36,10 @@ async function updateUI(lang) {
     lang = selectedLanguage || initialLang;
   }
 
-  const xmlData = await fetchDropdownData(lang); // Verwenden Sie fetchDropdownData statt loadLanguageData
+  const xmlData = await window.fetchDropdownData(lang);
   const container = document.getElementById('prompt-generator-container');
   clearContainer(container);
-  await buildUI(xmlData);
+  await window.buildUI(xmlData);
   
   if (container && languageDropdown) {
     container.appendChild(languageDropdown);
@@ -98,5 +99,5 @@ function updateLanguageDropdown(lang) {
 
 
 window.initLanguageSwitcher = initLanguageSwitcher;
-window.fetchDropdownData = fetchDropdownData;
-//window.buildUI = buildUI;
+window.createLanguageDropdown = createLanguageDropdown;
+window.updateUI = updateUI;

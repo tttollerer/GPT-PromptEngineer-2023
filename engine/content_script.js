@@ -9,28 +9,30 @@ let combinedText;
 
 
 async function init() {
-  if (initCalled) {
-    return;
+  try {
+    if (initCalled || dropdownsAdded) {
+      return;
+    }
+
+    initCalled = true;
+
+    removeExistingContainer();
+
+    const container = createContainer();
+    document.body.appendChild(container);
+    window.initLanguageSwitcher();
+    xmlData = await window.fetchDropdownData();
+
+    if (!xmlData) {
+      console.error('Failed to fetch XML data');
+      return;
+    }
+
+    window.buildUI(xmlData);
+    addEventListeners(container);
+  } catch (error) {
+    console.error('Error in init:', error);
   }
-
-  initCalled = true;
-
-  if (dropdownsAdded) {
-    return;
-  }
-
-  removeExistingContainer();
-
-  const container = createContainer();
-  document.body.appendChild(container);
-  window.initLanguageSwitcher();
-  xmlData = await window.fetchDropdownData();
-
-
-
-  //window.buildUI(xmlData);
-  window.buildUIElements(container);
-  addEventListeners(container);
 }
 
 
@@ -46,26 +48,84 @@ function createContainer() {
 function addEventListeners(container) {
   const targetNode = document.querySelector(window.getSelector());
 
+  if (!targetNode) {
+    console.error('PromptEngineer: Target input field not found. Selector:', window.getSelector());
+    console.error('PromptEngineer: Available textareas:', document.querySelectorAll('textarea'));
+    return;
+  }
+
+  console.log('PromptEngineer: Target node found:', targetNode);
 
   window.submitForm = async function(xmlData) {
-    let originalText = targetNode.value.trim();
-    let dropdownTexts = '';
-    for (const select of document.querySelectorAll('.prompt-generator-container select')) {
-      const selectedText = select.options[select.selectedIndex].dataset.text;
-      dropdownTexts += selectedText ? ' ' + selectedText : '';
+    try {
+      if (!targetNode) {
+        console.error('Target node not found');
+        return;
+      }
+
+      const formData = collectFormData();
+      const combinedText = buildPromptText(formData);
+      
+      targetNode.value = combinedText.trim();
+      
+      await submitPrompt();
+      scheduleCleanup();
+    } catch (error) {
+      console.error('Error in submitForm:', error);
     }
-  
-    let inputTexts = '';
-    for (const input of document.querySelectorAll('.prompt-generator-container input[type="text"]')) {
-      if (input.value) {
-        inputTexts += ' ' + input.getAttribute('valueBefore') + input.value + input.getAttribute('valueAfter');
+  };
+
+  function collectFormData() {
+    const originalText = targetNode.value.trim();
+    const dropdownTexts = collectDropdownTexts();
+    const inputTexts = collectInputTexts();
+    const { checkboxTexts, additionalIds } = collectCheckboxData();
+    const languageInfo = getLanguageInfo();
+
+    return {
+      originalText,
+      dropdownTexts,
+      inputTexts,
+      checkboxTexts,
+      additionalIds,
+      languageInfo
+    };
+  }
+
+  function collectDropdownTexts() {
+    let dropdownTexts = '';
+    const selects = document.querySelectorAll('.prompt-generator-container select');
+    
+    for (const select of selects) {
+      const selectedOption = select.options[select.selectedIndex];
+      const selectedText = selectedOption?.dataset?.text;
+      if (selectedText) {
+        dropdownTexts += ' ' + selectedText;
       }
     }
-  
+    return dropdownTexts;
+  }
+
+  function collectInputTexts() {
+    let inputTexts = '';
+    const inputs = document.querySelectorAll('.prompt-generator-container input[type="text"]');
+    
+    for (const input of inputs) {
+      if (input.value) {
+        const valueBefore = input.getAttribute('valueBefore') || '';
+        const valueAfter = input.getAttribute('valueAfter') || '';
+        inputTexts += ' ' + valueBefore + input.value + valueAfter;
+      }
+    }
+    return inputTexts;
+  }
+
+  function collectCheckboxData() {
     let checkboxTexts = '';
     let additionalIds = [];
-  
-    for (const checkbox of document.querySelectorAll('.prompt-generator-container input[type="checkbox"]')) {
+    const checkboxes = document.querySelectorAll('.prompt-generator-container input[type="checkbox"]');
+
+    for (const checkbox of checkboxes) {
       if (checkbox.checked) {
         checkboxTexts += ' ' + checkbox.value;
         const additionalFields = checkbox.getAttribute('additionals');
@@ -74,60 +134,82 @@ function addEventListeners(container) {
           ids.forEach(id => additionalIds.push(id.trim()));
         }
       } else {
-        const additionalFields = checkbox.getAttribute('additionalsHide');
-        if (additionalFields) {
-          const ids = additionalFields.split(',');
-          ids.forEach(id => {
-            const inputField = document.getElementById(id.trim());
-            if (inputField) {
-              inputField.parentElement.classList.add('HideInput');
-              inputField.value = '';
-            }
-          });
-        }
+        hideUncheckedFields(checkbox);
       }
     }
-  
-    function getLanguageName(langCode) {
-      return languageMapping[langCode] || langCode;
-    }
-  
-    const currentLanguageDropdown = document.getElementById('language-selector');
-    const selectedLanguageCode = currentLanguageDropdown.value;
-    const selectedLanguageName = getLanguageName(selectedLanguageCode);
-  
-   
-  
-    if (container.classList.contains('hidden')) {
-      combinedText = originalText;
-    } else {
-      combinedText = `${dropdownTexts}\n${checkboxTexts}\n${inputTexts}\n\n${originalText}`;
-      if (selectedLanguageCode && selectedLanguageCode !== "en") {
-        combinedText += `\n\nAnswer in ${selectedLanguageName} all the time.`;
-      }
-    }
-    targetNode.value = combinedText.trim();
-  
-    const sendButton = document.getElementById('PromptButton');
-    if (sendButton) {
-      sendButton.click();
 
-      setTimeout(function() {
-        sendButton.click();
-  
-      setTimeout(function () {
-        targetNode.value = '';
-      }, 2000);
-  
-      setTimeout(() => {
-        if (isContainerOpen()) {
-          toggleContainerVisibility();
+    return { checkboxTexts, additionalIds };
+  }
+
+  function hideUncheckedFields(checkbox) {
+    const additionalFields = checkbox.getAttribute('additionalsHide');
+    if (additionalFields) {
+      const ids = additionalFields.split(',');
+      ids.forEach(id => {
+        const inputField = document.getElementById(id.trim());
+        if (inputField) {
+          inputField.parentElement.classList.add('HideInput');
+          inputField.value = '';
         }
-      }, 10000);
-    }, 10000);  // Hinzugefügt: Warte 500 ms bevor das Senden ausgelöst wird
-  } else {
-      console.log("Send button not found");
+      });
     }
+  }
+
+  function getLanguageInfo() {
+    const currentLanguageDropdown = document.getElementById('language-selector');
+    if (!currentLanguageDropdown) {
+      return { code: 'en', name: 'English' };
+    }
+
+    const selectedLanguageCode = currentLanguageDropdown.value;
+    const selectedLanguageName = languageMapping[selectedLanguageCode] || selectedLanguageCode;
+    
+    return {
+      code: selectedLanguageCode,
+      name: selectedLanguageName
+    };
+  }
+
+  function buildPromptText(formData) {
+    if (container.classList.contains('hidden')) {
+      return formData.originalText;
+    }
+
+    let combinedText = `${formData.dropdownTexts}\n${formData.checkboxTexts}\n${formData.inputTexts}\n\n${formData.originalText}`;
+    
+    if (formData.languageInfo.code && formData.languageInfo.code !== "en") {
+      combinedText += `\n\nAnswer in ${formData.languageInfo.name} all the time.`;
+    }
+    
+    return combinedText;
+  }
+
+  async function submitPrompt() {
+    const sendButton = document.getElementById('PromptButton');
+    if (!sendButton) {
+      console.log("Send button not found");
+      return;
+    }
+
+    sendButton.click();
+    
+    setTimeout(() => {
+      sendButton.click();
+    }, 10000);
+  }
+
+  function scheduleCleanup() {
+    setTimeout(() => {
+      if (targetNode) {
+        targetNode.value = '';
+      }
+    }, 2000);
+
+    setTimeout(() => {
+      if (isContainerOpen()) {
+        toggleContainerVisibility();
+      }
+    }, 10000);
   }
   
 
@@ -144,67 +226,83 @@ function addEventListeners(container) {
 
 
 
-  container.addEventListener("change", function (event) {
+  container.addEventListener("change", handleContainerChange);
 
+  function handleContainerChange(event) {
+    try {
+      if (!event.target.options || typeof event.target.selectedIndex === 'undefined') {
+        return;
+      }
 
-    if (!event.target.options || typeof event.target.selectedIndex === 'undefined') {
-      return;
+      const selectedOption = event.target.options[event.target.selectedIndex];
+      const additionalIds = extractAdditionalIds(selectedOption);
+
+      hideAllInputs(additionalIds);
+      handleCheckboxVisibility(selectedOption);
+      showAdditionalInputs(additionalIds);
+    } catch (error) {
+      console.error('Error handling container change:', error);
     }
+  }
 
-    const selectedOption = event.target.options[event.target.selectedIndex];
-    let additionalIds = [];
-
-
-
+  function extractAdditionalIds(selectedOption) {
+    const additionalIds = [];
     if (selectedOption.dataset && selectedOption.dataset.additionals) {
       const ids = selectedOption.dataset.additionals.split(',');
       ids.forEach(id => additionalIds.push(id.trim()));
-
-
     }
+    return additionalIds;
+  }
 
-    Array.from(container.querySelectorAll('.prompt-generator-input-div')).forEach(inputDiv => {
+  function hideAllInputs(additionalIds) {
+    const inputDivs = container.querySelectorAll('.prompt-generator-input-div');
+    inputDivs.forEach(inputDiv => {
       const inputElement = inputDiv.querySelector('input[type="text"]');
       if (inputElement && !additionalIds.includes(inputElement.id)) {
         inputDiv.classList.add('HideInput');
         inputElement.value = '';
       }
     });
+  }
 
-    Array.from(container.querySelectorAll('input[type="checkbox"]')).forEach(checkbox => {
+  function handleCheckboxVisibility(selectedOption) {
+    const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
       const checkboxField = checkbox.parentElement.parentElement;
       const additionals = checkbox.getAttribute('additionals');
       const additionalsHide = checkbox.getAttribute('additionalsHide');
-
-
-
 
       if (additionals && additionalsHide) {
         if (selectedOption.dataset && selectedOption.dataset.text === checkbox.value) {
           checkboxField.classList.remove('HideInput');
         } else {
           checkboxField.classList.add('HideInput');
-          const ids = additionalsHide.split(',');
-          ids.forEach(id => {
-            const inputField = document.getElementById(id.trim());
-            if (inputField) {
-              inputField.value = '';
-            }
-          });
+          clearHiddenFields(additionalsHide);
         }
       }
     });
+  }
 
-    Array.from(additionalIds).forEach(id => {
+  function clearHiddenFields(additionalsHide) {
+    const ids = additionalsHide.split(',');
+    ids.forEach(id => {
+      const inputField = document.getElementById(id.trim());
+      if (inputField) {
+        inputField.value = '';
+      }
+    });
+  }
+
+  function showAdditionalInputs(additionalIds) {
+    additionalIds.forEach(id => {
       const inputField = document.getElementById(id.trim());
       if (inputField) {
         inputField.parentElement.classList.remove('HideInput');
       }
     });
-  });
+  }
 
   dropdownsAdded = true;
-  updateUI();
 }
 
 if (document.readyState === 'loading') {
@@ -244,25 +342,6 @@ function toggleContainerVisibility() {
   }
 }
 
-function getInputTexts(xmlData) {
-  const inputs = xmlData.getElementsByTagName('input');
-  Array.from(inputs).forEach((input) => {
-    const idElement = input.querySelector('id');
-    const valueBeforeElement = input.querySelector('valueBefore');
-    const valueAfterElement = input.querySelector('valueAfter');
-    const inputId = idElement ? idElement.textContent : '';
-
-    if (inputId) {
-      const inputElement = document.getElementById(inputId);
-      if (inputElement) {
-        const valueBefore = valueBeforeElement ? valueBeforeElement.textContent : '';
-        const valueAfter = valueAfterElement ? valueAfterElement.textContent : '';
-        inputElement.setAttribute('valueBefore', valueBefore);
-        inputElement.setAttribute('valueAfter', valueAfter);
-      }
-    }
-  });
-}
 
 function isContainerOpen() {
   // Prüfen, ob der Container sichtbar ist, indem die Sichtbarkeit des Elements geprüft wird

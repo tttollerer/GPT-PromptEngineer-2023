@@ -16,20 +16,19 @@
     {
       "matches": [
         "https://chat.openai.com/*",
+        "https://chatgpt.com/*",
         "https://bard.google.com/*",
         "https://www.bing.com/*"
       ],
       "js": [
+        "engine/fetch_data.js",
         "settings/settings.js", 
-        "engine/input_field_creation.js",
-        "translation/translations.json",
-        "engine/fetch_data.js", 
-        "engine/build_ui.js",
-        "engine/language_switcher.js",
-        "engine/content_script.js"
+        "engine/ui/theme-manager.js",
+        "engine/ui/form-builder.js",
+        "engine/ui/overlay-manager.js"
       ],
       "css": [
-        "styles/styles.css"
+        "styles/overlay.css"
       ],
       "run_at": "document_idle"
     }
@@ -43,24 +42,24 @@
     "resources": [
       "settings/settings.js", 
       "translation/translations.json",
-      "engine/input_field_creation.js", 
-      "data_en.xml",
+      "engine/ui/theme-manager.js",
+      "engine/ui/form-builder.js",
+      "engine/ui/overlay-manager.js",
       "data_inputs.xml",
       "data_checkboxes.xml",
       "data_dropdowns.xml",
       "data_dropdown_employee.xml",
       "data_dropdown_tasks.xml",
-      "data_dropdown_clients.xml",  
       "Images/logo.png",
       "Images/icon128.png",
       "Images/icon48.png",
       "Images/icon16.png",
-      "Images/OnOff.png",
-      "engine/content_script.js"],
+      "Images/OnOff.png"],
     "run_at": "document_idle",
     "use_dynamic_url": false,
     "matches": [
       "https://chat.openai.com/*",
+      "https://chatgpt.com/*",
       "https://bard.google.com/*",
       "https://www.bing.com/*"]
   }]

@@ -1,5 +1,3 @@
-window.attributionHTML = attributionHTML;
-
 
 
 (async function() {
@@ -105,175 +103,214 @@ window.attributionHTML = attributionHTML;
   };
   let lastSelectedLanguageIndex = 0;
   async function buildUI(xmlData) {
+    try {
       console.warn("buildUI");
-      if (!xmlData) {console.error('xmlData is null');
+      if (!xmlData) {
+        console.error('xmlData is null');
         return;
       }
 
-    const dropdowns = xmlData.getElementsByTagName('dropdown');
-    const checkboxes = xmlData.getElementsByTagName('checkbox');
-    const inputs = xmlData.getElementsByTagName('input');
-    
-    const targetNode = document.querySelector(window.getSelector());
+      const targetNode = setupTargetNode();
+      if (!targetNode) {
+        return;
+      }
 
-if (targetNode) {
-  targetNode.setAttribute('id', 'PromptInput');
-  const promptButton = targetNode.nextElementSibling;
-
-  if (promptButton) {
-    promptButton.setAttribute('id', 'PromptButton');
-    
+      const container = setupContainer();
+      setupToggleButton(targetNode, container);
+      
+      buildUIComponents(container, xmlData);
+      addAttribution(container);
+      
+    } catch (error) {
+      console.error('Error in buildUI:', error);
+    }
   }
 
-} else {
-  console.log('Das targetNode-Element wurde nicht gefunden.');
-}
-    if (!targetNode) {
-      return;
+  function setupTargetNode() {
+    const selector = window.getSelector();
+    const targetNode = document.querySelector(selector);
+    
+    if (targetNode) {
+      console.log('PromptEngineer: Target node found with selector:', selector);
+      targetNode.setAttribute('id', 'PromptInput');
+      
+      // Try to find send button - different approaches for different sites
+      let promptButton = targetNode.nextElementSibling;
+      if (!promptButton) {
+        // For chatgpt.com, button might be in parent container
+        promptButton = targetNode.parentElement?.querySelector('button[type="submit"]');
+      }
+      if (!promptButton) {
+        // Generic button search
+        promptButton = targetNode.closest('form')?.querySelector('button[type="submit"]');
+      }
+      
+      if (promptButton) {
+        promptButton.setAttribute('id', 'PromptButton');
+        console.log('PromptEngineer: Send button found and configured');
+      } else {
+        console.warn('PromptEngineer: Send button not found - form submission may not work');
+      }
+      
+      return targetNode;
+    } else {
+      console.error('PromptEngineer: Target node not found. Selector:', selector);
+      console.error('PromptEngineer: Available elements:');
+      console.error('- textareas:', document.querySelectorAll('textarea').length);
+      console.error('- #thread-bottom-container:', document.querySelectorAll('#thread-bottom-container').length);
+      return null;
     }
+  }
 
+  function setupContainer() {
     const existingContainer = document.getElementById('prompt-generator-container');
-const container = existingContainer ? existingContainer : document.createElement('div');
-container.id = 'prompt-generator-container';
-container.classList.add('prompt-generator-container');
-clearContainer(container);
-
+    const container = existingContainer || document.createElement('div');
+    container.id = 'prompt-generator-container';
+    container.classList.add('prompt-generator-container');
+    clearContainer(container);
 
     const image = document.createElement('img');
-image.src = chrome.runtime.getURL('Images/logo.png');
-image.classList.add('prompt-generator-image');
-container.appendChild(image);
+    image.src = chrome.runtime.getURL('Images/logo.png');
+    image.classList.add('prompt-generator-image');
+    container.appendChild(image);
 
+    return container;
+  }
 
+  function setupToggleButton(targetNode, container) {
+    if (!toggleButtonAdded) {
+      const toggleButton = document.createElement('button');
+      toggleButton.classList.add('toggle-button');
+      toggleButton.onclick = toggleContainer;
 
+      const toggleButtonImage = document.createElement('img');
+      toggleButtonImage.src = chrome.runtime.getURL('Images/OnOff.png');
+      toggleButtonImage.width = 128;
+      toggleButtonImage.height = 128;
+      toggleButton.appendChild(toggleButtonImage);
 
+      const parentElement = targetNode.parentElement;
+      parentElement.insertBefore(container, targetNode);
+      parentElement.insertBefore(toggleButton, targetNode);
+      toggleButtonAdded = true;
+    }
+  }
 
-
-
-
-
-if (!toggleButtonAdded) {
-/* On Off Button */
-const toggleButton = document.createElement('button');
-toggleButton.classList.add('toggle-button');
-toggleButton.onclick = toggleContainer;
-
-const toggleButtonImage = document.createElement('img');
-toggleButtonImage.src = chrome.runtime.getURL('Images/OnOff.png');
-toggleButtonImage.width = 128;
-toggleButtonImage.height = 128;
-toggleButton.appendChild(toggleButtonImage);
-
-const parentElement = targetNode.parentElement;
-parentElement.insertBefore(container, targetNode);
-parentElement.insertBefore(toggleButton, targetNode);
-toggleButtonAdded = true;
-
-
-}
-
-
-
-
-
-
-    const languageDropdown = createLanguageDropdown();
+  function buildUIComponents(container, xmlData) {
+    const languageDropdown = window.createLanguageDropdown();
     container.appendChild(languageDropdown);
 
+    buildCheckboxes(container, xmlData);
+    buildDropdowns(container, xmlData);
+    createInputs(container, xmlData);
+    getInputTexts(xmlData);
+  }
 
-
-
+  function buildCheckboxes(container, xmlData) {
+    const checkboxes = xmlData.getElementsByTagName('checkbox');
     const checkboxContainer = document.createElement('div');
     checkboxContainer.classList.add('prompt-generator-checkbox-container');
     container.appendChild(checkboxContainer);
 
     Array.from(checkboxes).forEach((checkbox) => {
-      const checkboxData = {
-        label: checkbox.querySelector('label').textContent,
-        value: checkbox.querySelector('value').textContent,
-        id: checkbox.querySelector('id').textContent,
-        additionals: checkbox.querySelector('additionals').textContent,
-        additionalsHide: checkbox.querySelector('additionalsHide').textContent,
-      };
-      const checkboxElement = inputFieldCreation.createCheckbox(checkboxData);
-      checkboxContainer.appendChild(checkboxElement);
+      const checkboxData = extractCheckboxData(checkbox);
+      if (checkboxData) {
+        const checkboxElement = inputFieldCreation.createCheckbox(checkboxData);
+        checkboxContainer.appendChild(checkboxElement);
+      }
     });
+  }
 
+  function extractCheckboxData(checkbox) {
+    try {
+      return {
+        label: checkbox.querySelector('label')?.textContent || '',
+        value: checkbox.querySelector('value')?.textContent || '',
+        id: checkbox.querySelector('id')?.textContent || '',
+        additionals: checkbox.querySelector('additionals')?.textContent || '',
+        additionalsHide: checkbox.querySelector('additionalsHide')?.textContent || '',
+      };
+    } catch (error) {
+      console.warn('Error extracting checkbox data:', error);
+      return null;
+    }
+  }
+
+  function buildDropdowns(container, xmlData) {
+    const dropdowns = xmlData.getElementsByTagName('dropdown');
     const dropdownContainer = document.createElement('div');
     dropdownContainer.classList.add('prompt-generator-dropdown-container');
     container.appendChild(dropdownContainer);
 
     Array.from(dropdowns).forEach((dropdown) => {
-  const options = dropdown.querySelectorAll('options option');
-  const idElement = dropdown.querySelector('id');
-  const labelElement = dropdown.querySelector('label');
-  const dropdownData = {
-    id: idElement ? idElement.textContent : '',
-    label: labelElement ? labelElement.textContent : '',
-    options: Array.from(options).map((option) => {
-      const optionLabelElement = option.querySelector('label');
-      const optionValueElement = option.querySelector('value');
-      const optionAdditionalsElement = option.querySelector('additionals');
-      return {
-        label: optionLabelElement ? optionLabelElement.textContent : '',
-        text: optionValueElement ? optionValueElement.textContent : '',
-        additionals: optionAdditionalsElement ? optionAdditionalsElement.textContent : null,
-      };
-    }),
-  };
-  const dropdownElement = inputFieldCreation.createDropdown(dropdownData);
-  dropdownContainer.appendChild(dropdownElement);
-});
-
-
-/*funktioniert */
-const inputContainer = document.createElement('div');
-//inputContainer.classList.add('prompt-generator-input-container');
-//container.appendChild(inputContainer);
-
-Array.from(inputs).forEach((input) => {
-  const labelElement = input.querySelector('label');
-  const idElement = input.querySelector('id');
-  const typeElement = input.querySelector('type');
-  const inputData = {
-    label: labelElement ? labelElement.textContent : '',
-    id: idElement ? idElement.textContent : '',
-    type: typeElement ? typeElement.textContent : 'text',  // Standard auf 'text' setzen, wenn kein Typ definiert ist
-  };
-
-
-  if (!labelElement || !idElement) {
-    console.warn("Warnung: Ein oder mehrere benötigte Elemente wurden nicht gefunden.");
-    return;
+      const dropdownData = extractDropdownData(dropdown);
+      if (dropdownData) {
+        const dropdownElement = inputFieldCreation.createDropdown(dropdownData);
+        dropdownContainer.appendChild(dropdownElement);
+      }
+    });
   }
 
-  
+  function extractDropdownData(dropdown) {
+    try {
+      const options = dropdown.querySelectorAll('options option');
+      const idElement = dropdown.querySelector('id');
+      const labelElement = dropdown.querySelector('label');
+      
+      return {
+        id: idElement?.textContent || '',
+        label: labelElement?.textContent || '',
+        options: Array.from(options).map((option) => {
+          const optionLabelElement = option.querySelector('label');
+          const optionValueElement = option.querySelector('value');
+          const optionAdditionalsElement = option.querySelector('additionals');
+          return {
+            label: optionLabelElement?.textContent || '',
+            text: optionValueElement?.textContent || '',
+            additionals: optionAdditionalsElement?.textContent || null,
+          };
+        }),
+      };
+    } catch (error) {
+      console.warn('Error extracting dropdown data:', error);
+      return null;
+    }
+  }
 
-  const inputElement = inputFieldCreation.createInput(inputData);
-  const inputField = inputElement.querySelector('input');
-  inputField.placeholder = inputData.label;
-  inputContainer.appendChild(inputElement);
-  console.log(inputData.label);
-});
-
-targetNode.parentElement.insertBefore(container, targetNode);
-
-
-
-
-
-
-
+  function addAttribution(container) {
     const attribution = document.createElement('div');
-    attribution.innerHTML = window.attributionHTML;
-
+    attribution.textContent = window.attributionHTML || '';
     attribution.classList.add('prompt-generator-attribution');
-    
-    createInputs(container, xmlData);
-    getInputTexts(xmlData);
-  
     container.appendChild(attribution);
-   
+  }
+
+  function getInputTexts(xmlData) {
+    try {
+      if (!xmlData) {
+        console.warn('XML data not available for input text extraction');
+        return;
+      }
+
+      const inputs = xmlData.getElementsByTagName('input');
+      Array.from(inputs).forEach((input) => {
+        const idElement = input.querySelector('id');
+        const valueBeforeElement = input.querySelector('valueBefore');
+        const valueAfterElement = input.querySelector('valueAfter');
+        const inputId = idElement?.textContent || '';
+
+        if (inputId) {
+          const inputElement = document.getElementById(inputId);
+          if (inputElement) {
+            const valueBefore = valueBeforeElement?.textContent || '';
+            const valueAfter = valueAfterElement?.textContent || '';
+            inputElement.setAttribute('valueBefore', valueBefore);
+            inputElement.setAttribute('valueAfter', valueAfter);
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error getting input texts:', error);
+    }
   }
 
   function clearContainer(container) {
@@ -283,33 +320,51 @@ targetNode.parentElement.insertBefore(container, targetNode);
   }
 
   function createInputs(container, xmlData) {
-    const inputs = xmlData.getElementsByTagName('input');
-    const inputContainer = document.createElement('div');
-    inputContainer.classList.add('prompt-generator-input-container');
-    container.appendChild(inputContainer);
-  
-    Array.from(inputs).forEach((input) => {
+    try {
+      const inputs = xmlData.getElementsByTagName('input');
+      const inputContainer = document.createElement('div');
+      inputContainer.classList.add('prompt-generator-input-container');
+      container.appendChild(inputContainer);
+    
+      Array.from(inputs).forEach((input) => {
+        const inputData = extractInputData(input);
+        if (inputData && inputData.label && inputData.id) {
+          const inputElement = inputFieldCreation.createInput(inputData);
+          const inputField = inputElement.querySelector('input');
+          if (inputField) {
+            inputField.setAttribute('valueBefore', inputData.valueBefore);
+            inputField.setAttribute('valueAfter', inputData.valueAfter);
+            inputField.placeholder = inputData.label;
+            inputContainer.appendChild(inputElement);
+          }
+        } else {
+          console.warn("Warnung: Ein oder mehrere benötigte Elemente wurden nicht gefunden.");
+        }
+      });
+    } catch (error) {
+      console.error('Error creating inputs:', error);
+    }
+  }
+
+  function extractInputData(input) {
+    try {
       const labelElement = input.querySelector('label');
       const idElement = input.querySelector('id');
-      const typeElement = input.querySelector('type');  // Lese das 'type' Element aus den XML-Daten
+      const typeElement = input.querySelector('type');
       const valueBeforeElement = input.querySelector('valueBefore');
       const valueAfterElement = input.querySelector('valueAfter');
-  
-      const inputData = {
-        label: labelElement ? labelElement.textContent : '',
-        id: idElement ? idElement.textContent : '',
-        type: typeElement ? typeElement.textContent : 'text',  // Setze den 'type' Wert in inputData
-        valueBefore: valueBeforeElement ? valueBeforeElement.textContent : '',
-        valueAfter: valueAfterElement ? valueAfterElement.textContent : '',
+
+      return {
+        label: labelElement?.textContent || '',
+        id: idElement?.textContent || '',
+        type: typeElement?.textContent || 'text',
+        valueBefore: valueBeforeElement?.textContent || '',
+        valueAfter: valueAfterElement?.textContent || '',
       };
-  
-      const inputElement = inputFieldCreation.createInput(inputData);
-      const inputField = inputElement.querySelector('input');
-      inputField.setAttribute('valueBefore', inputData.valueBefore);
-      inputField.setAttribute('valueAfter', inputData.valueAfter);
-      inputField.placeholder = inputData.label;
-      inputContainer.appendChild(inputElement);
-    });
+    } catch (error) {
+      console.warn('Error extracting input data:', error);
+      return null;
+    }
   }
   
 
@@ -325,45 +380,67 @@ targetNode.parentElement.insertBefore(container, targetNode);
 let containerVisible = true;
 
 function toggleContainer() {
-  const container = document.getElementById('prompt-generator-container');
-  const containerVisible = !container.classList.contains('hidden');
-  const toggleButton = document.querySelector('.toggle-button');
-  if (containerVisible) {
-    container.classList.add('hidden');
-    toggleButton.classList.add('rotated'); 
-
-  } else {
-    const selectedLanguage = localStorage.getItem('selectedLanguage') || initialLang;
-    updateUI(selectedLanguage); 
-    container.classList.remove('hidden');
-    toggleButton.classList.remove('rotated'); 
-
+  try {
+    const container = document.getElementById('prompt-generator-container');
+    const toggleButton = document.querySelector('.toggle-button');
+    
+    if (!container || !toggleButton) {
+      console.warn('Container or toggle button not found');
+      return;
+    }
+    
+    const containerVisible = !container.classList.contains('hidden');
+    
+    if (containerVisible) {
+      container.classList.add('hidden');
+      toggleButton.classList.add('rotated');
+    } else {
+      const selectedLanguage = localStorage.getItem('selectedLanguage') || window.initialLang;
+      window.updateUI(selectedLanguage);
+      container.classList.remove('hidden');
+      toggleButton.classList.remove('rotated');
+    }
+  } catch (error) {
+    console.error('Error toggling container:', error);
   }
 }
 
 function resetInputFields() {
-  const container = document.getElementById('prompt-generator-container');
-  const inputs = container.querySelectorAll('input, select');
-  inputs.forEach(input => {
-    if (input.type === 'checkbox') {
-      input.checked = false;
-    } else if (input.tagName === 'SELECT') {
-      input.selectedIndex = 0;
-    } else {
-      input.value = '';
+  try {
+    const container = document.getElementById('prompt-generator-container');
+    if (!container) {
+      console.warn('Container not found for reset');
+      return;
     }
-  });
+    
+    const inputs = container.querySelectorAll('input, select');
+    inputs.forEach(input => {
+      if (input.type === 'checkbox') {
+        input.checked = false;
+      } else if (input.tagName === 'SELECT') {
+        input.selectedIndex = 0;
+      } else {
+        input.value = '';
+      }
+    });
+  } catch (error) {
+    console.error('Error resetting input fields:', error);
+  }
 }
 
-
-
 function hideAdditionalInputs() {
-  const inputElements = document.querySelectorAll('.prompt-generator-input-container .prompt-generator-input-div');
-  inputElements.forEach(inputDiv => {
-    if (!inputDiv.classList.contains('HideInput')) {
-      inputDiv.classList.add('HideInput');
-      const inputElement = inputDiv.querySelector('input[type="text"]');
-      inputElement.value = '';
-    }
-  });
+  try {
+    const inputElements = document.querySelectorAll('.prompt-generator-input-container .prompt-generator-input-div');
+    inputElements.forEach(inputDiv => {
+      if (!inputDiv.classList.contains('HideInput')) {
+        inputDiv.classList.add('HideInput');
+        const inputElement = inputDiv.querySelector('input[type="text"]');
+        if (inputElement) {
+          inputElement.value = '';
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error hiding additional inputs:', error);
+  }
 }
