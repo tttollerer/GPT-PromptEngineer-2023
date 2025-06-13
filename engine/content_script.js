@@ -150,8 +150,17 @@ function addEventListeners(container) {
 
 
 
+  // Handle checkbox styling
   container.addEventListener("change", function (event) {
-
+    if (event.target.type === 'checkbox') {
+      const checkboxLabel = event.target.parentElement;
+      if (event.target.checked) {
+        checkboxLabel.classList.add('active');
+      } else {
+        checkboxLabel.classList.remove('active');
+      }
+      return;
+    }
 
     if (!event.target.options || typeof event.target.selectedIndex === 'undefined') {
       return;

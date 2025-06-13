@@ -108,15 +108,14 @@
 }
 
 #prompt-generator-container .checkbox_btn input {
-  margin-left: 8px;
-  margin-bottom: 2px;
+  display: none;
 }
 
 #prompt-generator-container .checkbox_btn:hover {
   border: 1px solid var(--light-green);
 }
 
-#prompt-generator-container .checkbox_btn:active {
+#prompt-generator-container .checkbox_btn.active {
   background-color: var(--light-green);
   border-color: var(--light-green);
   color: var(--white);
@@ -179,31 +178,12 @@
   border: 1px solid var(--light-green) !important;
 }
 
-#prompt-generator-container input[type="checkbox"]+label::before {
-  content: "•";
-  display: inline-block;
-  width: 1em;
-  margin-right: 0.5em;
-}
 
-#prompt-generator-container input[type="checkbox"]:checked+label::before {
-  content: "•";
-  background-color: var(--light-green);
-  /* change the color to your liking */
-}
 
 #prompt-generator-container input[type=checkbox] {
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 1px solid var(--light-green);
+  display: none;
 }
 
-#prompt-generator-container input[type=checkbox]:checked {
-  background-color: #0080ff;
-  border-color: #0080ff;
-}
 
 #prompt-generator-container .prompt-generator-input-div {
   margin-bottom: 15px;
