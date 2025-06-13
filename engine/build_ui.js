@@ -164,9 +164,8 @@ toggleButtonImage.width = 128;
 toggleButtonImage.height = 128;
 toggleButton.appendChild(toggleButtonImage);
 
-const parentElement = targetNode.parentElement;
-parentElement.insertBefore(container, targetNode);
-parentElement.insertBefore(toggleButton, targetNode);
+// Add toggle button as floating element to body
+document.body.appendChild(toggleButton);
 toggleButtonAdded = true;
 
 
@@ -256,7 +255,7 @@ Array.from(inputs).forEach((input) => {
   console.log(inputData.label);
 });
 
-targetNode.parentElement.insertBefore(container, targetNode);
+// Container is already appended to body in content_script.js
 
 
 

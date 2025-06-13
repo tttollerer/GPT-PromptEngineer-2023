@@ -25,6 +25,7 @@ async function init() {
   removeExistingContainer();
 
   const container = createContainer();
+  // Always append to body as last element for bottom menu
   document.body.appendChild(container);
   window.initLanguageSwitcher();
   xmlData = await window.fetchDropdownData(localStorage.getItem('selectedLanguage') || 'en');
@@ -41,6 +42,8 @@ function createContainer() {
   container = document.createElement("div");
   container.id = "prompt-generator-container";
   container.classList.add("prompt-generator-container");
+  // Start hidden for bottom menu
+  container.classList.add("hidden");
 
   return container;
 }

@@ -7,16 +7,23 @@
 }
 
 #prompt-generator-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background-color: var(--dark-grey);
   color: var(--white);
-  padding: 15px !important;
-  padding-bottom: 15px !important;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  margin-right: 15px;
+  padding: 20px !important;
+  border-radius: 12px 12px 0 0;
   border: 1px solid #1776d969;
-  transition: all 0.5s ease-in-out;
+  border-bottom: none;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   display: block;
+  z-index: 10000;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(100%);
 }
 
 
@@ -318,18 +325,19 @@
 /*On Off Button*/
 .toggle-button {
   position: fixed;
-  bottom: 55px;
+  bottom: 30px;
   right: 30px;
   width: 64px;
   height: 64px;
   border: none;
   outline: none;
   cursor: pointer;
-  transition: transform 0.5s ease-in-out;
   border-radius: 50%;
-  box-shadow: 0 0 5px rgba(5, 71, 239, 0);
-  transition: transform 0.5s, box-shadow 0.5s;
-  transform: rotate(90deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease-in-out;
+  transform: rotate(0deg);
+  z-index: 10001;
+  background: transparent;
 }
 
 .toggle-button:hover {
@@ -338,7 +346,7 @@
 
 
 .toggle-button.rotated {
-  transform: rotate(-90deg);
+  transform: rotate(180deg);
 }
 
 .prompt-generator-container {
@@ -359,8 +367,12 @@ input:focus::placeholder {
 
 
 
-.hidden {
-  display: none !important;
+#prompt-generator-container.hidden {
+  transform: translateY(100%) !important;
+}
+
+#prompt-generator-container:not(.hidden) {
+  transform: translateY(0) !important;
 }
 
 
