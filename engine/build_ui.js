@@ -126,11 +126,33 @@ if (targetNode) {
   }
 
 } else {
-  console.log('Das targetNode-Element wurde nicht gefunden.');
-}
-    if (!targetNode) {
-      return;
+  console.error('🤖 PromptEngineer buildUI: Das targetNode-Element wurde nicht gefunden auf', window.location.href);
+  console.log('💡 Extension kann nicht initialisiert werden. Überprüfe die Console für Textfeld-Erkennungs-Details.');
+  
+  // Versuche einfache Fallback-Selektoren
+  const fallbackSelectors = ['textarea', 'input[type="text"]', '[contenteditable="true"]'];
+  let fallbackFound = false;
+  
+  for (let selector of fallbackSelectors) {
+    const elements = document.querySelectorAll(selector);
+    if (elements.length > 0) {
+      console.log(`🔧 Fallback gefunden: ${elements.length} Elemente mit Selector "${selector}"`);
+      elements.forEach((el, i) => {
+        console.log(`  ${i+1}. Element:`, el);
+      });
+      fallbackFound = true;
     }
+  }
+  
+  if (!fallbackFound) {
+    console.log('❌ Keine Textfelder auf der Seite gefunden.');
+  }
+}
+
+if (!targetNode) {
+  console.log('⚠️ PromptEngineer buildUI wird abgebrochen - kein Textfeld verfügbar');
+  return;
+}
 
     const existingContainer = document.getElementById('prompt-generator-container');
 const container = existingContainer ? existingContainer : document.createElement('div');

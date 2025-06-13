@@ -412,7 +412,27 @@ input:focus::placeholder {
 }
 
 
-/*Speach Button*/
+/*Speech Button*/
 #speech-button {
   position:absolute;
+}
+
+/* Textfield highlight animation */
+@keyframes textfieldHighlight {
+  0% {
+    border-color: var(--light-green);
+    box-shadow: 0 0 5px var(--light-green);
+  }
+  50% {
+    border-color: var(--light-green);
+    box-shadow: 0 0 15px var(--light-green);
+  }
+  100% {
+    border-color: initial;
+    box-shadow: none;
+  }
+}
+
+.prompt-engineer-detected {
+  animation: textfieldHighlight 2s ease-in-out;
 }
