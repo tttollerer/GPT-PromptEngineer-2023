@@ -1,0 +1,134 @@
+<data>
+    <inputs>
+        <input>
+           <label> Type of Input (e.g. business letter, code, coordinates) </label>
+           <id> InputArt </id>
+           <class> prompt-generator-input </class>
+        </input>
+        <input>
+           <label> URL / Link / Repository </label>
+           <id>LinkOrURL</id>
+           <class> LinkOrURL </class>
+           <valueBefore>Here is the URL of the Repository: {{LinkOrURL}} == "</valueBefore>
+           <valueAfter>". </valueAfter>
+        </input>
+        <input>
+           <label>Plugin Name</label>
+           <id>PluginName</id>
+           <class>PluginName</class>
+           <valueBefore>The plugin is: {{PluginName}} == "</valueBefore>
+            <valueAfter>". </valueAfter>
+        </input>
+        <input>
+           <label>Country</label>
+           <id>Country</id>
+           <class>Country</class>
+           <valueBefore>You are a specialist in the laws of this country: "</valueBefore>
+            <valueAfter>". </valueAfter>
+        </input>
+        <input>
+           <label>Practice Area</label>
+           <id>PracticeArea</id>
+           <class>PracticeArea</class>
+           
+        </input>
+        <input>
+           <label> Input data (e.g. entire business letter) </label>
+           <id> InputData </id>
+           <class> prompt-generator-input </class>
+        </input>
+        <input>
+           <label> Target Group </label>
+           <id> InputTargetGroup </id>
+           <class> prompt-generator-input </class>
+        </input>
+        <input>
+           <label> Describe The Author </label>
+           <id> InputAuthor </id>
+           <class> prompt-generator-input </class>
+        </input>
+        <input>
+           <label> The Keywords </label>
+           <id> InputKeywords </id>
+           <class> prompt-generator-input </class>
+        </input>
+        <input>
+           <label> Code I </label>
+           <id> InputCode </id>
+           <class> prompt-generator-input </class>
+        </input>
+        <input>
+           <label> Code II </label>
+           <id> InputCode2 </id>
+           <class> prompt-generator-input </class>
+        </input>
+        <input>
+           <label> Programming Language </label>
+           <id> CodeLang </id>
+           <class> prompt-generator-input </class>
+        </input>
+        <input>
+           <label> My Text </label>
+           <id>text</id>
+           <class> prompt-generator-input </class>
+           <valueBefore>Here is the Text: "</valueBefore>
+           <valueAfter>". </valueAfter>
+        </input>
+        <input>
+           <label> Person </label>
+           <id>person</id>
+           <class> prompt-generator-input </class>
+           <valueBefore>You are a "</valueBefore>
+            <valueAfter>". </valueAfter>
+        </input>
+        <input>
+           <label> Topic </label>
+           <id>topic</id>
+           <class> prompt-generator-input </class>
+           <valueBefore> Your topic is "</valueBefore>
+            <valueAfter>". </valueAfter>
+        </input>
+        <input>
+           <label> Input Language </label>
+           <id>inputLanguage</id>
+           <class> prompt-generator-input </class>
+           <valueBefore> Input language is {{inputLanguage}} == "</valueBefore>
+            <valueAfter>". </valueAfter>
+        </input>
+        <input>
+         <label>Additional company information</label>
+         <id>AdditionalCompanyInformation</id>
+         <class> prompt-generator-input </class>
+         <valueBefore> Your additional company information is {{AdditionalCompanyInformation}} == "</valueBefore>
+          <valueAfter>". </valueAfter>
+      </input>
+        <!--<input>
+           <label>Describe the desired image style e.g. 'Vintage sepia photograph'</label>
+           <id>MidJprefix</id>
+           <class> prompt-generator-input </class>
+           <valueBefore> {{MidJprefix}} == "</valueBefore>
+            <valueAfter>". </valueAfter>
+        </input>
+        <input>
+           <label>What should be represented e.g. 'A father teaching his son'</label>
+           <id>MidJcontent</id>
+           <class> prompt-generator-input </class>
+           <valueBefore> {{MidJcontent}} == "</valueBefore>
+            <valueAfter>". </valueAfter>
+        </input>
+        <input>
+           <label>Scene description e.g. 'With a sense of nostalgia, Kodak camera'</label>
+           <id>MidJsuffix</id>
+           <class> prompt-generator-input </class>
+           <valueBefore> {{MidJsuffix}} == "</valueBefore>
+            <valueAfter>". </valueAfter>
+        </input>
+        <input>
+           <label>Number of Variations</label>
+           <id>NumberOfVariations</id>
+           <class> prompt-generator-input </class>
+           <valueBefore> {{Variations}} == "</valueBefore>
+            <valueAfter>". </valueAfter>
+        </input>-->
+        </inputs>
+</data>

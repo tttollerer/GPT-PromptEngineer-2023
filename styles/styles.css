@@ -1,0 +1,426 @@
+:root {
+  --light-grey: #c9c9c9;
+  --dark-grey: #282828;
+  --grey: #424242;
+  --white: #f0f0f0;
+  --light-green: #016bff;
+}
+
+#prompt-generator-container {
+  background-color: var(--dark-grey);
+  color: var(--white);
+  padding: 15px !important;
+  padding-bottom: 15px !important;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  margin-right: 15px;
+  border: 1px solid #1776d969;
+  transition: all 0.5s ease-in-out;
+  display: block;
+}
+
+
+
+#prompt-generator-container .prompt-generator-title {
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+  color: #1776d969;
+}
+
+#prompt-generator-container .prompt-generator-label-div {
+  display: flex;
+  align-items: center;
+}
+
+#prompt-generator-container .prompt-generator-checkbox-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 3px;
+}
+
+#prompt-generator-container .prompt-generator-checkbox-container .prompt-generator-label-div {
+  margin-right: 10px;
+  margin-bottom: 15px;
+}
+
+#prompt-generator-container .prompt-generator-dropdown-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#prompt-generator-container .prompt-generator-dropdown-wrapper {
+  flex: 0 0 calc(50% - 5px);
+  margin-bottom: 15px;
+}
+
+#prompt-generator-container .prompt-generator-dropdown {
+  width: 100%;
+  background-color: var(--grey);
+  border: none;
+  padding: 5px 2px 5px 5px;
+  appearance: none;
+  border-radius: 8px;
+  border: 1px solid var(--grey);
+
+}
+
+#prompt-generator-container .prompt-generator-dropdown option {
+  background-color: var(--grey);
+  color: var(--white);
+}
+
+
+
+#prompt-generator-container button {
+  background-color: var(--grey);
+  color: var(--white);
+  border: 1px solid var(--grey);
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#prompt-generator-container button:hover {
+  background-color: #4a4a4a;
+}
+
+#prompt-generator-container .checkbox_btn {
+  display: inline-block;
+  padding: 5px 15px;
+  background-color: var(--grey);
+  border: 1px solid var(--grey);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--white);
+  text-align: center;
+  transition: all 0.5s ease-in-out;
+}
+
+#prompt-generator-container .checkbox_btn input {
+  margin-left: 8px;
+  margin-bottom: 2px;
+}
+
+#prompt-generator-container .checkbox_btn:hover {
+  border: 1px solid var(--light-green);
+}
+
+#prompt-generator-container .checkbox_btn:active {
+  background-color: var(--light-green);
+  border-color: var(--light-green);
+  color: var(--white);
+}
+
+#prompt-generator-container .checkbox_btn label {
+  background-color: var(--white);
+  padding: 5px;
+  border-radius: 8px;
+}
+
+#prompt-generator-container .checkbox_btn+label {
+  background-color: var(--light-green);
+  color: var(--dark-grey);
+}
+
+#prompt-generator-container .prompt-generator-dropdown+label {
+  margin-top: 15px;
+}
+
+#prompt-generator-container .prompt-generator-input-wrapper {
+  flex: 0 0 calc(50% - 5px);
+  margin-bottom: 15px;
+}
+
+#prompt-generator-container .prompt-generator-input,
+#PromptInput {
+  width: 100%;
+  background-color: var(--grey);
+  color: var(--white);
+  padding: 5px;
+  border-radius: 8px;
+}
+
+#prompt-generator-container .prompt-generator-input::placeholder {
+  color: var(--white);
+}
+
+#prompt-generator-container input[type="checkbox"],
+#prompt-generator-container input[type="text"],
+#prompt-generator-container select,
+#PromptInput {
+  border: 1px solid var(--dark-grey);
+  transition: border-color 500ms;
+}
+
+#prompt-generator-container input[type="checkbox"]:focus,
+#prompt-generator-container input[type="checkbox"]:hover,
+#prompt-generator-container input[type="text"]:focus,
+#prompt-generator-container input[type="text"]:hover,
+#prompt-generator-container select:focus,
+#prompt-generator-container select:hover,
+#PromptInput {
+  border: 1px solid var(--light-green) !important;
+}
+
+#prompt-generator-container input[type="checkbox"]:checked+label,
+/*#prompt-generator-container select:not(:empty),*/
+#prompt-generator-container .prompt-generator-input input[type="text"]:not(:empty) {
+  border: 1px solid var(--light-green) !important;
+}
+
+#prompt-generator-container input[type="checkbox"]+label::before {
+  content: "•";
+  display: inline-block;
+  width: 1em;
+  margin-right: 0.5em;
+}
+
+#prompt-generator-container input[type="checkbox"]:checked+label::before {
+  content: "•";
+  background-color: var(--light-green);
+  /* change the color to your liking */
+}
+
+#prompt-generator-container input[type=checkbox] {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--light-green);
+}
+
+#prompt-generator-container input[type=checkbox]:checked {
+  background-color: #0080ff;
+  border-color: #0080ff;
+}
+
+#prompt-generator-container .prompt-generator-input-div {
+  margin-bottom: 15px;
+}
+
+#prompt-generator-container label {
+  color: var(--light-grey)
+}
+
+#prompt-generator-container .prompt-generator-label-div label {
+  padding-left: 8px;
+}
+
+/* Stil für das Eingabefeld */
+#prompt-generator-container .input-field {
+  border: 1px solid black;
+  padding: 5px;
+  transition: border-color 0.2s ease-in-out;
+}
+
+#prompt-generator-container .prompt-generator-subtitle {
+  text-transform: uppercase;
+  font-weight: 400;
+  text-align: center;
+  font-size: 0.7em;
+  margin-bottom: 5px;
+}
+
+#prompt-generator-container .HideInput {
+  display: none;
+}
+
+#prompt-generator-container .NeverHide {
+  display: block !important;
+}
+
+#prompt-generator-container h3 {
+  font-weight: 300;
+  font-size: 1.2 rem;
+}
+
+#PromptInput {
+  color: white;
+  padding: 10px;
+  width: calc(100% - 15px);
+  line-height: 1.5;
+  border: 2px;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+#PromptInput:focus {
+  border-color: #0077ff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(0, 119, 255, 0.6);
+}
+
+#PromptButton {
+  right: 24px !important;
+  margin-bottom: 12px !important;
+}
+
+#PromptButton::placeholder {
+  color: white;
+}
+
+
+#prompt-generator-container .prompt-generator-attribution {
+  font-size: 11px;
+  margin-top: 10px;
+  text-align: center;
+  color: gray;
+}
+
+
+/*language switcher*/
+
+#prompt-generator-container #language-switcher-container {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+
+#language-selector {
+  background: inherit;
+  position: absolute;
+  right: 30px;
+  top: 29px;
+  padding: 5px 5px !important;
+  padding-right: 12px !important;
+  padding:0px !important;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 12px;
+  color: darkgrey;
+}
+
+
+.prompt-generator-image {
+  margin: 10px auto 20px auto;
+
+}
+
+#language-selector option {
+  font-size: 1.5rem !important;
+}
+
+.prompt-generator-dropdown-wrapper .prompt-generator-label-div,
+.prompt-generator-input-div label {
+  display: none !important;
+}
+
+#prompt-generator-container .prompt-generator-dropdown option:first-child {
+  color: var(--dark-grey) !important;
+}
+
+/*On Off Button*/
+.toggle-button {
+  position: fixed;
+  bottom: 55px;
+  right: 30px;
+  width: 64px;
+  height: 64px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: transform 0.5s ease-in-out;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(5, 71, 239, 0);
+  transition: transform 0.5s, box-shadow 0.5s;
+  transform: rotate(90deg);
+}
+
+.toggle-button:hover {
+  box-shadow: 0 0 15px rgba(10, 98, 212, 0.8);
+}
+
+
+.toggle-button.rotated {
+  transform: rotate(-90deg);
+}
+
+.prompt-generator-container {
+  transition: opacity 3s ease, transform 3s ease;
+}
+
+
+
+input::placeholder {
+  color: #a49f9f !Important;
+  /* Dunklere Farbe für den Standardtext */
+}
+
+input:focus::placeholder {
+  color: #a49f9f !Important;
+  /* Hellere Farbe für ausgewählten Text */
+}
+
+
+
+.hidden {
+  display: none !important;
+}
+
+
+#temperature,
+#Schreibstil,
+#Formatierung {
+  display: flex;
+  justify-content: space-between;
+}
+
+#temperature,
+#Schreibstil,
+#Formatierung>div {
+  flex: 1;
+  margin-right: 10px;
+}
+
+#temperature>div:last-child,
+#Schreibstil>div:last-child,
+#Formatierung>div:last-child {
+  margin-right: 0;
+}
+
+#temperature,
+#Schreibstil,
+#Formatierung {
+  display: inline-block;
+  width: 30%;
+  box-sizing: border-box;
+}
+
+
+.prompt-generator-dropdown-container {
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+
+.prompt-generator-dropdown-container .prompt-generator-dropdown-wrapper {
+  flex-basis: calc(33.33% - 10px) !important;
+  margin-bottom: 15px !important;
+}
+
+@keyframes glow {
+  0%, 100% {
+      box-shadow: 0 0 10px #9ecaed;
+  }
+  50% {
+      box-shadow: 0 0 20px #9ecaed, 0 0 30px #9ecaed;
+  }
+}
+
+
+#prompt-generator-container {
+  box-shadow: 0 0 5px #016bff !important;
+  animation: glow 3s ease-in-out !important;
+
+}
+
+
+/*Speach Button*/
+#speech-button {
+  position:absolute;
+}

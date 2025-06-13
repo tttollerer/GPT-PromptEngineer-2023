@@ -1,0 +1,186 @@
+<data>
+<dropdowns>
+   
+     <dropdown>
+        <label> Scope </label>
+        <id> Scope </id>
+        <options>
+           <option>
+              <label> Scope </label>              
+              <id />
+              <additionals>
+Scope
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+             <option>
+              <label> Twitter Tweet 240 Characters</label>
+              <value> Generate me a tweet with maximum of 240 characters. Or several tweets, each with 240 characters. Suggest me separately 5 keywords that are trending and promise a high interest rage or conversion. Write in a personal, personable style.</value>
+              <id>TwitterTweet</id>
+              <additionals>
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> 29 Characters (Google Ads Title) </label>
+              <value> Generate five high-converting Google Ads title suggestions, each with a maximum length of 29 characters, on the specified topic. For each suggested title, provide a comprehensive rationale that describes its strategic design elements, targeted audience, and optimization for Google Ads. Discuss how each title utilizes Google Ads best practices such as relevance, use of keywords, and clear call-to-action to enhance click-through rates and conversions. </value>
+              <id />
+              <additionals>
+Scope
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> 90 Characters (Google Ads Description) </label>
+              <value> Give me a well-converting description of the topic with a maximum of 90 characters. Give me 5 ideas. </value>
+              <id />
+              <additionals>
+Scope
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Short and Precise </label>
+              <value> Write briefly, concisely, and in simple language. </value>
+              <id />
+              <additionals>
+                  Scope
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> 10 Bullet Points </label>
+              <value> Here are 10 points I would like to address: </value>
+              <id />
+              <additionals>
+                  Scope
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> 2000 Word Post </label>
+              <value> I have prepared a detailed post that is around 2000 words. </value>
+              <id />
+              <additionals>
+Scope
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Google Ads Title - 29 characters </label>
+              <value> I created a Google ad with a maximum of 29 characters. create 5 alternatives for a converting Google Ads Title </value>
+              <id />
+              <additionals>
+Scope
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Google Ads Description - 90 characters </label>
+              <value> I created a Google ad with a maximum of 90 characters. </value>
+              <id />
+              <additionals>
+Scope
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+        </options>
+     </dropdown>
+     <dropdown>
+        <label> Formatting </label>
+        <id> formatting </id>
+        <options>
+           <option>
+              <label> Formatting </label>
+              <value />
+              <id />
+              <additionals>
+formatting
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+            <label>100% Human Text</label>
+            <value>When it comes to writing content, two factors are crucial, "perplexity" and "burstiness." Perplexity measures the complexity of text. Separately, burstiness compares the variations of sentences. Humans tend to write with greater burstiness, for example, with some longer or complex sentences alongside shorter ones. AI sentences tend to be more uniform. Therefore, when writing the following content I am going to ask you to create, I need it to have a good amount of perplexity and burstiness. Do you understand?"
+
+               As a language model trained by OpenAI, ChatGPT is capable of generating a wide range of responses to various prompts. However, not all prompts are created equal, and some may be more likely to trigger AI detectors or get flagged as non-human responses. In order to generate a prompt that can pass AI detectors such as GPT zero and get a 100% human score, there are several key factors to consider.
+               
+               First and foremost, the prompt should be specific and focused, rather than broad or open-ended. Open-ended prompts are more likely to result in generic or formulaic responses that could be flagged as non-human. By contrast, a specific prompt that requires a more targeted response is more likely to elicit a thoughtful and nuanced answer that will be less likely to raise red flags.
+               
+               Secondly, the prompt should be written in natural, human language, rather than technical jargon or complex terminology. AI detectors are trained to look for patterns that are associated with machine-generated text, and the use of technical language or syntax could trigger these patterns. Therefore, it is important to phrase the prompt in a way that is clear and easily understandable to a human reader.
+               
+               Thirdly, the prompt should be relevant and engaging to the reader. If the prompt is not interesting or engaging, then the response is more likely to be formulaic or generic, which could be flagged as non-human. By contrast, a prompt that is thought-provoking or emotionally resonant is more likely to elicit a human-like response.
+               
+               To illustrate these principles, let's consider an example of a prompt that could pass AI detectors and get a 100% human score. Imagine that the prompt is "Tell me about a time when you faced a difficult decision in your personal life.</value>
+            <id>100humantext</id>
+            <additionals>
+formatting
+                
+            </additionals>
+            <additionalsHide />
+         </option>
+           <option>
+              <label> Easy to Read and Clean Formatting </label>
+              <value> Write legibly and clearly formatted. Make meaningful paragraphs. Structure the content. </value>
+              <id />
+              <additionals>
+formatting
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Introductory 6-Point Summary </label>
+              <value> I start with a short summary consisting of 6 points. These points are the main takeaways from the text. </value>
+              <id />
+              <additionals>
+formatting
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Formatting with highlighted keywords </label>
+              <value> I've highlighted important keywords to make them easier to identify. Structure the text meaningfully with paragraphs. </value>
+              <id />
+              <additionals>
+InputKeywords, formatting
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Code </label>
+              <value> Output the code in the language you received it. the focus is on the emitted code. Explain the code. Before the paragraph, add an explanation of exactly what the paragraph does. </value>
+              <id />
+              <additionals>
+InputCode, CodeLang
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+           <option>
+              <label> Code Fast </label>
+              <value> Output the code in the language you received it. keep the code as short as possible. No comments or explanations. Keep the code as short as possible. Important, the functionality should be consistent. </value>
+              <id />
+              <additionals>
+                  
+              </additionals>
+              <additionalsHide />
+           </option>
+        </options>
+     </dropdown>
+   
+  
+  </dropdowns>
+  </data>

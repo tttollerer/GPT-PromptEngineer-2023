@@ -1,0 +1,67 @@
+{
+  "manifest_version": 3,
+  "name": "ChatGPT PromptEngineer 2023",
+  "version": "1.3",
+  "description": "WRITE LESS, GET MORE, PER CLICK - Specify U´r Topic | Share U´ŕ Needs | Receive Personalized No Random Results | A Lot Languages",
+  "icons": {
+    "16": "Images/icon16.png",
+    "48": "Images/icon48.png",
+    "128": "Images/icon128.png"
+  },
+  
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://bard.google.com/*",
+        "https://www.bing.com/*"
+      ],
+      "js": [
+        "settings/settings.js", 
+        "engine/input_field_creation.js",
+        "translation/translations.js",
+        "engine/fetch_data.js", 
+        "engine/build_ui.js",
+        "engine/language_switcher.js",
+        "engine/content_script.js"
+      ],
+      "css": [
+        "styles/styles.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "minimum_chrome_version": "92",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+  {
+    "resources": [
+      "settings/settings.js", 
+      "translation/translations.js",
+      "engine/input_field_creation.js", 
+      "data_en.xml",
+      "data_inputs.xml",
+      "data_checkboxes.xml",
+      "data_dropdowns.xml",
+      "data_dropdown_employee.xml",
+      "data_dropdown_tasks.xml",
+      "data_dropdown_clients.xml",  
+      "Images/logo.png",
+      "Images/icon128.png",
+      "Images/icon48.png",
+      "Images/icon16.png",
+      "Images/OnOff.png",
+      "engine/content_script.js"],
+    "run_at": "document_idle",
+    "use_dynamic_url": false,
+    "matches": [
+      "https://chatgpt.com/*",
+      "https://bard.google.com/*",
+      "https://www.bing.com/*"]
+  }]
+}
