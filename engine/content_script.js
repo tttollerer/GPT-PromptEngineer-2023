@@ -19,6 +19,9 @@ async function init() {
     return;
   }
 
+  // Add 2-second delay to ensure getSelector is available
+  await new Promise(resolve => setTimeout(resolve, 2000));
+
   removeExistingContainer();
 
   const container = createContainer();
@@ -215,13 +218,20 @@ if (document.readyState === 'loading') {
 }
 
 function initMutationObserver() {
-  const observer = new MutationObserver((mutations) => {
-    const targetNode = document.querySelector(window.getSelector());
-    if (targetNode) {
-      init();
-      observer.disconnect();
+  const observer = new MutationObserver(async (mutations) => {
+    // Add delay to ensure getSelector function is available
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    if (window.getSelector) {
+      const targetNode = document.querySelector(window.getSelector());
+      if (targetNode) {
+        init();
+        observer.disconnect();
+      } else {
+        console.log("targetNode, bzw. das Eingabefeld wurde nicht gefunden, überprüfe den Spaceholder in den Settings.");
+      }
     } else {
-      console.log("targetNode, bzw. das Eingabefeld wurde nicht gefunden, überprüfe den Spaceholder in den Settings.");
+      console.log("getSelector function not available yet");
     }
   });
 

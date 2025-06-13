@@ -64,18 +64,17 @@ window.PAGE_SETTINGS = [
       },
   ];
   
-  window.onload = function() {
-    window.getSelector = function() {
-        const url = window.location.href;
+  // Define getSelector immediately, not waiting for window.onload
+  window.getSelector = function() {
+      const url = window.location.href;
 
-        for (let i = 0; i < window.PAGE_SETTINGS.length; i++) {
-            const pageSetting = window.PAGE_SETTINGS[i];
-            if (url.match(new RegExp(pageSetting.url.replace(/\*/g, ".*")))) {
-                return pageSetting.selector;
-            }
-        }
+      for (let i = 0; i < window.PAGE_SETTINGS.length; i++) {
+          const pageSetting = window.PAGE_SETTINGS[i];
+          if (url.match(new RegExp(pageSetting.url.replace(/\*/g, ".*")))) {
+              return pageSetting.selector;
+          }
+      }
 
-        return "";
-    };
-}
+      return "";
+  };
 
