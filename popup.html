@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PromptEngineer XML Editor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="header-content">
+        <img src="Images/icon48.png" alt="PromptEngineer" class="header-icon">
+        <h1 class="header-title">XML Editor</h1>
+        <div class="header-status" id="connection-status">
+          <span class="status-indicator" id="status-dot"></span>
+          <span class="status-text" id="status-text">Verbindung...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="popup-main">
+      <!-- File Manager Sidebar -->
+      <aside class="file-manager">
+        <div class="file-manager-header">
+          <h3>XML Dateien</h3>
+          <button class="btn-icon" id="refresh-files" title="Dateien neu laden">
+            <svg viewBox="0 0 24 24" width="16" height="16">
+              <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <ul class="file-list" id="xml-file-list">
+          <!-- Files will be populated by JavaScript -->
+        </ul>
+      </aside>
+
+      <!-- Editor Area -->
+      <section class="editor-area">
+        <div class="editor-header">
+          <div class="editor-tabs">
+            <span class="editor-tab active" id="current-file-tab">
+              <span class="tab-icon">📄</span>
+              <span class="tab-name">Keine Datei ausgewählt</span>
+              <button class="tab-close" title="Schließen">×</button>
+            </span>
+          </div>
+          <div class="editor-toolbar">
+            <button class="btn-secondary" id="format-xml" title="XML formatieren">
+              <svg viewBox="0 0 24 24" width="16" height="16">
+                <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V10H11V8H9M13,8V10H15V8H13M9,12V14H11V12H9M13,12V14H15V12H13Z" fill="currentColor"/>
+              </svg>
+              Format
+            </button>
+            <button class="btn-secondary" id="validate-xml" title="XML validieren">
+              <svg viewBox="0 0 24 24" width="16" height="16">
+                <path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" fill="currentColor"/>
+              </svg>
+              Validieren
+            </button>
+          </div>
+        </div>
+
+        <!-- Editor Container -->
+        <div class="editor-container" id="editor-container">
+          <div class="editor-placeholder">
+            <div class="placeholder-icon">📝</div>
+            <h3>Wähle eine XML-Datei zum Bearbeiten</h3>
+            <p>Klicke auf eine Datei in der linken Liste, um sie im Editor zu öffnen.</p>
+          </div>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <div class="status-left">
+            <span class="status-item" id="cursor-position">Zeile 1, Spalte 1</span>
+            <span class="status-item" id="file-size">0 Bytes</span>
+          </div>
+          <div class="status-right">
+            <span class="status-item" id="validation-status">Nicht validiert</span>
+            <span class="status-item" id="encoding">UTF-8</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="btn-secondary" id="reset-file">
+            <svg viewBox="0 0 24 24" width="16" height="16">
+              <path d="M13,3A9,9 0 0,0 4,12H1L4.89,15.89L4.96,16.03L9,12H6A7,7 0 0,1 13,5A7,7 0 0,1 20,12A7,7 0 0,1 13,19C11.07,19 9.32,18.21 8.06,16.94L6.64,18.36C8.27,20 10.5,21 13,21A9,9 0 0,0 22,12A9,9 0 0,0 13,3Z" fill="currentColor"/>
+            </svg>
+            Zurücksetzen
+          </button>
+          <button class="btn-secondary" id="export-all">
+            <svg viewBox="0 0 24 24" width="16" height="16">
+              <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" fill="currentColor"/>
+            </svg>
+            Alle exportieren
+          </button>
+          <button class="btn-primary" id="save-file" disabled>
+            <svg viewBox="0 0 24 24" width="16" height="16">
+              <path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" fill="currentColor"/>
+            </svg>
+            Speichern
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Notifications -->
+    <div class="notifications" id="notifications"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay" style="display: none;">
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Lade XML-Dateien...</p>
+    </div>
+  </div>
+
+  <!-- Load CodeMirror 6 from CDN -->
+  <script type="module">
+    // Import CodeMirror modules and make them globally available
+    import { EditorState, EditorView, basicSetup } from 'https://cdn.skypack.dev/codemirror@6.0.1';
+    import { xml } from 'https://cdn.skypack.dev/@codemirror/lang-xml@6.0.0';
+    import { oneDark } from 'https://cdn.skypack.dev/@codemirror/theme-one-dark@6.0.0';
+    
+    // Make available globally for popup.js
+    window.CM = {
+      EditorState,
+      EditorView, 
+      basicSetup,
+      xml,
+      oneDark
+    };
+    
+    // Signal that CodeMirror is ready
+    window.dispatchEvent(new CustomEvent('codemirror-ready'));
+  </script>
+  
+  <!-- Popup Logic -->
+  <script src="popup.js"></script>
+</body>
+</html>

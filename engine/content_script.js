@@ -11,6 +11,294 @@ let activePrompts = {
   inputs: []
 };
 
+// Track resources for cleanup
+let mainObserver = null;
+let observerRetryCount = 0;
+const MAX_OBSERVER_RETRIES = 5;
+
+// Settings management
+let extensionSettings = {
+  autoOpen: false,
+  highlightPrompts: true  // Default to true for testing
+};
+
+function loadSettings() {
+  extensionSettings.autoOpen = localStorage.getItem('promptEngineerAutoOpen') === 'true';
+  // Default to true if no setting exists yet
+  const savedHighlightSetting = localStorage.getItem('promptEngineerHighlightPrompts');
+  extensionSettings.highlightPrompts = savedHighlightSetting !== null ? savedHighlightSetting === 'true' : true;
+}
+
+function saveSettings() {
+  localStorage.setItem('promptEngineerAutoOpen', extensionSettings.autoOpen.toString());
+  localStorage.setItem('promptEngineerHighlightPrompts', extensionSettings.highlightPrompts.toString());
+}
+
+// TopBar functions moved to build_ui.js
+
+function createSettingsPanel() {
+  const settingsPanel = document.createElement('div');
+  settingsPanel.id = 'settings-panel';
+  
+  // Create settings content structure safely
+  const settingsContent = document.createElement('div');
+  settingsContent.className = 'settings-content';
+  
+  // Settings header
+  const settingsHeader = document.createElement('div');
+  settingsHeader.className = 'settings-header';
+  
+  const headerTitle = document.createElement('h3');
+  headerTitle.textContent = 'Extension Einstellungen';
+  
+  const closeButton = document.createElement('button');
+  closeButton.className = 'settings-close';
+  closeButton.textContent = '×';
+  
+  settingsHeader.appendChild(headerTitle);
+  settingsHeader.appendChild(closeButton);
+  
+  // Setting item 1 - Auto open
+  const settingItem1 = document.createElement('div');
+  settingItem1.className = 'setting-item';
+  
+  const label1 = document.createElement('label');
+  const checkbox1 = document.createElement('input');
+  checkbox1.type = 'checkbox';
+  checkbox1.id = 'auto-open-setting';
+  const span1 = document.createElement('span');
+  span1.textContent = 'Extension beim Seitenaufruf automatisch öffnen';
+  
+  label1.appendChild(checkbox1);
+  label1.appendChild(span1);
+  
+  const description1 = document.createElement('div');
+  description1.className = 'setting-description';
+  description1.textContent = 'Das Bottom-Menu wird automatisch angezeigt wenn die Seite geladen wird';
+  
+  settingItem1.appendChild(label1);
+  settingItem1.appendChild(description1);
+  
+  // Setting item 2 - Highlight prompts
+  const settingItem2 = document.createElement('div');
+  settingItem2.className = 'setting-item';
+  
+  const label2 = document.createElement('label');
+  const checkbox2 = document.createElement('input');
+  checkbox2.type = 'checkbox';
+  checkbox2.id = 'highlight-prompts-setting';
+  const span2 = document.createElement('span');
+  span2.textContent = 'Eingefügte Prompts farblich hervorheben';
+  
+  label2.appendChild(checkbox2);
+  label2.appendChild(span2);
+  
+  const description2 = document.createElement('div');
+  description2.className = 'setting-description';
+  description2.textContent = 'Extension-Prompts erhalten eine bläuliche Textfarbe im Textfeld';
+  
+  const statusDiv = document.createElement('div');
+  statusDiv.id = 'highlighting-compatibility-status';
+  statusDiv.style.marginTop = '5px';
+  statusDiv.style.fontSize = '11px';
+  
+  description2.appendChild(statusDiv);
+  
+  settingItem2.appendChild(label2);
+  settingItem2.appendChild(description2);
+  
+  // Assemble everything
+  settingsContent.appendChild(settingsHeader);
+  settingsContent.appendChild(settingItem1);
+  settingsContent.appendChild(settingItem2);
+  settingsPanel.appendChild(settingsContent);
+  
+  // Event listeners
+  closeButton.addEventListener('click', hideSettingsPanel);
+  
+  settingsPanel.addEventListener('click', (e) => {
+    if (e.target === settingsPanel) {
+      hideSettingsPanel();
+    }
+  });
+  
+  // Settings checkboxes are already referenced from above
+  const autoOpenCheckbox = checkbox1;
+  const highlightCheckbox = checkbox2;
+  
+  autoOpenCheckbox.addEventListener('change', (e) => {
+    extensionSettings.autoOpen = e.target.checked;
+    saveSettings();
+  });
+  
+  highlightCheckbox.addEventListener('change', (e) => {
+    extensionSettings.highlightPrompts = e.target.checked;
+    saveSettings();
+    // Update the textfield content to apply/remove highlighting immediately
+    if (window.errorHandler && window.errorHandler.debugMode) {
+      console.log("🎨 Highlighting setting changed to:", e.target.checked);
+    }
+    updateTextfieldContent();
+  });
+  
+  document.body.appendChild(settingsPanel);
+  return settingsPanel;
+}
+
+function toggleSettingsPanel() {
+  let settingsPanel = document.getElementById('settings-panel');
+  if (!settingsPanel) {
+    settingsPanel = createSettingsPanel();
+  }
+  
+  // Update checkbox states
+  const autoOpenCheckbox = settingsPanel.querySelector('#auto-open-setting');
+  const highlightCheckbox = settingsPanel.querySelector('#highlight-prompts-setting');
+  
+  autoOpenCheckbox.checked = extensionSettings.autoOpen;
+  highlightCheckbox.checked = extensionSettings.highlightPrompts;
+  
+  // Update highlighting compatibility status
+  const statusDiv = settingsPanel.querySelector('#highlighting-compatibility-status');
+  if (statusDiv) {
+    try {
+      // Clear previous content
+      statusDiv.textContent = '';
+      
+      const targetNode = document.querySelector(window.getSelector());
+      const statusSpan = document.createElement('span');
+      
+      if (targetNode) {
+        if (targetNode.contentEditable === 'true') {
+          statusSpan.style.color = '#4CAF50';
+          statusSpan.textContent = '✓ Highlighting wird unterstützt (contentEditable Element)';
+        } else {
+          statusSpan.style.color = '#FF9800';
+          statusSpan.textContent = '⚠ Highlighting nicht verfügbar (' + targetNode.tagName.toLowerCase() + ' Element)';
+        }
+      } else {
+        statusSpan.style.color = '#f44336';
+        statusSpan.textContent = '❌ Textfeld nicht gefunden';
+      }
+      
+      statusDiv.appendChild(statusSpan);
+    } catch (error) {
+      const errorSpan = document.createElement('span');
+      errorSpan.style.color = '#f44336';
+      errorSpan.textContent = '❌ Fehler bei der Erkennung';
+      statusDiv.appendChild(errorSpan);
+      console.error("Error checking highlighting compatibility:", error);
+    }
+  }
+  
+  settingsPanel.classList.add('show');
+}
+
+function hideSettingsPanel() {
+  const settingsPanel = document.getElementById('settings-panel');
+  if (settingsPanel) {
+    settingsPanel.classList.remove('show');
+  }
+}
+
+// Make functions available globally for TopBar
+window.toggleSettingsPanel = toggleSettingsPanel;
+
+// ProseMirror styling observer
+let proseMirrorObserver = null;
+
+function setupProseMirrorObserver(targetNode, extensionPrompts) {
+  // Disconnect previous observer
+  if (proseMirrorObserver) {
+    proseMirrorObserver.disconnect();
+  }
+  
+  let isApplyingStyling = false; // Flag to prevent infinite loops
+  let lastStyleTime = 0; // Throttle styling operations
+  const STYLE_THROTTLE_MS = 500; // Minimum time between styling operations
+  
+  proseMirrorObserver = new MutationObserver((mutations) => {
+    // Prevent infinite loops caused by our own DOM modifications
+    if (isApplyingStyling) {
+      return;
+    }
+    
+    // Check if mutations were caused by our highlight spans
+    const isOurMutation = mutations.some(mutation => 
+      Array.from(mutation.addedNodes).some(node => 
+        node.nodeType === Node.ELEMENT_NODE && node.classList?.contains('prompt-highlight')
+      )
+    );
+    
+    if (isOurMutation) {
+      // Skip mutations caused by our own styling
+      return;
+    }
+    
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        // Check if our spans were removed and need re-applying
+        const hasHighlights = targetNode.querySelectorAll('.prompt-highlight').length > 0;
+        const textContent = targetNode.textContent;
+        
+        // Only re-apply if we have content but no highlights and throttle is cleared
+        const now = Date.now();
+        if (textContent && !hasHighlights && (now - lastStyleTime > STYLE_THROTTLE_MS)) {
+          isApplyingStyling = true; // Set flag to prevent loops
+          lastStyleTime = now;
+          
+          try {
+            // Apply color styling to text that contains our prompts
+            extensionPrompts.forEach((prompt, index) => {
+              if (textContent.includes(prompt.trim())) {
+                // Try to find and style text nodes containing prompts
+                const walker = document.createTreeWalker(
+                  targetNode,
+                  NodeFilter.SHOW_TEXT,
+                  null,
+                  false
+                );
+                
+                let node;
+                while (node = walker.nextNode()) {
+                  if (node.textContent.includes(prompt.trim())) {
+                    // Create a span around this text node
+                    const parent = node.parentNode;
+                    if (parent && !parent.classList.contains('prompt-highlight')) {
+                      const span = document.createElement('span');
+                      span.className = `prompt-highlight ${index % 2 === 0 ? 'even' : 'odd'}`;
+                      span.style.color = index % 2 === 0 ? '#4A9EFF' : '#1E7CE8';
+                      span.style.fontWeight = 'bold';
+                      
+                      parent.insertBefore(span, node);
+                      span.appendChild(node);
+                      
+                      if (window.errorHandler && window.errorHandler.debugMode) {
+                        console.log("🔄 Re-applied styling to prompt", index);
+                      }
+                    }
+                  }
+                }
+              }
+            });
+          } finally {
+            // Always reset the flag, even if an error occurs
+            setTimeout(() => {
+              isApplyingStyling = false;
+            }, 100);
+          }
+        }
+      }
+    });
+  });
+  
+  proseMirrorObserver.observe(targetNode, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+}
+
 // Universal helper functions for different element types
 function getElementContent(element) {
   if (!element) return '';
@@ -19,9 +307,9 @@ function getElementContent(element) {
   if (tagName === 'textarea' || tagName === 'input') {
     return element.value || '';
   } else if (element.contentEditable === 'true') {
-    // For contenteditable, convert <br> tags back to \n
-    const htmlContent = element.innerHTML || '';
-    return htmlContent.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]*>/g, '');
+    // For contenteditable, get text content safely
+    // Use textContent which automatically handles HTML entities
+    return element.textContent || '';
   }
   return '';
 }
@@ -33,9 +321,20 @@ function setElementContent(element, content) {
   if (tagName === 'textarea' || tagName === 'input') {
     element.value = content;
   } else if (element.contentEditable === 'true') {
-    // For contenteditable, convert \n to <br> tags
-    const htmlContent = content.replace(/\n/g, '<br>');
-    element.innerHTML = htmlContent;
+    // For contenteditable, safely set content
+    // Clear existing content
+    element.textContent = '';
+    
+    // Split by newlines and create proper structure
+    const lines = content.split('\n');
+    lines.forEach((line, index) => {
+      if (line) {
+        element.appendChild(document.createTextNode(line));
+      }
+      if (index < lines.length - 1) {
+        element.appendChild(document.createElement('br'));
+      }
+    });
   }
 }
 
@@ -71,16 +370,20 @@ function updateTextfieldContent() {
     return;
   }
 
-  console.log("🔄 updateTextfieldContent: Starte Update...");
-  console.log("📋 Element:", targetNode);
-  console.log("📊 Active prompts:", activePrompts);
+  if (window.errorHandler && window.errorHandler.debugMode) {
+    console.log("🔄 updateTextfieldContent: Starte Update...");
+    console.log("📋 Element:", targetNode);
+    console.log("📊 Active prompts:", activePrompts);
+  }
 
   // Get current content and extract user text (preserve user content)
   let currentContent = getElementContent(targetNode);
   let userText = extractUserText(currentContent);
   
-  console.log("📄 Current content:", currentContent);
-  console.log("👤 User text:", userText);
+  if (window.errorHandler && window.errorHandler.debugMode) {
+    console.log("📄 Current content:", currentContent);
+    console.log("👤 User text:", userText);
+  }
   
   // Build extension prompts
   let extensionPrompts = [];
@@ -102,21 +405,89 @@ function updateTextfieldContent() {
     if (prompt.trim()) extensionPrompts.push(prompt);
   });
   
-  console.log("🎯 Extension prompts:", extensionPrompts);
+  if (window.errorHandler && window.errorHandler.debugMode) {
+    console.log("🎯 Extension prompts:", extensionPrompts);
+    console.log("🔧 DEBUG - extensionPrompts.length:", extensionPrompts.length);
+    console.log("🔧 DEBUG - extensionSettings.highlightPrompts:", extensionSettings.highlightPrompts);
+    console.log("🔧 DEBUG - targetNode.contentEditable:", targetNode.contentEditable);
+  }
   
   // Combine prompts with user text
   let newContent = '';
+  
   if (extensionPrompts.length > 0) {
-    newContent = extensionPrompts.join('\n\n') + '\n\n';
-  }
-  if (userText.trim()) {
-    newContent += userText;
+    if (extensionSettings.highlightPrompts && targetNode.contentEditable === 'true') {
+      // Apply highlighting for contenteditable elements - SAFELY
+      // Clear the target node first
+      targetNode.textContent = '';
+      
+      // Create highlighted elements safely
+      extensionPrompts.forEach((prompt, index) => {
+        const className = index % 2 === 0 ? 'even' : 'odd';
+        
+        // Create span element safely
+        const span = document.createElement('span');
+        span.className = `prompt-highlight ${className}`;
+        span.textContent = prompt;
+        
+        // Apply styles directly for better control
+        span.style.color = className === 'even' ? '#4A9EFF' : '#1E7CE8';
+        span.style.fontWeight = 'bold';
+        
+        targetNode.appendChild(span);
+        
+        // Add line breaks between prompts
+        if (index < extensionPrompts.length - 1) {
+          targetNode.appendChild(document.createElement('br'));
+          targetNode.appendChild(document.createElement('br'));
+        }
+      });
+      
+      // Add line breaks after all prompts
+      targetNode.appendChild(document.createElement('br'));
+      targetNode.appendChild(document.createElement('br'));
+      
+      // Add user text if present
+      if (userText.trim()) {
+        targetNode.appendChild(document.createTextNode(userText));
+      }
+      
+      if (window.errorHandler && window.errorHandler.debugMode) {
+        console.log("✨ Applied highlighting to prompts:", extensionPrompts.length);
+      }
+      
+      // Set up observer to maintain styling if ProseMirror removes it
+      if (targetNode.classList.contains('ProseMirror')) {
+        setupProseMirrorObserver(targetNode, extensionPrompts);
+      }
+    } else {
+      // No highlighting or textarea element
+      newContent = extensionPrompts.join('\n\n') + '\n\n';
+      if (userText.trim()) {
+        newContent += userText;
+      }
+      
+      if (extensionSettings.highlightPrompts && targetNode.contentEditable !== 'true') {
+        if (window.errorHandler && window.errorHandler.debugMode) {
+          console.log("⚠️ Highlighting is enabled but not supported for this element type:", targetNode.tagName, "- highlighting only works with contentEditable elements");
+        }
+      }
+      
+      // Use normal content setting
+      setElementContent(targetNode, newContent);
+    }
+  } else {
+    // No extension prompts, just set user text
+    if (userText.trim()) {
+      setElementContent(targetNode, userText);
+    }
   }
   
-  console.log("📝 New content:", newContent);
-  
-  // Update textfield using universal helper
-  setElementContent(targetNode, newContent);
+  if (window.errorHandler && window.errorHandler.debugMode) {
+    console.log("📝 Content updated");
+    console.log("🎨 Highlighting enabled:", extensionSettings.highlightPrompts);
+    console.log("🎯 Target element type:", targetNode.tagName, "contentEditable:", targetNode.contentEditable);
+  }
   
   // Trigger appropriate events
   triggerElementUpdate(targetNode);
@@ -128,8 +499,16 @@ function extractUserText(content) {
   // Handle empty or non-string content
   if (!content || typeof content !== 'string') return '';
   
-  // Strip HTML if needed (contenteditable might have formatting)
-  const textOnly = content.replace(/<[^>]*>/g, '').trim();
+  // First, remove highlighted prompts (if any) before processing
+  let cleanContent = content;
+  if (content.includes('<span class="prompt-highlight')) {
+    // Remove highlighted prompt spans but keep their content for processing
+    cleanContent = content.replace(/<span class="prompt-highlight[^"]*"[^>]*>/g, '').replace(/<\/span>/g, '');
+    console.log("🎨 Removed highlighting spans from content");
+  }
+  
+  // Strip remaining HTML if needed (contenteditable might have formatting)
+  const textOnly = cleanContent.replace(/<[^>]*>/g, '').trim();
   
   console.log("🔍 extractUserText input:", content);
   console.log("🧹 After HTML cleanup:", textOnly);
@@ -144,16 +523,22 @@ function extractUserText(content) {
     if (!trimmedLine) continue;
     
     // Enhanced heuristic: if line looks like an extension prompt, skip it
-    const isExtensionPrompt = trimmedLine.length > 80 && (
-      trimmedLine.includes('Generate') || 
-      trimmedLine.includes('Write') || 
-      trimmedLine.includes('Create') || 
-      trimmedLine.includes('Provide') ||
-      trimmedLine.includes('Give me') ||
-      trimmedLine.includes('Compose') ||
-      trimmedLine.includes('Format') ||
-      trimmedLine.includes('maximum of') ||
-      trimmedLine.includes('bullet points')
+    const isExtensionPrompt = (
+      // Check for highlighting markers (old and new)
+      trimmedLine.startsWith('▶') || trimmedLine.startsWith('▷') ||
+      trimmedLine.startsWith('🔹') || trimmedLine.startsWith('🔸') ||
+      // Check for typical prompt characteristics
+      (trimmedLine.length > 80 && (
+        trimmedLine.includes('Generate') || 
+        trimmedLine.includes('Write') || 
+        trimmedLine.includes('Create') || 
+        trimmedLine.includes('Provide') ||
+        trimmedLine.includes('Give me') ||
+        trimmedLine.includes('Compose') ||
+        trimmedLine.includes('Format') ||
+        trimmedLine.includes('maximum of') ||
+        trimmedLine.includes('bullet points')
+      ))
     );
     
     if (isExtensionPrompt) {
@@ -189,6 +574,9 @@ async function init() {
     return;
   }
 
+  // Load settings first
+  loadSettings();
+
   // Add 2-second delay to ensure getSelector is available
   await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -197,6 +585,8 @@ async function init() {
   const container = createContainer();
   // Always append to body as last element for bottom menu
   document.body.appendChild(container);
+  
+  // Initialize language switcher and build UI (TopBar will be created in buildUI)
   window.initLanguageSwitcher();
   xmlData = await window.fetchDropdownData(localStorage.getItem('selectedLanguage') || 'en');
   
@@ -205,8 +595,7 @@ async function init() {
 
 
 
-  //window.buildUI(xmlData);
-  window.buildUIElements(container);
+  window.buildUI(xmlData);
   addEventListeners(container);
 }
 
@@ -215,8 +604,14 @@ function createContainer() {
   container = document.createElement("div");
   container.id = "prompt-generator-container";
   container.classList.add("prompt-generator-container");
-  // Start hidden for bottom menu
-  container.classList.add("hidden");
+  
+  // Check auto-open setting
+  if (extensionSettings.autoOpen) {
+    // Start visible if auto-open is enabled
+  } else {
+    // Start hidden for bottom menu
+    container.classList.add("hidden");
+  }
 
   return container;
 }
@@ -444,6 +839,55 @@ function addEventListeners(container) {
     });
   });
 
+  // Handle input field changes for highlighting updates
+  container.addEventListener("input", function (event) {
+    if (event.target.type === 'text' && event.target.classList.contains('prompt-generator-input')) {
+      console.log("📝 Input Event - ID:", event.target.id, "Value:", event.target.value);
+      
+      const inputId = event.target.id;
+      const inputValue = event.target.value.trim();
+      const valueBefore = event.target.getAttribute('valueBefore') || '';
+      const valueAfter = event.target.getAttribute('valueAfter') || '';
+      
+      // Build complete prompt text if input has value
+      let completePrompt = '';
+      if (inputValue) {
+        completePrompt = valueBefore + inputValue + valueAfter;
+      }
+      
+      // Update active prompts for this input
+      let foundIndex = -1;
+      for (let i = 0; i < activePrompts.inputs.length; i++) {
+        if (activePrompts.inputs[i].id === inputId) {
+          foundIndex = i;
+          break;
+        }
+      }
+      
+      if (completePrompt) {
+        const promptObj = { id: inputId, text: completePrompt };
+        if (foundIndex >= 0) {
+          console.log("🔄 Updating existing input prompt at index:", foundIndex);
+          activePrompts.inputs[foundIndex] = promptObj;
+        } else {
+          console.log("➕ Adding new input prompt:", promptObj);
+          activePrompts.inputs.push(promptObj);
+        }
+      } else {
+        // Remove prompt if input is empty
+        if (foundIndex >= 0) {
+          console.log("➖ Removing input prompt for ID:", inputId);
+          activePrompts.inputs.splice(foundIndex, 1);
+        }
+      }
+      
+      console.log("📊 Updated activePrompts.inputs:", activePrompts.inputs);
+      console.log("🔄 Calling updateTextfieldContent...");
+      updateTextfieldContent();
+      console.log("✅ Input event handling completed");
+    }
+  });
+
   dropdownsAdded = true;
   updateUI();
 }
@@ -456,25 +900,73 @@ if (document.readyState === 'loading') {
 }
 
 function initMutationObserver() {
-  const observer = new MutationObserver(async (mutations) => {
-    // Add delay to ensure getSelector function is available
-    await new Promise(resolve => setTimeout(resolve, 2000));
+  // Disconnect any existing observer
+  if (mainObserver) {
+    mainObserver.disconnect();
+    mainObserver = null;
+  }
+  
+  // Check retry limit
+  if (observerRetryCount >= MAX_OBSERVER_RETRIES) {
+    console.error('❌ Max observer retries reached. Extension initialization failed.');
+    return;
+  }
+  
+  observerRetryCount++;
+  
+  mainObserver = new MutationObserver(async (mutations) => {
+    // Use a shorter, more reasonable delay
+    await new Promise(resolve => setTimeout(resolve, 500));
     
     if (window.getSelector) {
-      const targetNode = document.querySelector(window.getSelector());
-      if (targetNode) {
-        init();
-        observer.disconnect();
-      } else {
-        console.log("targetNode, bzw. das Eingabefeld wurde nicht gefunden, überprüfe den Spaceholder in den Settings.");
+      try {
+        const targetNode = document.querySelector(window.getSelector());
+        if (targetNode) {
+          init();
+          // Successfully initialized - clean up observer
+          if (mainObserver) {
+            mainObserver.disconnect();
+            mainObserver = null;
+          }
+          observerRetryCount = 0; // Reset retry count on success
+        } else {
+          console.log(`⚠️ Attempt ${observerRetryCount}/${MAX_OBSERVER_RETRIES}: Textfeld nicht gefunden`);
+          
+          // Stop observing after max retries
+          if (observerRetryCount >= MAX_OBSERVER_RETRIES) {
+            if (mainObserver) {
+              mainObserver.disconnect();
+              mainObserver = null;
+            }
+            console.error('❌ Textfeld konnte nicht gefunden werden nach', MAX_OBSERVER_RETRIES, 'Versuchen');
+          }
+        }
+      } catch (error) {
+        console.error('Error in MutationObserver:', error);
+        if (mainObserver) {
+          mainObserver.disconnect();
+          mainObserver = null;
+        }
       }
     } else {
-      console.log("getSelector function not available yet");
+      console.log(`⚠️ getSelector function not available yet (attempt ${observerRetryCount})`);
     }
   });
 
-  observer.observe(document.body, { childList: true, subtree: true });
+  mainObserver.observe(document.body, { childList: true, subtree: true });
 }
+
+// Clean up on page unload
+window.addEventListener('beforeunload', () => {
+  if (mainObserver) {
+    mainObserver.disconnect();
+    mainObserver = null;
+  }
+  if (proseMirrorObserver) {
+    proseMirrorObserver.disconnect();
+    proseMirrorObserver = null;
+  }
+});
 
 
 function removeExistingContainer() {

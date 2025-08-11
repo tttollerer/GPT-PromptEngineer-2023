@@ -22,8 +22,33 @@ async function loadLanguageData(lang) {
 function createLanguageDropdown() {
   const dropdown = document.createElement('select');
   dropdown.id = 'language-selector';
-  dropdown.innerHTML = window.SETTINGS.LANGUAGE_DROPDOWN_OPTIONS;
   dropdown.tabIndex = -1;
+  
+  // Create language options safely
+  const languages = [
+    { value: 'en', text: '🇺🇸 English' },
+    { value: 'zh', text: '🇨🇳 Chinese' },
+    { value: 'es', text: '🇪🇸 Spanish' },
+    { value: 'hi', text: '🇮🇳 Hindi' },
+    { value: 'fr', text: '🇫🇷 French' },
+    { value: 'de', text: '🇩🇪 German' },
+    { value: 'ru', text: '🇷🇺 Russian' },
+    { value: 'pt', text: '🇵🇹 Portuguese' },
+    { value: 'it', text: '🇮🇹 Italian' },
+    { value: 'th', text: '🇹🇭 Thai' },
+    { value: '', text: 'Dialects:' },
+    { value: 'ch', text: '🇨🇭 Switzerdütsch' },
+    { value: 'by', text: '🔠 Bayrisch' },
+    { value: 'sch', text: '🇩🇪 Schwäbisch' }
+  ];
+  
+  languages.forEach(lang => {
+    const option = document.createElement('option');
+    option.value = lang.value;
+    option.textContent = lang.text;
+    dropdown.appendChild(option);
+  });
+  
   return dropdown;
 }
 
@@ -40,12 +65,7 @@ async function updateUI(lang) {
   clearContainer(container);
   await buildUI(xmlData);
   
-  if (container && languageDropdown) {
-    container.appendChild(languageDropdown);
-    languageDropdown.removeEventListener('change', handleLanguageChange);
-    languageDropdown.addEventListener('change', handleLanguageChange);
-    updateLanguageDropdown(lang);
-  }
+  // Language dropdown is now handled in TopBar
   updateLanguageDropdown(lang); 
 }
 
@@ -66,10 +86,7 @@ async function initLanguageSwitcher() {
 
   languageDropdown.addEventListener('change', handleLanguageChange);
 
-  const container = document.getElementById('prompt-generator-container');
-  if (container) {
-    container.appendChild(languageDropdown);
-  }
+  // Language dropdown is now added via TopBar - no longer append to container
 
 
   

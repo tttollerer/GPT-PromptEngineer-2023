@@ -263,15 +263,21 @@ window.PAGE_SETTINGS = [
   window.getSelector = function() {
       const url = window.location.href;
       
-      // Debug-Ausgabe starten
-      console.group("🤖 PromptEngineer: Textfeld-Erkennung");
-      console.log("URL:", url);
+      // Debug-Ausgabe starten (nur im Debug-Modus)
+      const debugMode = localStorage.getItem('promptEngineerDebugMode') === 'true';
+      
+      if (debugMode) {
+        console.group("🤖 PromptEngineer: Textfeld-Erkennung");
+        console.log("URL:", url);
+      }
 
       // First try the predefined selectors
       for (let i = 0; i < window.PAGE_SETTINGS.length; i++) {
           const pageSetting = window.PAGE_SETTINGS[i];
           if (url.match(new RegExp(pageSetting.url.replace(/\*/g, ".*")))) {
-              console.log("📍 Gefundene Seitenregel für:", pageSetting.url);
+              if (debugMode) {
+                console.log("📍 Gefundene Seitenregel für:", pageSetting.url);
+              }
               
               // Try all selectors for this page
               if (pageSetting.selectors) {
@@ -281,16 +287,22 @@ window.PAGE_SETTINGS = [
                       if (element) {
                           // Check if element is actually visible
                           const isElementVisible = isVisible(element);
-                          console.log("🔍 Element gefunden mit Selector:", selector);
-                          console.log("📋 Element:", element);
-                          console.log("👁️ Sichtbar:", isElementVisible);
+                          if (debugMode) {
+                            console.log("🔍 Element gefunden mit Selector:", selector);
+                            console.log("📋 Element:", element);
+                            console.log("👁️ Sichtbar:", isElementVisible);
+                          }
                           
                           if (isElementVisible) {
-                              console.log("✅ Sichtbares Textfeld gefunden!");
-                              console.groupEnd();
+                              if (debugMode) {
+                                console.log("✅ Sichtbares Textfeld gefunden!");
+                                console.groupEnd();
+                              }
                               return selector;
                           } else {
-                              console.log("⚠️ Element ist versteckt (display:none, visibility:hidden, etc.)");
+                              if (debugMode) {
+                                console.log("⚠️ Element ist versteckt (display:none, visibility:hidden, etc.)");
+                              }
                           }
                       } else {
                           console.log("❌ Selector funktioniert nicht:", selector);
@@ -310,29 +322,36 @@ window.PAGE_SETTINGS = [
           }
       }
 
-      console.log("⚡ Versuche Auto-Detection...");
+      if (debugMode) {
+        console.log("⚡ Versuche Auto-Detection...");
+      }
       // Fallback to auto-detection
       const autoSelector = window.detectMainTextfield();
       if (autoSelector) {
-          console.log("✅ Auto-Detection erfolgreich:", autoSelector);
-          console.groupEnd();
+          if (debugMode) {
+            console.log("✅ Auto-Detection erfolgreich:", autoSelector);
+            console.groupEnd();
+          }
           return autoSelector;
       }
 
-      // Fehler-Fall - umfassende Debug-Ausgabe
+      // Fehler-Fall - Debug-Ausgabe nur im Debug-Modus
       console.error("❌ Kein Textfeld gefunden!");
-      console.log("🔍 Debug-Informationen:");
-      console.log("Available textareas:", document.querySelectorAll('textarea'));
-      console.log("Available text inputs:", document.querySelectorAll('input[type="text"]'));
-      console.log("Available contenteditable:", document.querySelectorAll('[contenteditable="true"]'));
-      console.log("Available role=textbox:", document.querySelectorAll('[role="textbox"]'));
       
-      console.log("💡 Manuelle Selektoren zum Testen:");
-      document.querySelectorAll('textarea').forEach((el, i) => {
-          console.log(`textarea ${i+1}:`, generateSelector(el));
-      });
-      
-      console.groupEnd();
+      if (debugMode) {
+        console.log("🔍 Debug-Informationen:");
+        console.log("Available textareas:", document.querySelectorAll('textarea'));
+        console.log("Available text inputs:", document.querySelectorAll('input[type="text"]'));
+        console.log("Available contenteditable:", document.querySelectorAll('[contenteditable="true"]'));
+        console.log("Available role=textbox:", document.querySelectorAll('[role="textbox"]'));
+        
+        console.log("💡 Manuelle Selektoren zum Testen:");
+        document.querySelectorAll('textarea').forEach((el, i) => {
+            console.log(`textarea ${i+1}:`, generateSelector(el));
+        });
+        
+        console.groupEnd();
+      }
       return "";
   };
 

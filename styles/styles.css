@@ -13,7 +13,7 @@
   right: 0;
   background-color: var(--dark-grey);
   color: var(--white);
-  padding: 20px !important;
+  padding: 0 20px 20px 20px !important;
   border-radius: 12px 12px 0 0;
   border: 1px solid #1776d969;
   border-bottom: none;
@@ -259,34 +259,224 @@
 }
 
 
-/*language switcher*/
-
-#prompt-generator-container #language-switcher-container {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 1000;
+/* TopBar */
+.extension-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 15px;
+  position: relative;
 }
 
-
-#language-selector {
-  background: inherit;
+.extension-logo {
   position: absolute;
-  right: 30px;
-  top: 29px;
-  padding: 5px 5px !important;
-  padding-right: 12px !important;
-  padding:0px !important;
-  border-radius: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.extension-logo img {
+  height: 20px;
+  width: auto;
+}
+
+.extension-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: auto;
+  z-index: 1;
+}
+
+/* Language Switcher */
+#language-selector {
+  background: var(--grey);
+  padding: 5px 8px;
+  border-radius: 6px;
   text-align: center;
   font-size: 12px;
-  color: darkgrey;
+  color: var(--white);
+  border: 1px solid var(--grey);
+  cursor: pointer;
+}
+
+#language-selector:hover {
+  border-color: var(--light-green);
+}
+
+/* Settings Icon */
+#settings-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+#settings-icon:hover {
+  opacity: 1;
+  transform: rotate(90deg);
+}
+
+#settings-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--white);
+}
+
+/* Settings Panel */
+#settings-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 10002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+#settings-panel.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.settings-content {
+  background: var(--dark-grey);
+  border-radius: 12px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  border: 1px solid var(--light-green);
+  transform: translateY(-50px);
+  transition: transform 0.3s ease;
+}
+
+#settings-panel.show .settings-content {
+  transform: translateY(0);
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.settings-header h3 {
+  color: var(--white);
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.settings-close {
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.settings-close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.setting-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: var(--grey);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.setting-item:hover {
+  border-color: var(--light-green);
+}
+
+.setting-item label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--white);
+  font-size: 14px;
+}
+
+.setting-item input[type="checkbox"] {
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.setting-description {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--light-grey);
+  margin-left: 30px;
+}
+
+/* Prompt Highlighting */
+.prompt-highlight {
+  transition: color 0.2s ease;
+  font-weight: bold !important;
+}
+
+.prompt-highlight.even {
+  color: #4A9EFF !important;
+  background: rgba(74, 158, 255, 0.1) !important;
+}
+
+.prompt-highlight.odd {
+  color: #1E7CE8 !important;
+  background: rgba(30, 124, 232, 0.1) !important;
+}
+
+/* ProseMirror highlighting - try multiple selectors */
+.ProseMirror .prompt-highlight,
+div[contenteditable="true"] .prompt-highlight,
+#PromptInput .prompt-highlight {
+  color: #4A9EFF !important;
+  font-weight: bold !important;
+}
+
+.ProseMirror .prompt-highlight.even,
+div[contenteditable="true"] .prompt-highlight.even,
+#PromptInput .prompt-highlight.even {
+  color: #4A9EFF !important;
+}
+
+.ProseMirror .prompt-highlight.odd,
+div[contenteditable="true"] .prompt-highlight.odd,
+#PromptInput .prompt-highlight.odd {
+  color: #1E7CE8 !important;
+}
+
+/* Force styling with attribute selectors */
+span[class*="prompt-highlight"] {
+  color: #4A9EFF !important;
+  font-weight: bold !important;
 }
 
 
+/* Legacy image styling - now handled by topbar */
 .prompt-generator-image {
-  margin: 10px auto 20px auto;
-
+  display: none;
 }
 
 #language-selector option {

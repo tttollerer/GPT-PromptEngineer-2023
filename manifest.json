@@ -10,8 +10,18 @@
   },
   
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "PromptEngineer XML Editor",
+    "default_icon": {
+      "16": "Images/icon16.png",
+      "48": "Images/icon48.png",
+      "128": "Images/icon128.png"
+    }
+  },
   "content_scripts": [
     {
       "matches": [
@@ -21,6 +31,9 @@
       ],
       "js": [
         "settings/settings.js", 
+        "engine/dom_helpers.js",
+        "engine/error_handler.js",
+        "engine/resource_manager.js",
         "engine/input_field_creation.js",
         "translation/translations.js",
         "engine/fetch_data.js", 
@@ -41,7 +54,13 @@
   "web_accessible_resources": [
   {
     "resources": [
+      "popup.html",
+      "popup.css",
+      "popup.js",
       "settings/settings.js", 
+      "engine/dom_helpers.js",
+      "engine/error_handler.js",
+      "engine/resource_manager.js",
       "translation/translations.js",
       "engine/input_field_creation.js", 
       "data_en.xml",

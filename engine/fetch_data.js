@@ -12,8 +12,19 @@ async function fetchAllXml() {
   try {
     // Ensure XML_FILES exists and has entries
     if (!window.XML_FILES || !window.XML_FILES.length) {
-      console.error('No XML files configured in window.XML_FILES');
-      throw new Error('No XML files configured');
+      const error = new Error('No XML files configured');
+      if (window.errorHandler) {
+        window.errorHandler.handleError({
+          message: 'No XML files configured in window.XML_FILES',
+          error: error,
+          context: 'fetchAllXml',
+          critical: true,
+          userMessage: 'Extension Konfiguration fehlt'
+        });
+      } else {
+        console.error('No XML files configured in window.XML_FILES');
+      }
+      throw error;
     }
 
     const xmls = await Promise.all(window.XML_FILES.map(async (file) => {
@@ -45,7 +56,17 @@ async function fetchAllXml() {
         
         return xml;
       } catch (error) {
-        console.error(`Failed to load XML file ${file}:`, error);
+        // Log error with error handler if available
+        if (window.errorHandler) {
+          window.errorHandler.handleError({
+            message: `Failed to load XML file ${file}: ${error.message}`,
+            error: error,
+            context: 'fetchAllXml',
+            file: file
+          });
+        } else {
+          console.error(`Failed to load XML file ${file}:`, error);
+        }
         // Return empty document as fallback
         return new DOMParser().parseFromString('<root/>', 'application/xml');
       }
@@ -57,7 +78,17 @@ async function fetchAllXml() {
     );
     
     if (validXmls.length === 0) {
-      throw new Error('No valid XML files could be loaded');
+      const error = new Error('No valid XML files could be loaded');
+      if (window.errorHandler) {
+        window.errorHandler.handleError({
+          message: error.message,
+          error: error,
+          context: 'fetchAllXml',
+          critical: true,
+          userMessage: 'Keine Daten konnten geladen werden. Bitte Seite neu laden.'
+        });
+      }
+      throw error;
     }
     
     const mergedXml = validXmls[0];
@@ -73,7 +104,16 @@ async function fetchAllXml() {
     
     return mergedXml;
   } catch (error) {
-    console.error('Error in fetchAllXml:', error);
+    if (window.errorHandler) {
+      window.errorHandler.handleError({
+        message: `Error in fetchAllXml: ${error.message}`,
+        error: error,
+        context: 'fetchAllXml',
+        critical: true
+      });
+    } else {
+      console.error('Error in fetchAllXml:', error);
+    }
     // Return minimal fallback XML
     return new DOMParser().parseFromString(
       '<root><error>Failed to load data</error></root>',
