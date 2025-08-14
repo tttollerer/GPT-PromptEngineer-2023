@@ -250,6 +250,30 @@ toggleButtonAdded = true;
 
 
 
+    // Create and add search UI
+    const searchUI = window.promptSearchUI.createSearchUI();
+    container.appendChild(searchUI);
+
+    // Create AI Prompt Generator button
+    const aiGeneratorButton = document.createElement('button');
+    aiGeneratorButton.className = 'ai-generator-button';
+    aiGeneratorButton.innerHTML = `
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+      🤖 KI-Prompt erstellen
+    `;
+    aiGeneratorButton.addEventListener('click', () => {
+      if (window.aiPromptGenerator) {
+        window.aiPromptGenerator.openGenerator();
+      } else {
+        console.warn('⚠️ AI Prompt Generator not loaded yet');
+      }
+    });
+    container.appendChild(aiGeneratorButton);
+
     const checkboxContainer = document.createElement('div');
     checkboxContainer.classList.add('prompt-generator-checkbox-container');
     container.appendChild(checkboxContainer);

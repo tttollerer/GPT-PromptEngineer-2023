@@ -1,0 +1,286 @@
+/* 
+ * ANIMATIONS.CSS - Motion and Interaction Behaviors
+ * This file contains transitions, animations, and hover effects
+ * Designers can modify timing and easing without breaking functionality
+ */
+
+/* ========================================
+   ANIMATION VARIABLES
+   ======================================== */
+
+:root {
+  /* Transition Timings */
+  --transition-fast: 0.2s;
+  --transition-normal: 0.3s;
+  --transition-slow: 0.5s;
+  --transition-very-slow: 3s;
+  
+  /* Easing Functions */
+  --ease-standard: ease;
+  --ease-in-out: ease-in-out;
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ========================================
+   CONTAINER ANIMATIONS
+   ======================================== */
+
+/* Main Container Slide Animation */
+#prompt-generator-container {
+  transition: transform var(--transition-normal) var(--ease-in-out), 
+              opacity var(--transition-normal) var(--ease-in-out);
+}
+
+.prompt-generator-container {
+  transition: opacity var(--transition-very-slow) var(--ease-standard), 
+              transform var(--transition-very-slow) var(--ease-standard);
+}
+
+/* Container Glow Animation */
+#prompt-generator-container {
+  animation: glow var(--transition-very-slow) var(--ease-in-out) !important;
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 10px #9ecaed;
+  }
+  50% {
+    box-shadow: 0 0 20px #9ecaed, 0 0 30px #9ecaed;
+  }
+}
+
+/* ========================================
+   INTERACTIVE ELEMENT TRANSITIONS
+   ======================================== */
+
+/* Input Field Transitions */
+#prompt-generator-container input[type="checkbox"],
+#prompt-generator-container input[type="text"],
+#prompt-generator-container select,
+#PromptInput {
+  transition: border-color var(--transition-slow);
+}
+
+/* Dropdown Hover Effect */
+#prompt-generator-container .prompt-generator-dropdown {
+  transition: border-color var(--transition-fast) var(--ease-standard);
+}
+
+/* Button Transitions */
+#prompt-generator-container button {
+  transition: background-color var(--transition-fast) var(--ease-standard);
+}
+
+/* Checkbox Button Transitions */
+#prompt-generator-container .checkbox_btn {
+  transition: all var(--transition-slow) var(--ease-in-out);
+}
+
+/* Settings Icon Rotation */
+#settings-icon {
+  transition: all var(--transition-normal) var(--ease-standard);
+}
+
+#settings-icon:hover {
+  transform: rotate(90deg);
+}
+
+/* Language Selector Transition */
+#language-selector {
+  transition: border-color var(--transition-fast) var(--ease-standard);
+}
+
+/* ========================================
+   SETTINGS PANEL ANIMATIONS
+   ======================================== */
+
+/* Settings Panel Fade */
+#settings-panel {
+  opacity: 0;
+  transition: all var(--transition-normal) var(--ease-standard);
+}
+
+#settings-panel.show {
+  opacity: 1;
+}
+
+/* Settings Content Slide */
+.settings-content {
+  transform: translateY(-50px);
+  transition: transform var(--transition-normal) var(--ease-standard);
+}
+
+#settings-panel.show .settings-content {
+  transform: translateY(0);
+}
+
+/* Settings Close Button */
+.settings-close {
+  transition: background-color var(--transition-fast) var(--ease-standard);
+}
+
+/* Setting Item Hover */
+.setting-item {
+  transition: border-color var(--transition-fast) var(--ease-standard);
+}
+
+/* ========================================
+   TOGGLE BUTTON ANIMATIONS
+   ======================================== */
+
+/* Toggle Button */
+.toggle-button {
+  transition: all var(--transition-normal) var(--ease-in-out);
+  transform: rotate(0deg);
+}
+
+.toggle-button:hover {
+  transition: box-shadow var(--transition-fast) var(--ease-standard);
+}
+
+.toggle-button.rotated {
+  transform: rotate(180deg);
+}
+
+/* ========================================
+   TEXT FIELD ANIMATIONS
+   ======================================== */
+
+/* Text Field Highlight Animation */
+.prompt-engineer-detected {
+  animation: textfieldHighlight 2s var(--ease-in-out);
+}
+
+@keyframes textfieldHighlight {
+  0% {
+    border-color: var(--color-border-focus, #016bff);
+    box-shadow: 0 0 5px var(--color-border-focus, #016bff);
+  }
+  50% {
+    border-color: var(--color-border-focus, #016bff);
+    box-shadow: 0 0 15px var(--color-border-focus, #016bff);
+  }
+  100% {
+    border-color: initial;
+    box-shadow: none;
+  }
+}
+
+/* Prompt Input Focus Transition */
+#PromptInput {
+  transition: border-color var(--transition-normal) var(--ease-in-out), 
+              box-shadow var(--transition-normal) var(--ease-in-out);
+}
+
+/* ========================================
+   PROMPT HIGHLIGHTING TRANSITIONS
+   ======================================== */
+
+.prompt-highlight {
+  transition: color var(--transition-fast) var(--ease-standard);
+}
+
+/* ========================================
+   HOVER STATES
+   ======================================== */
+
+/* Input Field Hover Animation */
+#prompt-generator-container .input-field {
+  transition: border-color var(--transition-fast) var(--ease-in-out);
+}
+
+/* ========================================
+   MICRO-INTERACTIONS
+   ======================================== */
+
+/* Subtle scale on button press */
+#prompt-generator-container button:active {
+  transform: scale(0.98);
+  transition: transform 0.1s var(--ease-standard);
+}
+
+#prompt-generator-container .checkbox_btn:active {
+  transform: scale(0.98);
+  transition: transform 0.1s var(--ease-standard);
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+/* Add loading spinner animation if needed */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  animation: spin 1s linear infinite;
+}
+
+/* ========================================
+   CUSTOM ANIMATION EXAMPLES
+   ======================================== */
+
+/* Pulse Animation Example */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Fade In Animation Example */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Slide In From Bottom Example */
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ========================================
+   PERFORMANCE NOTES
+   ======================================== */
+
+/* 
+ * Tips for designers:
+ * - Use transform and opacity for best performance
+ * - Avoid animating width, height, or position properties
+ * - Keep animation durations reasonable (200-500ms for interactions)
+ * - Test animations on slower devices
+ * - Consider prefers-reduced-motion for accessibility
+ */
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

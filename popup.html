@@ -13,6 +13,19 @@
       <div class="header-content">
         <img src="Images/icon48.png" alt="PromptEngineer" class="header-icon">
         <h1 class="header-title">XML Editor</h1>
+        
+        <!-- File Selector Dropdown -->
+        <div class="file-selector">
+          <select id="file-dropdown" class="file-dropdown">
+            <option value="">Datei auswählen...</option>
+          </select>
+          <button class="btn-icon" id="refresh-files-header" title="Dateien neu laden">
+            <svg viewBox="0 0 24 24" width="16" height="16">
+              <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        
         <div class="header-controls">
           <button class="btn-icon" id="theme-toggle" title="Theme wechseln">
             <svg viewBox="0 0 24 24" width="16" height="16" id="theme-icon">
@@ -29,19 +42,32 @@
 
     <!-- Main Content -->
     <main class="popup-main">
-      <!-- File Manager Sidebar -->
-      <aside class="file-manager">
-        <div class="file-manager-header">
-          <h3>XML Dateien</h3>
-          <button class="btn-icon" id="refresh-files" title="Dateien neu laden">
-            <svg viewBox="0 0 24 24" width="16" height="16">
-              <path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" fill="currentColor"/>
-            </svg>
-          </button>
+
+      <!-- XML Tree Navigator -->
+      <aside class="xml-tree-panel" id="xml-tree-panel" style="display: none;">
+        <div class="tree-panel-header">
+          <h3>XML Struktur</h3>
+          <div class="tree-panel-controls">
+            <button class="btn-icon" id="expand-all-tree" title="Alle aufklappen">
+              <svg viewBox="0 0 24 24" width="16" height="16">
+                <path d="M7,14L12,9L17,14H7Z" fill="currentColor"/>
+              </svg>
+            </button>
+            <button class="btn-icon" id="collapse-all-tree" title="Alle zuklappen">
+              <svg viewBox="0 0 24 24" width="16" height="16">
+                <path d="M7,10L12,15L17,10H7Z" fill="currentColor"/>
+              </svg>
+            </button>
+            <button class="btn-icon" id="toggle-tree-panel" title="Panel schließen">
+              <svg viewBox="0 0 24 24" width="16" height="16">
+                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
         </div>
-        <ul class="file-list" id="xml-file-list">
-          <!-- Files will be populated by JavaScript -->
-        </ul>
+        <div class="xml-tree-container" id="xml-tree-container">
+          <!-- Tree will be populated by JavaScript -->
+        </div>
       </aside>
 
       <!-- Editor Area -->
@@ -60,32 +86,114 @@
             </span>
           </div>
           <div class="editor-toolbar">
-            <button class="btn-secondary" id="format-xml" title="XML formatieren">
-              <svg viewBox="0 0 24 24" width="16" height="16">
-                <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V10H11V8H9M13,8V10H15V8H13M9,12V14H11V12H9M13,12V14H15V12H13Z" fill="currentColor"/>
-              </svg>
-              Format
-            </button>
-            <button class="btn-secondary" id="validate-xml" title="XML validieren">
-              <svg viewBox="0 0 24 24" width="16" height="16">
-                <path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" fill="currentColor"/>
-              </svg>
-              Validieren
-            </button>
+            <div class="toolbar-section">
+              <button class="btn-secondary" id="toggle-xml-tree" title="XML Struktur anzeigen">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path d="M3,3H9V7H3V3M15,10H21V14H15V10M15,17H21V21H15V17M13,13H7V18H13V13Z" fill="currentColor"/>
+                </svg>
+                Struktur
+              </button>
+              <button class="btn-secondary" id="toggle-visual-mode" title="Visueller Editor">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6A6,6 0 0,1 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6M12,8A4,4 0 0,0 8,12A4,4 0 0,0 12,16A4,4 0 0,0 16,12A4,4 0 0,0 12,8Z" fill="currentColor"/>
+                </svg>
+                Visual
+              </button>
+            </div>
+            <div class="toolbar-section">
+              <button class="btn-secondary" id="format-xml" title="XML formatieren">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path d="M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V10H11V8H9M13,8V10H15V8H13M9,12V14H11V12H9M13,12V14H15V12H13Z" fill="currentColor"/>
+                </svg>
+                Format
+              </button>
+              <button class="btn-secondary" id="validate-xml" title="XML validieren">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path d="M12,2C17.53,2 22,6.47 22,12C22,17.53 17.53,22 12,22C6.47,22 2,17.53 2,12C2,6.47 6.47,2 12,2M15.59,7L12,10.59L8.41,7L7,8.41L10.59,12L7,15.59L8.41,17L12,13.41L15.59,17L17,15.59L13.41,12L17,8.41L15.59,7Z" fill="currentColor"/>
+                </svg>
+                Validieren
+              </button>
+            </div>
+            <div class="toolbar-section">
+              <button class="btn-secondary" id="test-prompt" title="Prompt testen">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path d="M8,5.14V19.14L19,12.14L8,5.14Z" fill="currentColor"/>
+                </svg>
+                Test
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- Editor Container -->
         <div class="editor-container" id="editor-container">
-          <div class="editor-placeholder">
-            <div class="placeholder-icon">
-              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-              </svg>
+          <!-- Code Editor View -->
+          <div class="code-editor-view" id="code-editor-view">
+            <div class="editor-placeholder">
+              <div class="placeholder-icon">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </div>
+              <h3>Wähle eine XML-Datei zum Bearbeiten</h3>
+              <p>Klicke auf eine Datei in der linken Liste, um sie im Editor zu öffnen.</p>
             </div>
-            <h3>Wähle eine XML-Datei zum Bearbeiten</h3>
-            <p>Klicke auf eine Datei in der linken Liste, um sie im Editor zu öffnen.</p>
+          </div>
+
+          <!-- Visual Form Builder View -->
+          <div class="visual-editor-view" id="visual-editor-view" style="display: none;">
+            <div class="visual-editor-container">
+              <div class="visual-editor-sidebar">
+                <h4>Element hinzufügen</h4>
+                <div class="element-palette">
+                  <button class="element-button" data-type="dropdown">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                      <path d="M7,10L12,15L17,10H7Z" fill="currentColor"/>
+                    </svg>
+                    Dropdown
+                  </button>
+                  <button class="element-button" data-type="input">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                      <path d="M3,3H21V5H3V3M3,7H15V9H3V7M3,11H21V13H3V11M3,15H15V17H3V15M3,19H21V21H3V19Z" fill="currentColor"/>
+                    </svg>
+                    Input
+                  </button>
+                  <button class="element-button" data-type="checkbox">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                      <path d="M10,17L5,12L6.41,10.59L10,14.17L17.59,6.58L19,8M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" fill="currentColor"/>
+                    </svg>
+                    Checkbox
+                  </button>
+                </div>
+              </div>
+              <div class="visual-editor-main">
+                <div class="visual-editor-content" id="visual-editor-content">
+                  <div class="visual-placeholder">
+                    <h4>Wähle eine Datei zum visuellen Bearbeiten</h4>
+                    <p>Nutze die Buttons links, um neue Elemente hinzuzufügen.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Preview Panel -->
+        <div class="live-preview-panel" id="live-preview-panel" style="display: none;">
+          <div class="preview-header">
+            <h4>Live Vorschau</h4>
+            <button class="btn-icon" id="close-preview" title="Vorschau schließen">
+              <svg viewBox="0 0 24 24" width="16" height="16">
+                <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+          <div class="preview-content" id="preview-content">
+            <div class="prompt-preview">
+              <div class="preview-label">Generierter Prompt:</div>
+              <div class="preview-text" id="preview-text">Keine Vorschau verfügbar</div>
+            </div>
           </div>
         </div>
 
@@ -135,25 +243,8 @@
     </div>
   </div>
 
-  <!-- Load CodeMirror 6 from CDN -->
-  <script type="module">
-    // Import CodeMirror modules and make them globally available
-    import { EditorState, EditorView, basicSetup } from 'https://cdn.skypack.dev/codemirror@6.0.1';
-    import { xml } from 'https://cdn.skypack.dev/@codemirror/lang-xml@6.0.0';
-    import { oneDark } from 'https://cdn.skypack.dev/@codemirror/theme-one-dark@6.0.0';
-    
-    // Make available globally for popup.js
-    window.CM = {
-      EditorState,
-      EditorView, 
-      basicSetup,
-      xml,
-      oneDark
-    };
-    
-    // Signal that CodeMirror is ready
-    window.dispatchEvent(new CustomEvent('codemirror-ready'));
-  </script>
+  <!-- Advanced XML Editor -->
+  <script src="xml-editor.js"></script>
   
   <!-- Popup Logic -->
   <script src="popup.js"></script>

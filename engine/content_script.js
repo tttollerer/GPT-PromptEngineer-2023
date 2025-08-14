@@ -47,6 +47,331 @@ function saveSettings() {
 
 // TopBar functions moved to build_ui.js
 
+function createAISettingsSection() {
+  const aiSection = document.createElement('div');
+  aiSection.className = 'settings-section';
+  aiSection.style.cssText = 'margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);';
+  
+  const aiTitle = document.createElement('h4');
+  aiTitle.textContent = '🤖 KI-Prompt Generator';
+  aiTitle.style.cssText = 'margin-bottom: 10px; color: var(--white);';
+  
+  // Provider selection
+  const providerSection = document.createElement('div');
+  providerSection.style.cssText = 'margin-bottom: 15px;';
+  
+  const providerLabel = document.createElement('label');
+  providerLabel.textContent = 'KI-Provider:';
+  providerLabel.style.cssText = 'display: block; margin-bottom: 5px; font-size: 13px;';
+  
+  const providerSelect = document.createElement('select');
+  providerSelect.id = 'ai-settings-provider';
+  providerSelect.style.cssText = `
+    width: 100%;
+    padding: 6px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-default);
+    border-radius: 4px;
+    color: var(--color-text-primary);
+    font-size: 13px;
+  `;
+  
+  // Populate providers
+  const providers = [
+    { id: 'openai', name: 'OpenAI (ChatGPT)' },
+    { id: 'claude', name: 'Anthropic Claude' },
+    { id: 'gemini', name: 'Google Gemini' },
+    { id: 'openrouter', name: 'OpenRouter (Alle Modelle)' }
+  ];
+  
+  providers.forEach(provider => {
+    const option = document.createElement('option');
+    option.value = provider.id;
+    option.textContent = provider.name;
+    providerSelect.appendChild(option);
+  });
+  
+  providerSection.appendChild(providerLabel);
+  providerSection.appendChild(providerSelect);
+  
+  // API Key sections for each provider
+  const apiKeyContainer = document.createElement('div');
+  apiKeyContainer.id = 'ai-api-key-container';
+  
+  providers.forEach(provider => {
+    const keySection = createAPIKeySection(provider.id, provider.name);
+    apiKeyContainer.appendChild(keySection);
+  });
+  
+  // Test button
+  const testButton = document.createElement('button');
+  testButton.id = 'ai-test-connection';
+  testButton.innerHTML = `
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22,4 12,14.01 9,11.01"/>
+    </svg>
+    Verbindung testen
+  `;
+  testButton.style.cssText = `
+    width: 100%;
+    padding: 8px 16px;
+    background: var(--color-success);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    margin-top: 10px;
+    transition: background 0.2s;
+  `;
+  
+  const testStatus = document.createElement('div');
+  testStatus.id = 'ai-test-status';
+  testStatus.style.cssText = 'margin-top: 10px; font-size: 12px; display: none;';
+  
+  const description = document.createElement('div');
+  description.className = 'setting-description';
+  description.style.cssText = 'margin-top: 10px;';
+  description.textContent = 'Konfiguriere deine API-Keys für KI-gestützte Prompt-Generierung. Die Keys werden sicher gespeichert.';
+  
+  // Event listeners
+  providerSelect.addEventListener('change', (e) => {
+    updateAPIKeyVisibility(e.target.value);
+    updateSelectedProvider(e.target.value);
+  });
+  
+  testButton.addEventListener('click', () => testAPIConnection());
+  
+  // Assemble section
+  aiSection.appendChild(aiTitle);
+  aiSection.appendChild(providerSection);
+  aiSection.appendChild(apiKeyContainer);
+  aiSection.appendChild(testButton);
+  aiSection.appendChild(testStatus);
+  aiSection.appendChild(description);
+  
+  // Initialize display
+  if (window.apiManager) {
+    setTimeout(() => {
+      loadAISettings();
+      updateAPIKeyVisibility(providerSelect.value);
+    }, 100);
+  }
+  
+  return aiSection;
+}
+
+function createAPIKeySection(providerId, providerName) {
+  const section = document.createElement('div');
+  section.className = 'ai-api-key-section';
+  section.id = `ai-key-section-${providerId}`;
+  section.style.cssText = 'margin: 10px 0; display: none;';
+  
+  const label = document.createElement('label');
+  label.textContent = `${providerName} API-Key:`;
+  label.style.cssText = 'display: block; margin-bottom: 5px; font-size: 13px;';
+  
+  const inputWrapper = document.createElement('div');
+  inputWrapper.style.cssText = 'position: relative;';
+  
+  const input = document.createElement('input');
+  input.type = 'password';
+  input.id = `ai-api-key-${providerId}`;
+  input.placeholder = 'Gib deinen API-Key ein...';
+  input.style.cssText = `
+    width: calc(100% - 40px);
+    padding: 6px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-default);
+    border-radius: 4px;
+    color: var(--color-text-primary);
+    font-size: 13px;
+  `;
+  
+  const toggleButton = document.createElement('button');
+  toggleButton.type = 'button';
+  toggleButton.innerHTML = '👁️';
+  toggleButton.style.cssText = `
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 35px;
+    background: var(--color-surface-hover);
+    border: 1px solid var(--color-border-default);
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-size: 12px;
+  `;
+  
+  toggleButton.addEventListener('click', () => {
+    if (input.type === 'password') {
+      input.type = 'text';
+      toggleButton.innerHTML = '🙈';
+    } else {
+      input.type = 'password';
+      toggleButton.innerHTML = '👁️';
+    }
+  });
+  
+  // Save API key on change
+  input.addEventListener('change', async (e) => {
+    if (window.apiManager) {
+      try {
+        await window.apiManager.setAPIKey(providerId, e.target.value);
+        
+        // Visual feedback for successful save
+        input.style.borderColor = '#4CAF50';
+        setTimeout(() => {
+          input.style.borderColor = '';
+        }, 2000);
+        
+      } catch (error) {
+        // Visual feedback for invalid key
+        input.style.borderColor = '#f44336';
+        setTimeout(() => {
+          input.style.borderColor = '';
+        }, 3000);
+        
+        // Show error message
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = 'color: #f44336; font-size: 11px; margin-top: 3px;';
+        errorDiv.textContent = error.message;
+        
+        const existingError = section.querySelector('.api-key-error');
+        if (existingError) {
+          existingError.remove();
+        }
+        
+        errorDiv.className = 'api-key-error';
+        section.appendChild(errorDiv);
+        
+        setTimeout(() => {
+          if (errorDiv.parentNode) {
+            errorDiv.remove();
+          }
+        }, 5000);
+        
+        console.error('API key validation error:', error);
+      }
+    }
+  });
+  
+  inputWrapper.appendChild(input);
+  inputWrapper.appendChild(toggleButton);
+  section.appendChild(label);
+  section.appendChild(inputWrapper);
+  
+  return section;
+}
+
+function updateAPIKeyVisibility(selectedProvider) {
+  const sections = document.querySelectorAll('.ai-api-key-section');
+  sections.forEach(section => {
+    section.style.display = 'none';
+  });
+  
+  const selectedSection = document.getElementById(`ai-key-section-${selectedProvider}`);
+  if (selectedSection) {
+    selectedSection.style.display = 'block';
+  }
+}
+
+function updateSelectedProvider(provider) {
+  if (window.apiManager) {
+    window.apiManager.setProvider(provider);
+  }
+}
+
+async function loadAISettings() {
+  if (!window.apiManager) return;
+  
+  // Load current provider
+  const providerSelect = document.getElementById('ai-settings-provider');
+  if (providerSelect && window.apiManager.settings.selectedProvider) {
+    providerSelect.value = window.apiManager.settings.selectedProvider;
+  }
+  
+  // Load API keys (async)
+  const providers = Object.keys(window.apiManager.settings.apiKeys || {});
+  for (const provider of providers) {
+    const input = document.getElementById(`ai-api-key-${provider}`);
+    if (input) {
+      try {
+        const key = await window.apiManager.getAPIKey(provider);
+        input.value = key || '';
+      } catch (error) {
+        console.error(`Failed to load API key for ${provider}:`, error);
+      }
+    }
+  }
+}
+
+async function testAPIConnection() {
+  const providerSelect = document.getElementById('ai-settings-provider');
+  const testButton = document.getElementById('ai-test-connection');
+  const testStatus = document.getElementById('ai-test-status');
+  
+  if (!providerSelect || !window.apiManager) return;
+  
+  const provider = providerSelect.value;
+  
+  let apiKey;
+  try {
+    apiKey = await window.apiManager.getAPIKey(provider);
+  } catch (error) {
+    testStatus.style.display = 'block';
+    testStatus.style.color = '#f44336';
+    testStatus.textContent = '❌ Fehler beim Laden des API-Keys: ' + error.message;
+    return;
+  }
+  
+  if (!apiKey) {
+    testStatus.style.display = 'block';
+    testStatus.style.color = '#f44336';
+    testStatus.textContent = '❌ Kein API-Key für diesen Provider konfiguriert';
+    return;
+  }
+  
+  // Update UI for testing
+  testButton.disabled = true;
+  testButton.innerHTML = `
+    <div style="display: inline-block; width: 16px; height: 16px; border: 2px solid #ffffff40; border-top: 2px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 6px;"></div>
+    Teste Verbindung...
+  `;
+  
+  testStatus.style.display = 'block';
+  testStatus.style.color = 'var(--color-text-secondary)';
+  testStatus.textContent = '⏳ Verbindung wird getestet...';
+  
+  try {
+    const result = await window.apiManager.testConnection(provider, apiKey);
+    
+    if (result.success) {
+      testStatus.style.color = 'var(--color-success)';
+      testStatus.textContent = '✓ Verbindung erfolgreich!';
+    } else {
+      testStatus.style.color = '#f44336';
+      testStatus.textContent = `❌ Fehler: ${result.message}`;
+    }
+  } catch (error) {
+    testStatus.style.color = '#f44336';
+    testStatus.textContent = `❌ Verbindung fehlgeschlagen: ${error.message}`;
+  } finally {
+    // Reset button
+    testButton.disabled = false;
+    testButton.innerHTML = `
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22,4 12,14.01 9,11.01"/>
+      </svg>
+      Verbindung testen
+    `;
+  }
+}
+
 function createSettingsPanel() {
   const settingsPanel = document.createElement('div');
   settingsPanel.id = 'settings-panel';
@@ -251,11 +576,15 @@ function createSettingsPanel() {
     }
   });
   
+  // AI Settings Section
+  const aiSection = createAISettingsSection();
+  
   // Assemble everything
   settingsContent.appendChild(settingsHeader);
   settingsContent.appendChild(settingItem1);
   settingsContent.appendChild(settingItem2);
   settingsContent.appendChild(editorSection);
+  settingsContent.appendChild(aiSection);
   settingsPanel.appendChild(settingsContent);
   
   // Event listeners

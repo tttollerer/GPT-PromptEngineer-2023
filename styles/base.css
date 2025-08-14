@@ -1,0 +1,336 @@
+/* 
+ * BASE.CSS - Functional/Structural Styles Only
+ * This file contains positioning, layout, and structural CSS
+ * DO NOT add colors, fonts, or decorative styles here
+ */
+
+/* Main Container Structure */
+#prompt-generator-container {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  max-width: 800px;
+  width: calc(100% - 40px);
+  display: block;
+  z-index: 10000;
+  max-height: 70vh;
+  overflow-y: auto;
+  border-radius: 12px 12px 0 0;
+  border-bottom: none;
+}
+
+#prompt-generator-container.hidden {
+  transform: translateX(-50%) translateY(100%) !important;
+}
+
+#prompt-generator-container:not(.hidden) {
+  transform: translateX(-50%) translateY(0) !important;
+}
+
+/* Layout Components */
+#prompt-generator-container .prompt-generator-title {
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+#prompt-generator-container .prompt-generator-label-div {
+  display: flex;
+  align-items: center;
+}
+
+#prompt-generator-container .prompt-generator-checkbox-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 3px;
+}
+
+#prompt-generator-container .prompt-generator-checkbox-container .prompt-generator-label-div {
+  margin-right: 10px;
+  margin-bottom: 15px;
+}
+
+#prompt-generator-container .prompt-generator-dropdown-container {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between;
+}
+
+#prompt-generator-container .prompt-generator-dropdown-wrapper {
+  flex: 0 0 calc(33.33% - 10px) !important;
+  margin-bottom: 15px !important;
+}
+
+#prompt-generator-container .prompt-generator-dropdown {
+  width: 100%;
+  padding: 5px 2px 5px 5px;
+  appearance: none;
+  border-radius: 8px;
+}
+
+/* Input Field Layout */
+#prompt-generator-container .prompt-generator-input-wrapper {
+  flex: 0 0 calc(50% - 5px);
+  margin-bottom: 15px;
+}
+
+#prompt-generator-container .prompt-generator-input,
+#PromptInput {
+  width: 100%;
+  padding: 5px;
+  border-radius: 8px;
+}
+
+#PromptInput {
+  padding: 10px;
+  width: calc(100% - 15px);
+  line-height: 1.5;
+  border-radius: 8px;
+}
+
+/* Button Layout */
+#prompt-generator-container button {
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.ai-generator-button {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#PromptButton {
+  right: 24px !important;
+  margin-bottom: 12px !important;
+}
+
+/* Checkbox Button Structure */
+#prompt-generator-container .checkbox_btn {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+}
+
+#prompt-generator-container .checkbox_btn input {
+  display: none;
+}
+
+#prompt-generator-container input[type=checkbox] {
+  display: none;
+}
+
+/* TopBar Structure */
+.extension-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.extension-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.extension-logo img {
+  height: 20px;
+  width: auto;
+}
+
+.extension-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: auto;
+  z-index: 1;
+}
+
+/* Language Selector Structure */
+#language-selector {
+  padding: 5px 8px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Settings Icon Structure */
+#settings-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+#settings-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Settings Panel Structure */
+#settings-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+}
+
+#settings-panel.show {
+  visibility: visible;
+}
+
+.settings-content {
+  border-radius: 12px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.settings-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.settings-close {
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: none;
+  background: none;
+}
+
+.setting-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.setting-item label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.setting-item input[type="checkbox"] {
+  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.setting-description {
+  margin-top: 8px;
+  font-size: 12px;
+  margin-left: 30px;
+}
+
+/* Attribution */
+#prompt-generator-container .prompt-generator-attribution {
+  font-size: 11px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Toggle Button Structure */
+.toggle-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 64px;
+  height: 64px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 10001;
+  background: transparent;
+}
+
+/* Speech Button Structure */
+#speech-button {
+  position: absolute;
+}
+
+/* Visibility Classes */
+.HideInput {
+  display: none;
+}
+
+.NeverHide {
+  display: block !important;
+}
+
+/* Responsive Layout */
+#temperature,
+#Schreibstil,
+#Formatierung {
+  display: inline-block;
+  width: 30%;
+  box-sizing: border-box;
+}
+
+#temperature,
+#Schreibstil,
+#Formatierung {
+  display: flex;
+  justify-content: space-between;
+}
+
+#temperature > div,
+#Schreibstil > div,
+#Formatierung > div {
+  flex: 1;
+  margin-right: 10px;
+}
+
+#temperature > div:last-child,
+#Schreibstil > div:last-child,
+#Formatierung > div:last-child {
+  margin-right: 0;
+}
+
+/* Label Visibility */
+.prompt-generator-dropdown-wrapper .prompt-generator-label-div,
+.prompt-generator-input-div label {
+  display: none !important;
+}
+
+/* Legacy image handling */
+.prompt-generator-image {
+  display: none;
+}

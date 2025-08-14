@@ -1,0 +1,298 @@
+/* 
+ * SEARCH.CSS - Live Search UI Styling
+ * Styling for the prompt search functionality
+ */
+
+/* ========================================
+   SEARCH CONTAINER
+   ======================================== */
+
+.prompt-search-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: var(--spacing-lg);
+  z-index: 1000;
+}
+
+/* ========================================
+   SEARCH FIELD
+   ======================================== */
+
+.prompt-search-field-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.prompt-search-input {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border-default);
+  border-radius: var(--radius-medium);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.prompt-search-input::placeholder {
+  color: var(--color-text-placeholder);
+  font-style: italic;
+}
+
+.prompt-search-input:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-glow);
+  background: var(--color-background-secondary);
+}
+
+.prompt-search-input:hover {
+  border-color: var(--color-border-accent);
+  background: var(--color-surface-hover);
+}
+
+/* ========================================
+   SEARCH RESULTS
+   ======================================== */
+
+.prompt-search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-large);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1001;
+  margin-top: 4px;
+}
+
+/* Custom scrollbar for results */
+.prompt-search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.prompt-search-results::-webkit-scrollbar-track {
+  background: var(--color-background-tertiary);
+  border-radius: 3px;
+}
+
+.prompt-search-results::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 3px;
+}
+
+.prompt-search-results::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-hover);
+}
+
+/* ========================================
+   RESULT ITEMS
+   ======================================== */
+
+.prompt-search-result-item {
+  padding: var(--spacing-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.prompt-search-result-item:last-child {
+  border-bottom: none;
+}
+
+.prompt-search-result-item:hover {
+  background: var(--color-surface-hover);
+  border-left: 4px solid var(--color-primary);
+  padding-left: calc(var(--spacing-md) - 4px);
+}
+
+.prompt-search-result-item:active {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* ========================================
+   RESULT ITEM CONTENT
+   ======================================== */
+
+.prompt-search-result-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+  line-height: 1.4;
+}
+
+.prompt-search-result-source {
+  font-size: var(--font-size-xs);
+  color: var(--color-primary-light);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--spacing-xs);
+}
+
+.prompt-search-result-preview {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ========================================
+   NO RESULTS STATE
+   ======================================== */
+
+.prompt-search-no-results {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-style: italic;
+  font-size: var(--font-size-sm);
+}
+
+/* ========================================
+   INSERTION FEEDBACK
+   ======================================== */
+
+.prompt-search-feedback {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--color-success);
+  color: white;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-medium);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  z-index: 10001;
+  box-shadow: var(--shadow-medium);
+  animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .prompt-search-container {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .prompt-search-input {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+  
+  .prompt-search-results {
+    max-height: 250px;
+  }
+  
+  .prompt-search-result-item {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .prompt-search-result-title {
+    font-size: var(--font-size-sm);
+  }
+  
+  .prompt-search-result-preview {
+    font-size: var(--font-size-xs);
+    -webkit-line-clamp: 1;
+  }
+  
+  .prompt-search-feedback {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    text-align: center;
+  }
+}
+
+/* ========================================
+   FOCUS STATES FOR ACCESSIBILITY
+   ======================================== */
+
+.prompt-search-result-item:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  background: var(--color-surface-hover);
+}
+
+/* ========================================
+   LOADING STATE (for future use)
+   ======================================== */
+
+.prompt-search-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.prompt-search-loading::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  margin-left: var(--spacing-sm);
+  border: 2px solid var(--color-text-muted);
+  border-top: 2px solid var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ========================================
+   DARK MODE ADJUSTMENTS
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  .prompt-search-results {
+    border-color: var(--color-border-accent);
+  }
+  
+  .prompt-search-result-item {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+  
+  .prompt-search-result-item:hover {
+    background: var(--color-background-tertiary);
+  }
+}

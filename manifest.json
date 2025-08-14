@@ -39,12 +39,19 @@
         "engine/input_field_creation.js",
         "translation/translations.js",
         "engine/fetch_data.js", 
+        "engine/api_manager.js",
+        "engine/prompt_search.js",
+        "engine/ai_prompt_generator.js",
         "engine/build_ui.js",
         "engine/language_switcher.js",
         "engine/content_script.js"
       ],
       "css": [
-        "styles/styles.css"
+        "styles/base.css",
+        "styles/theme.css",
+        "styles/animations.css",
+        "styles/search.css",
+        "styles/ai_generator.css"
       ],
       "run_at": "document_idle"
     }
@@ -59,10 +66,14 @@
       "popup.html",
       "popup.css",
       "popup.js",
+      "xml-editor.js",
       "settings/settings.js", 
       "engine/dom_helpers.js",
       "engine/error_handler.js",
       "engine/resource_manager.js",
+      "engine/api_manager.js",
+      "engine/prompt_search.js",
+      "engine/ai_prompt_generator.js",
       "translation/translations.js",
       "engine/input_field_creation.js", 
       "data_en.xml",
@@ -71,7 +82,8 @@
       "data_dropdowns.xml",
       "data_dropdown_employee.xml",
       "data_dropdown_tasks.xml",
-      "data_dropdown_clients.xml",  
+      "data_dropdown_clients.xml",
+      "data/system_prompts.json",
       "Images/logo.png",
       "Images/icon128.png",
       "Images/icon48.png",

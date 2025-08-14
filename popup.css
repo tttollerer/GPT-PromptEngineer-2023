@@ -27,6 +27,17 @@
   --file-item-active: #e3f2fd;
   --scrollbar-thumb: #c0c0c0;
   --scrollbar-track: #f0f0f0;
+  
+  /* Tree view specific */
+  --tree-node-hover: #f0f7ff;
+  --tree-node-selected: #e3f2fd;
+  --tree-indent: 20px;
+  
+  /* Visual editor specific */
+  --visual-bg: #fefefe;
+  --element-button-hover: #f0f0f0;
+  --element-border: #ddd;
+  --preview-bg: #f8f9fa;
 }
 
 /* Dark Theme */
@@ -149,7 +160,7 @@ body {
 .header-content {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .header-icon {
@@ -161,7 +172,41 @@ body {
   font-size: 18px;
   font-weight: 600;
   color: var(--text);
-  flex: 1;
+}
+
+/* File Selector Dropdown */
+.file-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.file-dropdown {
+  min-width: 200px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.file-dropdown:hover {
+  border-color: var(--primary-color);
+}
+
+.file-dropdown:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(1, 107, 255, 0.1);
+}
+
+.file-dropdown option {
+  background: var(--surface);
+  color: var(--text);
+  padding: 8px;
 }
 
 .header-controls {
@@ -204,29 +249,7 @@ body {
   overflow: hidden;
 }
 
-/* File Manager Sidebar */
-.file-manager {
-  width: 250px;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
-.file-manager-header {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.file-manager-header h3 {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-}
+/* File Manager styles removed - using header dropdown instead */
 
 .btn-icon {
   width: 28px;
@@ -671,4 +694,713 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
+}
+
+/* ===== NEW UI COMPONENTS ===== */
+
+/* XML Tree Panel */
+.xml-tree-panel {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  max-width: 400px;
+  resize: horizontal;
+  overflow: hidden;
+}
+
+.tree-panel-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  background: var(--background);
+}
+
+.tree-panel-header h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  flex: 1;
+}
+
+.tree-panel-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.xml-tree-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+/* Tree Node Styles */
+.tree-node {
+  margin: 2px 0;
+  user-select: none;
+}
+
+.tree-node-content {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: var(--radius-small);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text);
+  transition: background-color 0.2s ease;
+}
+
+.tree-node-content:hover {
+  background: var(--tree-node-hover);
+}
+
+.tree-node-content.selected {
+  background: var(--tree-node-selected);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.tree-node-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tree-node-label {
+  flex: 1;
+}
+
+.tree-node-type {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: 8px;
+}
+
+.tree-node-children {
+  margin-left: var(--tree-indent);
+  border-left: 1px solid var(--border);
+  padding-left: 8px;
+}
+
+.tree-node-toggle {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.tree-node-toggle.expanded {
+  transform: rotate(90deg);
+}
+
+/* Visual Editor Styles */
+.visual-editor-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.visual-editor-container {
+  display: flex;
+  height: 100%;
+  background: var(--visual-bg);
+}
+
+.visual-editor-sidebar {
+  width: 200px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 16px;
+}
+
+.visual-editor-sidebar h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.element-palette {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.element-button {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--element-border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  gap: 8px;
+}
+
+.element-button:hover {
+  background: var(--element-button-hover);
+  border-color: var(--primary-color);
+}
+
+.element-button svg {
+  color: var(--primary-color);
+}
+
+.visual-editor-main {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.visual-editor-content {
+  min-height: 100%;
+}
+
+.visual-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.visual-placeholder h4 {
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+/* Visual Element Cards */
+.visual-element {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.visual-element:hover {
+  box-shadow: var(--shadow);
+}
+
+.visual-element-header {
+  background: var(--background);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.visual-element-title {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.visual-element-type {
+  background: var(--primary-color);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.visual-element-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.visual-element-content {
+  padding: 16px;
+}
+
+.visual-field {
+  margin-bottom: 12px;
+}
+
+.visual-field:last-child {
+  margin-bottom: 0;
+}
+
+.visual-field label {
+  display: block;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.visual-field input,
+.visual-field textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  transition: border-color 0.2s ease;
+}
+
+.visual-field input:focus,
+.visual-field textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(1, 107, 255, 0.1);
+}
+
+.visual-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Live Preview Panel */
+.live-preview-panel {
+  width: 300px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  max-width: 500px;
+  resize: horizontal;
+  overflow: hidden;
+}
+
+.preview-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--background);
+}
+
+.preview-header h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.preview-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.prompt-preview {
+  background: var(--preview-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+
+.preview-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.preview-text {
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Toolbar Sections */
+.editor-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.toolbar-section {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.toolbar-section:not(:last-child)::after {
+  content: '';
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  margin-left: 12px;
+}
+
+/* Layout adjustments for split view */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.popup-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.popup-header {
+  flex-shrink: 0;
+  height: 60px;
+}
+
+.popup-main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.popup-main > * {
+  flex-shrink: 0;
+}
+
+.editor-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.editor-header {
+  flex-shrink: 0;
+}
+
+.editor-container {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.code-editor-view,
+.visual-editor-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.status-bar {
+  flex-shrink: 0;
+}
+
+.action-buttons {
+  flex-shrink: 0;
+}
+
+/* Ensure CodeMirror fills available space */
+.cm-editor {
+  height: 100%;
+}
+
+.cm-scroller {
+  overflow: auto !important;
+  max-height: 100% !important;
+}
+
+/* Advanced XML Editor Styles */
+.xml-editor-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: var(--editor-bg);
+  border-radius: var(--radius-small);
+  overflow: hidden;
+}
+
+.xml-editor-wrapper {
+  display: flex;
+  height: 100%;
+  position: relative;
+}
+
+.xml-line-numbers {
+  background: var(--background);
+  border-right: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: Monaco, Menlo, 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 10px 8px;
+  user-select: none;
+  min-width: 40px;
+  text-align: right;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.line-number {
+  height: 18.2px; /* Match textarea line height */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.xml-editor-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.xml-editor-textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  resize: none;
+  padding: 10px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  background: transparent;
+  color: var(--editor-text);
+  outline: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.xml-editor-textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.xml-editor-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  color: transparent;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.xml-editor-errors {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  max-height: 120px;
+  overflow-y: auto;
+  display: none;
+  z-index: 3;
+}
+
+.xml-error {
+  padding: 4px 8px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.xml-error.error {
+  background: rgba(244, 67, 54, 0.1);
+  color: var(--error);
+  border-left: 3px solid var(--error);
+}
+
+.xml-error.warning {
+  background: rgba(255, 152, 0, 0.1);
+  color: var(--warning);
+  border-left: 3px solid var(--warning);
+}
+
+.error-line {
+  font-weight: 600;
+  min-width: 60px;
+}
+
+.error-message {
+  flex: 1;
+}
+
+/* XML Syntax Highlighting */
+.xml-tag {
+  color: #e06c75;
+  font-weight: 600;
+}
+
+.xml-bracket {
+  color: #61afef;
+}
+
+.xml-attr-name {
+  color: #d19a66;
+  font-style: italic;
+}
+
+.xml-attr-value {
+  color: #98c379;
+}
+
+.xml-comment {
+  color: #5c6370;
+  font-style: italic;
+}
+
+.xml-processing {
+  color: #c678dd;
+}
+
+.xml-cdata {
+  color: #56b6c2;
+  background: rgba(86, 182, 194, 0.1);
+}
+
+/* Dark theme XML highlighting */
+body.dark-theme .xml-tag {
+  color: #e06c75;
+}
+
+body.dark-theme .xml-bracket {
+  color: #61afef;
+}
+
+body.dark-theme .xml-attr-name {
+  color: #d19a66;
+}
+
+body.dark-theme .xml-attr-value {
+  color: #98c379;
+}
+
+body.dark-theme .xml-comment {
+  color: #7f848e;
+}
+
+body.dark-theme .xml-processing {
+  color: #c678dd;
+}
+
+body.dark-theme .xml-cdata {
+  color: #56b6c2;
+  background: rgba(86, 182, 194, 0.15);
+}
+
+/* Focus states */
+.xml-editor-textarea:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: -2px;
+}
+
+/* Scrollbar for error display */
+.xml-editor-errors::-webkit-scrollbar {
+  height: 6px;
+}
+
+.xml-editor-errors::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+.xml-editor-errors::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+/* Legacy fallback editor styles (kept for compatibility) */
+.fallback-editor {
+  width: 100%;
+  height: 100%;
+  border: none;
+  resize: none;
+  padding: 16px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  outline: none;
+  background: var(--editor-bg);
+  color: var(--editor-text);
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.fallback-editor:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: -2px;
+}
+
+.fallback-editor::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* Dark theme adjustments */
+body.dark-theme {
+  --tree-node-hover: #2a2a2a;
+  --tree-node-selected: #1a365d;
+  --visual-bg: #1a1a1a;
+  --element-button-hover: #3a3a3a;
+  --element-border: #404040;
+  --preview-bg: #252525;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .xml-tree-panel {
+    width: 220px;
+  }
+  
+  .live-preview-panel {
+    width: 250px;
+  }
+}
+
+@media (max-width: 900px) {
+  .xml-tree-panel,
+  .live-preview-panel {
+    display: none;
+  }
+  
+  .visual-editor-sidebar {
+    width: 160px;
+  }
 }

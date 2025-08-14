@@ -1,0 +1,524 @@
+/* 
+ * AI_GENERATOR.CSS - AI Prompt Generator Styling
+ * Styling for the AI-powered prompt generation modal and components
+ */
+
+/* ========================================
+   AI GENERATOR BUTTON (in main UI)
+   ======================================== */
+
+.ai-generator-button {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-medium);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-lg);
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-small);
+}
+
+.ai-generator-button:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.ai-generator-button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-small);
+}
+
+.ai-generator-button:disabled {
+  background: var(--color-text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ========================================
+   MODAL OVERLAY
+   ======================================== */
+
+.ai-generator-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10002;
+  padding: var(--spacing-lg);
+  backdrop-filter: blur(4px);
+}
+
+.ai-generator-modal-content {
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-large);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--color-border-accent);
+}
+
+/* ========================================
+   MODAL HEADER
+   ======================================== */
+
+.ai-generator-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border-default);
+  background: var(--color-background-tertiary);
+  border-radius: var(--radius-large) var(--radius-large) 0 0;
+}
+
+.ai-generator-header h2 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.ai-generator-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-xxl);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-small);
+  transition: all 0.2s ease;
+  line-height: 1;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-generator-close:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+/* ========================================
+   CONFIGURATION SECTION
+   ======================================== */
+
+.ai-generator-config {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border-default);
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto;
+  gap: var(--spacing-md);
+  align-items: center;
+  background: var(--color-background-main);
+}
+
+.ai-generator-config label {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.ai-generator-select {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-medium);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.ai-generator-select:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-glow);
+}
+
+.ai-generator-select:disabled {
+  background: var(--color-background-tertiary);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.ai-generator-settings-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: transparent;
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius-medium);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.ai-generator-settings-btn:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+/* ========================================
+   INPUT SECTION
+   ======================================== */
+
+.ai-generator-input-section {
+  padding: var(--spacing-xl);
+  position: relative;
+}
+
+.ai-generator-input-section label {
+  display: block;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-md);
+}
+
+.ai-generator-textarea {
+  width: 100%;
+  padding: var(--spacing-md);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border-default);
+  border-radius: var(--radius-medium);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  min-height: 100px;
+}
+
+.ai-generator-textarea::placeholder {
+  color: var(--color-text-placeholder);
+  font-style: italic;
+}
+
+.ai-generator-textarea:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: var(--shadow-glow);
+}
+
+.ai-generator-generate-btn {
+  width: 100%;
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-medium);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--spacing-lg);
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-small);
+}
+
+.ai-generator-generate-btn:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.ai-generator-generate-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.ai-generator-generate-btn:disabled {
+  background: var(--color-text-muted);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ========================================
+   LOADING SPINNER
+   ======================================== */
+
+.ai-generator-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: var(--spacing-sm);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ========================================
+   ERROR MESSAGES
+   ======================================== */
+
+.ai-generator-error {
+  background: var(--color-error);
+  color: white;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-medium);
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  box-shadow: var(--shadow-small);
+}
+
+/* ========================================
+   RESULTS SECTION
+   ======================================== */
+
+.ai-generator-results {
+  padding: var(--spacing-xl);
+  border-top: 1px solid var(--color-border-default);
+  background: var(--color-background-main);
+}
+
+.ai-generator-results h3 {
+  margin: 0 0 var(--spacing-lg) 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.ai-results-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+/* ========================================
+   PROMPT CARDS
+   ======================================== */
+
+.ai-prompt-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-small);
+}
+
+.ai-prompt-card:hover {
+  border-color: var(--color-border-accent);
+  box-shadow: var(--shadow-medium);
+}
+
+.ai-prompt-content {
+  padding: var(--spacing-lg);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.ai-prompt-actions {
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  gap: var(--spacing-md);
+  background: var(--color-surface);
+}
+
+.ai-prompt-use-btn,
+.ai-prompt-copy-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-small);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.ai-prompt-use-btn {
+  background: var(--color-success);
+  color: white;
+}
+
+.ai-prompt-use-btn:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+}
+
+.ai-prompt-copy-btn {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-default);
+}
+
+.ai-prompt-copy-btn:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+/* ========================================
+   SUCCESS TOAST
+   ======================================== */
+
+.ai-generator-success-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--color-success);
+  color: white;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-medium);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  z-index: 10003;
+  box-shadow: var(--shadow-medium);
+  animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .ai-generator-modal {
+    padding: var(--spacing-md);
+  }
+  
+  .ai-generator-modal-content {
+    max-height: 95vh;
+  }
+  
+  .ai-generator-header {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .ai-generator-header h2 {
+    font-size: var(--font-size-lg);
+  }
+  
+  .ai-generator-config {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, auto);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .ai-generator-config label {
+    font-weight: var(--font-weight-bold);
+  }
+  
+  .ai-generator-input-section {
+    padding: var(--spacing-lg);
+  }
+  
+  .ai-generator-textarea {
+    font-size: var(--font-size-sm);
+  }
+  
+  .ai-generator-results {
+    padding: var(--spacing-lg);
+  }
+  
+  .ai-prompt-content {
+    padding: var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+  
+  .ai-prompt-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .ai-generator-success-toast {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-generator-modal {
+    padding: var(--spacing-sm);
+  }
+  
+  .ai-generator-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .ai-generator-input-section,
+  .ai-generator-results {
+    padding: var(--spacing-md);
+  }
+  
+  .ai-generator-config {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+.ai-generator-modal:focus-within {
+  outline: none;
+}
+
+.ai-generator-close:focus,
+.ai-generator-select:focus,
+.ai-generator-settings-btn:focus,
+.ai-generator-generate-btn:focus,
+.ai-prompt-use-btn:focus,
+.ai-prompt-copy-btn:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   DARK MODE ADJUSTMENTS
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  .ai-generator-modal {
+    background: rgba(0, 0, 0, 0.9);
+  }
+  
+  .ai-prompt-card:hover {
+    border-color: var(--color-primary-light);
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  .ai-generator-modal {
+    display: none;
+  }
+}

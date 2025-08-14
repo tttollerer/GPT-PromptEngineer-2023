@@ -17,6 +17,9 @@ class XMLEditor {
     this.editor = null;
     this.isModified = false;
     this.originalContent = '';
+    this.isVisualMode = false;
+    this.xmlTree = null;
+    this.parsedData = null;
     
     this.init();
   }
@@ -49,8 +52,8 @@ class XMLEditor {
       // Initialize theme
       this.initializeTheme();
       
-      // Wait for CodeMirror to be ready
-      await this.waitForCodeMirror();
+      // Wait for XML Editor to be ready
+      await this.waitForXMLEditor();
       
       // Initialize UI
       this.initializeUI();
@@ -58,8 +61,8 @@ class XMLEditor {
       // Load file sizes
       await this.loadFileSizes();
       
-      // Populate file list
-      this.populateFileList();
+      // Populate file dropdown
+      this.populateFileDropdown();
       
       // Update connection status
       this.updateConnectionStatus('connected', 'Bereit');
@@ -129,27 +132,34 @@ class XMLEditor {
       }
     }
     
-    // Re-create editor with appropriate theme if it exists
-    if (this.editor && this.currentFile) {
-      const content = this.getEditorContent();
-      this.createEditor(content);
+    // Update editor theme if it exists
+    if (this.editor) {
+      if (typeof this.editor.setTheme === 'function') {
+        // AdvancedXMLEditor theme switching
+        this.editor.setTheme(theme);
+      } else if (this.currentFile) {
+        // Fallback: recreate editor with new theme
+        const content = this.getEditorContent();
+        this.createEditor(content);
+      }
     }
   }
   
-  waitForCodeMirror() {
+  waitForXMLEditor() {
     return new Promise((resolve) => {
-      if (window.CM) {
+      if (window.AdvancedXMLEditor) {
+        console.log('✅ AdvancedXMLEditor available');
         resolve();
       } else {
-        window.addEventListener('codemirror-ready', () => resolve(), { once: true });
-        
-        // Fallback timeout
+        // Wait a bit for script to load
         setTimeout(() => {
-          if (!window.CM) {
-            console.warn('⚠️ CodeMirror not loaded, will use fallback editor');
+          if (window.AdvancedXMLEditor) {
+            console.log('✅ AdvancedXMLEditor loaded successfully');
+          } else {
+            console.warn('⚠️ AdvancedXMLEditor not available, using fallback');
           }
           resolve();
-        }, 5000);
+        }, 100);
       }
     });
   }
@@ -158,20 +168,24 @@ class XMLEditor {
     // Initialize resizable window if opened in a new window
     this.initializeResize();
     
-    // File list click handler
-    const fileList = document.getElementById('xml-file-list');
-    fileList.addEventListener('click', (e) => {
-      const fileItem = e.target.closest('.file-item');
-      if (fileItem) {
-        const fileName = fileItem.dataset.filename;
+    // File dropdown change handler
+    const fileDropdown = document.getElementById('file-dropdown');
+    fileDropdown.addEventListener('change', (e) => {
+      const fileName = e.target.value;
+      if (fileName) {
         this.loadFile(fileName);
       }
     });
     
     // Toolbar buttons
-    document.getElementById('refresh-files').addEventListener('click', () => this.refreshFiles());
+    document.getElementById('refresh-files-header').addEventListener('click', () => this.refreshFiles());
     document.getElementById('format-xml').addEventListener('click', () => this.formatXML());
     document.getElementById('validate-xml').addEventListener('click', () => this.validateXML());
+    
+    // New toolbar buttons
+    document.getElementById('toggle-xml-tree').addEventListener('click', () => this.toggleXMLTree());
+    document.getElementById('toggle-visual-mode').addEventListener('click', () => this.toggleVisualMode());
+    document.getElementById('test-prompt').addEventListener('click', () => this.testPrompt());
     
     // Action buttons
     document.getElementById('save-file').addEventListener('click', () => this.saveFile());
@@ -180,6 +194,22 @@ class XMLEditor {
     
     // Tab close
     document.querySelector('.tab-close').addEventListener('click', () => this.closeFile());
+    
+    // Tree panel controls
+    document.getElementById('expand-all-tree').addEventListener('click', () => this.expandAllTreeNodes());
+    document.getElementById('collapse-all-tree').addEventListener('click', () => this.collapseAllTreeNodes());
+    document.getElementById('toggle-tree-panel').addEventListener('click', () => this.toggleXMLTree());
+    
+    // Preview panel controls
+    document.getElementById('close-preview').addEventListener('click', () => this.closeLivePreview());
+    
+    // Visual editor element buttons
+    document.querySelectorAll('.element-button').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const type = e.currentTarget.dataset.type;
+        this.addVisualElement(type);
+      });
+    });
     
     // Handle beforeunload for unsaved changes
     window.addEventListener('beforeunload', (e) => {
@@ -323,22 +353,17 @@ class XMLEditor {
     }
   }
   
-  populateFileList() {
-    const fileList = document.getElementById('xml-file-list');
-    fileList.innerHTML = '';
+  populateFileDropdown() {
+    const fileDropdown = document.getElementById('file-dropdown');
+    
+    // Clear existing options except the first one
+    fileDropdown.innerHTML = '<option value="">Datei auswählen...</option>';
     
     this.xmlFiles.forEach(file => {
-      const listItem = document.createElement('li');
-      listItem.className = 'file-item';
-      listItem.dataset.filename = file.name;
-      
-      listItem.innerHTML = `
-        <span class=\"file-icon\">${file.icon}</span>
-        <span class=\"file-name\">${file.name}</span>
-        <span class=\"file-size\">${this.formatFileSize(file.size)}</span>
-      `;
-      
-      fileList.appendChild(listItem);
+      const option = document.createElement('option');
+      option.value = file.name;
+      option.textContent = `${file.name} (${this.formatFileSize(file.size)})`;
+      fileDropdown.appendChild(option);
     });
   }
   
@@ -368,6 +393,11 @@ class XMLEditor {
       
       console.log(`✅ File loaded: ${fileName}`);
       
+      // Show success notification
+      setTimeout(() => {
+        this.showNotification(`📄 ${fileName} erfolgreich geladen`, 'success');
+      }, 500);
+      
     } catch (error) {
       console.error(`❌ Failed to load ${fileName}:`, error);
       this.showNotification(`Fehler beim Laden von ${fileName}`, 'error');
@@ -377,6 +407,8 @@ class XMLEditor {
   }
   
   async fetchFileContent(fileName) {
+    console.log(`🔍 Fetching content for: ${fileName}`);
+    
     try {
       // First try to load from chrome storage (user modifications)
       const result = await chrome.storage.local.get(fileName);
@@ -385,29 +417,129 @@ class XMLEditor {
         return result[fileName];
       }
       
-      // Fallback to original file
-      const response = await fetch(chrome.runtime.getURL(fileName));
+      // Fallback to original file - try multiple approaches
+      const fileUrl = chrome.runtime.getURL(fileName);
+      console.log(`🌐 Attempting to fetch from URL: ${fileUrl}`);
+      
+      const response = await fetch(fileUrl);
+      console.log(`📡 Fetch response status: ${response.status} ${response.statusText}`);
+      
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
       const content = await response.text();
-      console.log(`📁 Loaded ${fileName} from extension`);
+      console.log(`📁 Successfully loaded ${fileName} from extension (${content.length} chars)`);
+      
+      // Validate that we got actual XML content
+      if (!content.trim().startsWith('<?xml') && !content.trim().startsWith('<')) {
+        throw new Error(`Invalid XML content received for ${fileName}`);
+      }
+      
       return content;
       
     } catch (error) {
-      console.error(`Error fetching ${fileName}:`, error);
+      console.error(`❌ Error fetching ${fileName}:`, error);
+      console.error(`Full error details:`, {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
       
       // Return minimal XML structure as fallback
       const fallbackContent = this.getFallbackContent(fileName);
-      console.log(`🔄 Using fallback content for ${fileName}`);
+      console.log(`🔄 Using fallback content for ${fileName} (${fallbackContent.length} chars)`);
+      
+      // Show warning notification that fallback is being used
+      setTimeout(() => {
+        this.showNotification(
+          `⚠️ ${fileName} konnte nicht geladen werden - verwende Standard-Template`,
+          'warning'
+        );
+      }, 1000);
+      
       return fallbackContent;
     }
   }
   
   getFallbackContent(fileName) {
+    console.log(`🔧 Generating fallback content for: ${fileName}`);
+    
+    // Special handling for employee dropdown
+    if (fileName.includes('employee')) {
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <dropdowns>
+    <dropdown>
+      <label>Mitarbeiter Rollen</label>
+      <id>employee_roles</id>
+      <options>
+        <option>
+          <label>Geschäftsführer</label>
+          <value>Als Geschäftsführer mit langjähriger Erfahrung in der Unternehmensführung</value>
+          <id>ceo</id>
+          <additionals></additionals>
+          <additionalsHide />
+        </option>
+        <option>
+          <label>Marketing Manager</label>
+          <value>Als erfahrener Marketing Manager mit Fokus auf digitale Strategien</value>
+          <id>marketing_manager</id>
+          <additionals></additionals>
+          <additionalsHide />
+        </option>
+        <option>
+          <label>Software Entwickler</label>
+          <value>Als Senior Software Developer mit Expertise in modernen Technologien</value>
+          <id>developer</id>
+          <additionals></additionals>
+          <additionalsHide />
+        </option>
+      </options>
+    </dropdown>
+  </dropdowns>
+</data>`;
+    }
+    
+    // Special handling for tasks dropdown  
+    if (fileName.includes('tasks')) {
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <dropdowns>
+    <dropdown>
+      <label>Aufgaben</label>
+      <id>common_tasks</id>
+      <options>
+        <option>
+          <label>E-Mail schreiben</label>
+          <value>Verfasse eine professionelle E-Mail</value>
+          <id>email</id>
+          <additionals></additionals>
+          <additionalsHide />
+        </option>
+        <option>
+          <label>Präsentation erstellen</label>
+          <value>Erstelle eine überzeugende Präsentation</value>
+          <id>presentation</id>
+          <additionals></additionals>
+          <additionalsHide />
+        </option>
+        <option>
+          <label>Bericht schreiben</label>
+          <value>Schreibe einen detaillierten Bericht</value>
+          <id>report</id>
+          <additionals></additionals>
+          <additionalsHide />
+        </option>
+      </options>
+    </dropdown>
+  </dropdowns>
+</data>`;
+    }
+    
+    // Generic dropdown fallback
     if (fileName.includes('dropdown')) {
-      return `<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+      return `<?xml version="1.0" encoding="UTF-8"?>
 <data>
   <dropdowns>
     <dropdown>
@@ -421,12 +553,19 @@ class XMLEditor {
           <additionals></additionals>
           <additionalsHide />
         </option>
+        <option>
+          <label>Option 2</label>
+          <value>Dies ist ein Beispiel-Prompt für Option 2</value>
+          <id>option2</id>
+          <additionals></additionals>
+          <additionalsHide />
+        </option>
       </options>
     </dropdown>
   </dropdowns>
 </data>`;
     } else if (fileName.includes('input')) {
-      return `<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+      return `<?xml version="1.0" encoding="UTF-8"?>
 <data>
   <inputs>
     <input>
@@ -439,7 +578,7 @@ class XMLEditor {
   </inputs>
 </data>`;
     } else if (fileName.includes('checkbox')) {
-      return `<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+      return `<?xml version="1.0" encoding="UTF-8"?>
 <data>
   <checkboxes>
     <checkbox>
@@ -454,62 +593,78 @@ class XMLEditor {
     }
     
     // Default fallback
-    return `<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+    return `<?xml version="1.0" encoding="UTF-8"?>
 <data>
-  <!-- ${fileName} - Beispiel-Struktur -->
-  <!-- Fügen Sie hier Ihren XML-Inhalt hinzu -->
+  <!-- ${fileName} - Fallback-Template -->
+  <!-- Datei konnte nicht geladen werden - verwende Standard-Vorlage -->
+  <dropdowns>
+    <dropdown>
+      <label>Standard Vorlage</label>
+      <id>fallback</id>
+      <options>
+        <option>
+          <label>Beispiel Option</label>
+          <value>Dies ist ein Fallback-Prompt für ${fileName}</value>
+          <id>fallback_option</id>
+          <additionals></additionals>
+          <additionalsHide />
+        </option>
+      </options>
+    </dropdown>
+  </dropdowns>
 </data>`;
   }
   
   createEditor(content) {
-    const editorContainer = document.getElementById('editor-container');
+    const codeEditorView = document.getElementById('code-editor-view');
     
     // Clear existing editor
-    editorContainer.innerHTML = '';
+    codeEditorView.innerHTML = '';
     
-    // Create CodeMirror editor
+    // Create Advanced XML Editor
     try {
-      if (!window.CM) {
-        throw new Error('CodeMirror not available');
-      }
-      
-      const { EditorView, EditorState, basicSetup, xml, oneDark } = window.CM;
-      
-      const extensions = [
-        basicSetup,
-        xml(),
-        EditorView.updateListener.of((update) => {
-          if (update.docChanged) {
-            this.onContentChanged();
+      if (window.AdvancedXMLEditor) {
+        console.log('✅ Creating AdvancedXMLEditor');
+        
+        // Determine theme
+        const isDark = document.body.classList.contains('dark-theme');
+        
+        this.editor = new AdvancedXMLEditor(codeEditorView, {
+          theme: isDark ? 'dark' : 'light',
+          lineNumbers: true,
+          syntaxHighlighting: true,
+          wordWrap: true,
+          autoIndent: true,
+          validateXML: true,
+          placeholder: 'XML Inhalt hier eingeben...'
+        });
+        
+        // Set content
+        this.editor.setValue(content || '');
+        
+        // Add change listener
+        this.editor.on('change', () => {
+          this.onContentChanged();
+          // Update tree view if visible
+          if (document.getElementById('xml-tree-panel').style.display !== 'none') {
+            this.buildXMLTree();
           }
-        }),
-        EditorView.theme({
-          '&': { height: '100%' },
-          '.cm-scroller': { overflow: 'auto' },
-          '.cm-focused': { outline: 'none' }
-        })
-      ];
-      
-      // Add dark theme if dark mode is active
-      if (document.body.classList.contains('dark-theme')) {
-        extensions.push(oneDark);
+        });
+        
+        // Listen for cursor changes for status bar
+        codeEditorView.addEventListener('xmleditor-cursorchange', (e) => {
+          this.updateStatusBar();
+        });
+        
+        console.log('✅ AdvancedXMLEditor created successfully');
+        
+      } else {
+        throw new Error('AdvancedXMLEditor not available');
       }
-      
-      const state = EditorState.create({
-        doc: content,
-        extensions
-      });
-      
-      this.editor = new EditorView({
-        state,
-        parent: editorContainer
-      });
-      
-      console.log('✅ CodeMirror editor created');
       
     } catch (error) {
-      console.error('❌ Failed to create CodeMirror editor:', error);
-      this.createFallbackEditor(content, editorContainer);
+      console.error('❌ Failed to create AdvancedXMLEditor:', error);
+      this.createFallbackEditor(content, codeEditorView);
     }
   }
   
@@ -517,8 +672,19 @@ class XMLEditor {
     // Fallback to simple textarea if CodeMirror fails
     console.log('🔄 Using fallback textarea editor');
     
+    // Clear container first
+    const placeholder = container.querySelector('.editor-placeholder');
+    if (placeholder) {
+      placeholder.remove();
+    }
+    
     const textarea = document.createElement('textarea');
+    textarea.className = 'fallback-editor';
     textarea.value = content;
+    textarea.placeholder = 'XML Inhalt hier eingeben...';
+    
+    // Apply theme-aware styling
+    const isDark = document.body.classList.contains('dark-theme');
     textarea.style.cssText = `
       width: 100%;
       height: 100%;
@@ -529,14 +695,23 @@ class XMLEditor {
       font-size: 13px;
       line-height: 1.4;
       outline: none;
-      background: #fafafa;
-      color: #333;
+      background: ${isDark ? '#1e1e1e' : '#fafafa'};
+      color: ${isDark ? '#d4d4d4' : '#333'};
+      box-sizing: border-box;
     `;
     
     textarea.addEventListener('input', () => this.onContentChanged());
     
     container.appendChild(textarea);
-    this.editor = { getValue: () => textarea.value, setValue: (val) => textarea.value = val };
+    this.editor = { 
+      getValue: () => textarea.value, 
+      setValue: (val) => textarea.value = val,
+      dispatch: () => {}, // Dummy for compatibility
+      dom: textarea
+    };
+    
+    // Show notification about fallback mode
+    this.showNotification('Editor läuft im Kompatibilitätsmodus', 'warning');
   }
   
   onContentChanged() {
@@ -555,25 +730,25 @@ class XMLEditor {
   }
   
   getEditorContent() {
-    if (this.editor && this.editor.state) {
-      // CodeMirror 6
-      return this.editor.state.doc.toString();
-    } else if (this.editor && this.editor.getValue) {
-      // Fallback editor
+    if (this.editor && this.editor.getValue) {
+      // AdvancedXMLEditor or fallback editor
       return this.editor.getValue();
+    } else if (this.editor && this.editor.state) {
+      // Legacy CodeMirror 6 (unlikely to be used now)
+      return this.editor.state.doc.toString();
     }
     return '';
   }
   
   setEditorContent(content) {
-    if (this.editor && this.editor.dispatch) {
-      // CodeMirror 6
+    if (this.editor && this.editor.setValue) {
+      // AdvancedXMLEditor or fallback editor
+      this.editor.setValue(content);
+    } else if (this.editor && this.editor.dispatch) {
+      // Legacy CodeMirror 6 (unlikely to be used now)
       this.editor.dispatch({
         changes: { from: 0, to: this.editor.state.doc.length, insert: content }
       });
-    } else if (this.editor && this.editor.setValue) {
-      // Fallback editor
-      this.editor.setValue(content);
     }
   }
   
@@ -610,7 +785,7 @@ class XMLEditor {
       const file = this.xmlFiles.find(f => f.name === this.currentFile);
       if (file) {
         file.size = new Blob([content]).size;
-        this.populateFileList();
+        this.populateFileDropdown();
         this.updateActiveFile(this.currentFile);
       }
       
@@ -710,6 +885,18 @@ class XMLEditor {
   
   formatXML() {
     try {
+      // Use the new editor's built-in format functionality if available
+      if (this.editor && typeof this.editor.formatXML === 'function') {
+        const success = this.editor.formatXML();
+        if (success) {
+          this.showNotification('XML formatiert', 'success');
+        } else {
+          this.showNotification('Kann XML nicht formatieren: Ungültiges XML', 'error');
+        }
+        return;
+      }
+      
+      // Fallback to manual formatting
       const content = this.getEditorContent();
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(content, 'application/xml');
@@ -821,7 +1008,7 @@ class XMLEditor {
     console.log('🔄 Refreshing file list...');
     
     await this.loadFileSizes();
-    this.populateFileList();
+    this.populateFileDropdown();
     
     if (this.currentFile) {
       this.updateActiveFile(this.currentFile);
@@ -875,9 +1062,10 @@ class XMLEditor {
   }
   
   updateActiveFile(fileName) {
-    document.querySelectorAll('.file-item').forEach(item => {
-      item.classList.toggle('active', item.dataset.filename === fileName);
-    });
+    const fileDropdown = document.getElementById('file-dropdown');
+    if (fileDropdown) {
+      fileDropdown.value = fileName || '';
+    }
   }
   
   updateSaveButton(enabled) {
@@ -961,6 +1149,790 @@ class XMLEditor {
         notification.remove();
       }
     }, 5000);
+  }
+  
+  // ===== NEW METHODS FOR ENHANCED UI =====
+  
+  toggleXMLTree() {
+    const treePanel = document.getElementById('xml-tree-panel');
+    const button = document.getElementById('toggle-xml-tree');
+    
+    if (treePanel.style.display === 'none') {
+      treePanel.style.display = 'flex';
+      button.classList.add('active');
+      if (this.currentFile) {
+        this.buildXMLTree();
+      }
+    } else {
+      treePanel.style.display = 'none';
+      button.classList.remove('active');
+    }
+  }
+  
+  toggleVisualMode() {
+    const codeView = document.getElementById('code-editor-view');
+    const visualView = document.getElementById('visual-editor-view');
+    const button = document.getElementById('toggle-visual-mode');
+    
+    this.isVisualMode = !this.isVisualMode;
+    
+    if (this.isVisualMode) {
+      codeView.style.display = 'none';
+      visualView.style.display = 'flex';
+      button.classList.add('active');
+      this.buildVisualEditor();
+    } else {
+      codeView.style.display = 'flex';
+      visualView.style.display = 'none';
+      button.classList.remove('active');
+    }
+  }
+  
+  buildXMLTree() {
+    if (!this.currentFile) return;
+    
+    const container = document.getElementById('xml-tree-container');
+    container.innerHTML = '';
+    
+    try {
+      const content = this.getEditorContent();
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(content, 'text/xml');
+      
+      if (xmlDoc.querySelector('parsererror')) {
+        container.innerHTML = '<div class="tree-error">XML-Fehler: Datei kann nicht geparst werden</div>';
+        return;
+      }
+      
+      const rootElement = xmlDoc.documentElement;
+      const treeNode = this.createTreeNode(rootElement, 0);
+      container.appendChild(treeNode);
+      
+    } catch (error) {
+      console.error('Error building XML tree:', error);
+      container.innerHTML = '<div class="tree-error">Fehler beim Aufbau der Baumstruktur</div>';
+    }
+  }
+  
+  createTreeNode(element, level) {
+    const nodeDiv = document.createElement('div');
+    nodeDiv.className = 'tree-node';
+    
+    const hasChildren = element.children.length > 0;
+    const nodeContent = document.createElement('div');
+    nodeContent.className = 'tree-node-content';
+    
+    // Toggle button for expandable nodes
+    if (hasChildren) {
+      const toggle = document.createElement('button');
+      toggle.className = 'tree-node-toggle expanded';
+      toggle.innerHTML = '▶';
+      toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleTreeNode(nodeDiv);
+      });
+      nodeContent.appendChild(toggle);
+    } else {
+      const spacer = document.createElement('span');
+      spacer.style.width = '16px';
+      spacer.style.height = '16px';
+      spacer.style.display = 'inline-block';
+      nodeContent.appendChild(spacer);
+    }
+    
+    // Icon
+    const icon = document.createElement('span');
+    icon.className = 'tree-node-icon';
+    icon.innerHTML = this.getTreeNodeIcon(element.tagName);
+    nodeContent.appendChild(icon);
+    
+    // Label
+    const label = document.createElement('span');
+    label.className = 'tree-node-label';
+    label.textContent = this.getTreeNodeLabel(element);
+    nodeContent.appendChild(label);
+    
+    // Type badge
+    const type = document.createElement('span');
+    type.className = 'tree-node-type';
+    type.textContent = element.tagName;
+    nodeContent.appendChild(type);
+    
+    // Click handler to jump to position in editor
+    nodeContent.addEventListener('click', () => {
+      this.jumpToXMLElement(element);
+    });
+    
+    nodeDiv.appendChild(nodeContent);
+    
+    // Children
+    if (hasChildren) {
+      const children = document.createElement('div');
+      children.className = 'tree-node-children';
+      
+      Array.from(element.children).forEach(child => {
+        const childNode = this.createTreeNode(child, level + 1);
+        children.appendChild(childNode);
+      });
+      
+      nodeDiv.appendChild(children);
+    }
+    
+    return nodeDiv;
+  }
+  
+  getTreeNodeIcon(tagName) {
+    const icons = {
+      'dropdown': '<svg viewBox="0 0 16 16" width="14" height="14"><path d="M3,6L7,10L11,6H3Z" fill="currentColor"/></svg>',
+      'input': '<svg viewBox="0 0 16 16" width="14" height="14"><path d="M2,6H14V10H2V6Z" fill="currentColor"/></svg>',
+      'checkbox': '<svg viewBox="0 0 16 16" width="14" height="14"><path d="M2,2H14V14H2V2M4,8L7,11L12,5" fill="currentColor"/></svg>',
+      'option': '<svg viewBox="0 0 16 16" width="14" height="14"><circle cx="8" cy="8" r="3" fill="currentColor"/></svg>',
+      'label': '<svg viewBox="0 0 16 16" width="14" height="14"><path d="M2,4H14V6H2V4M2,8H10V10H2V8M2,12H12V14H2V12Z" fill="currentColor"/></svg>',
+      'value': '<svg viewBox="0 0 16 16" width="14" height="14"><path d="M2,2H14V14H2V2M4,6H12V8H4V6M4,10H10V12H4V10Z" fill="currentColor"/></svg>'
+    };
+    
+    return icons[tagName] || '<svg viewBox="0 0 16 16" width="14" height="14"><path d="M4,4H12V12H4V4Z" fill="currentColor"/></svg>';
+  }
+  
+  getTreeNodeLabel(element) {
+    const tagName = element.tagName;
+    
+    // Try to get a meaningful label
+    const labelElement = element.querySelector('label');
+    if (labelElement && labelElement.textContent.trim()) {
+      return labelElement.textContent.trim();
+    }
+    
+    const idElement = element.querySelector('id');
+    if (idElement && idElement.textContent.trim()) {
+      return idElement.textContent.trim();
+    }
+    
+    // Fallback to tag name
+    return tagName;
+  }
+  
+  toggleTreeNode(nodeDiv) {
+    const toggle = nodeDiv.querySelector('.tree-node-toggle');
+    const children = nodeDiv.querySelector('.tree-node-children');
+    
+    if (children) {
+      const isExpanded = toggle.classList.contains('expanded');
+      
+      if (isExpanded) {
+        children.style.display = 'none';
+        toggle.classList.remove('expanded');
+      } else {
+        children.style.display = 'block';
+        toggle.classList.add('expanded');
+      }
+    }
+  }
+  
+  expandAllTreeNodes() {
+    const toggles = document.querySelectorAll('.tree-node-toggle');
+    toggles.forEach(toggle => {
+      const children = toggle.closest('.tree-node').querySelector('.tree-node-children');
+      if (children) {
+        children.style.display = 'block';
+        toggle.classList.add('expanded');
+      }
+    });
+  }
+  
+  collapseAllTreeNodes() {
+    const toggles = document.querySelectorAll('.tree-node-toggle');
+    toggles.forEach(toggle => {
+      const children = toggle.closest('.tree-node').querySelector('.tree-node-children');
+      if (children) {
+        children.style.display = 'none';
+        toggle.classList.remove('expanded');
+      }
+    });
+  }
+  
+  jumpToXMLElement(element) {
+    // Clear previous selections
+    const selectedNodes = document.querySelectorAll('.tree-node-content.selected');
+    selectedNodes.forEach(node => node.classList.remove('selected'));
+    
+    // Find the corresponding tree node and select it
+    const allTreeNodes = document.querySelectorAll('.tree-node-content');
+    allTreeNodes.forEach(node => {
+      const label = node.querySelector('.tree-node-label').textContent;
+      const elementLabel = this.getTreeNodeLabel(element);
+      
+      if (label === elementLabel) {
+        node.classList.add('selected');
+      }
+    });
+    
+    // Jump to element position in CodeMirror editor
+    if (this.editor && element) {
+      try {
+        const position = this.findElementPositionInEditor(element);
+        if (position !== -1) {
+          // Move cursor to the element
+          const { EditorView } = window.CM;
+          this.editor.dispatch({
+            selection: { anchor: position, head: position },
+            effects: EditorView.scrollIntoView(position, { y: "center" })
+          });
+          
+          // Focus the editor
+          this.editor.focus();
+          
+          console.log(`🎯 Jumped to element at position ${position}`);
+        }
+      } catch (error) {
+        console.error('Error jumping to element:', error);
+      }
+    }
+  }
+  
+  findElementPositionInEditor(element) {
+    if (!this.editor) return -1;
+    
+    const editorContent = this.getEditorContent();
+    const elementLabel = this.getTreeNodeLabel(element);
+    const tagName = element.tagName;
+    
+    // Try different search patterns
+    const searchPatterns = [
+      `<${tagName}>`,
+      `<${tagName} `,
+      `<label>${elementLabel}</label>`,
+      elementLabel
+    ];
+    
+    for (const pattern of searchPatterns) {
+      const index = editorContent.indexOf(pattern);
+      if (index !== -1) {
+        return index;
+      }
+    }
+    
+    // Fallback: search for just the tag name
+    const tagIndex = editorContent.indexOf(`<${tagName}`);
+    return tagIndex !== -1 ? tagIndex : -1;
+  }
+  
+  buildVisualEditor() {
+    if (!this.currentFile) return;
+    
+    const container = document.getElementById('visual-editor-content');
+    container.innerHTML = '';
+    
+    try {
+      const content = this.getEditorContent();
+      this.parsedData = this.parseXMLForVisualEditor(content);
+      
+      if (!this.parsedData) {
+        container.innerHTML = '<div class="visual-placeholder"><h4>XML-Fehler</h4><p>Die Datei kann nicht geparst werden.</p></div>';
+        return;
+      }
+      
+      this.renderVisualElements();
+      
+    } catch (error) {
+      console.error('Error building visual editor:', error);
+      container.innerHTML = '<div class="visual-placeholder"><h4>Fehler</h4><p>Visueller Editor konnte nicht geladen werden.</p></div>';
+    }
+  }
+  
+  parseXMLForVisualEditor(content) {
+    try {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(content, 'text/xml');
+      
+      if (xmlDoc.querySelector('parsererror')) {
+        return null;
+      }
+      
+      const data = { type: this.getXMLType(), elements: [] };
+      
+      if (this.currentFile.includes('dropdown')) {
+        const dropdowns = xmlDoc.querySelectorAll('dropdown');
+        dropdowns.forEach(dropdown => {
+          data.elements.push(this.parseDropdown(dropdown));
+        });
+      } else if (this.currentFile.includes('input')) {
+        const inputs = xmlDoc.querySelectorAll('input');
+        inputs.forEach(input => {
+          data.elements.push(this.parseInput(input));
+        });
+      } else if (this.currentFile.includes('checkbox')) {
+        const checkboxes = xmlDoc.querySelectorAll('checkbox');
+        checkboxes.forEach(checkbox => {
+          data.elements.push(this.parseCheckbox(checkbox));
+        });
+      }
+      
+      return data;
+      
+    } catch (error) {
+      console.error('Error parsing XML:', error);
+      return null;
+    }
+  }
+  
+  getXMLType() {
+    if (this.currentFile.includes('dropdown')) return 'dropdown';
+    if (this.currentFile.includes('input')) return 'input';
+    if (this.currentFile.includes('checkbox')) return 'checkbox';
+    return 'unknown';
+  }
+  
+  parseDropdown(dropdown) {
+    const element = {
+      type: 'dropdown',
+      id: this.getElementText(dropdown, 'id'),
+      label: this.getElementText(dropdown, 'label'),
+      options: []
+    };
+    
+    const options = dropdown.querySelectorAll('option');
+    options.forEach(option => {
+      element.options.push({
+        id: this.getElementText(option, 'id'),
+        label: this.getElementText(option, 'label'),
+        value: this.getElementText(option, 'value'),
+        additionals: this.getElementText(option, 'additionals'),
+        additionalsHide: this.getElementText(option, 'additionalsHide')
+      });
+    });
+    
+    return element;
+  }
+  
+  parseInput(input) {
+    return {
+      type: 'input',
+      id: this.getElementText(input, 'id'),
+      label: this.getElementText(input, 'label'),
+      class: this.getElementText(input, 'class'),
+      valueBefore: this.getElementText(input, 'valueBefore'),
+      valueAfter: this.getElementText(input, 'valueAfter')
+    };
+  }
+  
+  parseCheckbox(checkbox) {
+    return {
+      type: 'checkbox',
+      id: this.getElementText(checkbox, 'id'),
+      label: this.getElementText(checkbox, 'label'),
+      value: this.getElementText(checkbox, 'value'),
+      additionals: this.getElementText(checkbox, 'additionals'),
+      additionalsHide: this.getElementText(checkbox, 'additionalsHide')
+    };
+  }
+  
+  getElementText(parent, tagName) {
+    const element = parent.querySelector(tagName);
+    return element ? element.textContent.trim() : '';
+  }
+  
+  renderVisualElements() {
+    const container = document.getElementById('visual-editor-content');
+    
+    if (!this.parsedData || !this.parsedData.elements.length) {
+      container.innerHTML = '<div class="visual-placeholder"><h4>Keine Elemente</h4><p>Fügen Sie Elemente mit den Buttons links hinzu.</p></div>';
+      return;
+    }
+    
+    container.innerHTML = '';
+    
+    this.parsedData.elements.forEach((element, index) => {
+      const elementDiv = this.createVisualElement(element, index);
+      container.appendChild(elementDiv);
+    });
+  }
+  
+  createVisualElement(element, index) {
+    const elementDiv = document.createElement('div');
+    elementDiv.className = 'visual-element';
+    elementDiv.dataset.index = index;
+    
+    // Header
+    const header = document.createElement('div');
+    header.className = 'visual-element-header';
+    
+    const title = document.createElement('div');
+    title.className = 'visual-element-title';
+    title.textContent = element.label || `${element.type} ${index + 1}`;
+    
+    const type = document.createElement('span');
+    type.className = 'visual-element-type';
+    type.textContent = element.type;
+    
+    const controls = document.createElement('div');
+    controls.className = 'visual-element-controls';
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn-icon btn-danger';
+    deleteBtn.innerHTML = '🗑️';
+    deleteBtn.title = 'Element löschen';
+    deleteBtn.addEventListener('click', () => this.deleteVisualElement(index));
+    
+    controls.appendChild(deleteBtn);
+    header.appendChild(title);
+    header.appendChild(type);
+    header.appendChild(controls);
+    
+    // Content
+    const content = document.createElement('div');
+    content.className = 'visual-element-content';
+    
+    if (element.type === 'dropdown') {
+      content.appendChild(this.createDropdownEditor(element, index));
+    } else if (element.type === 'input') {
+      content.appendChild(this.createInputEditor(element, index));
+    } else if (element.type === 'checkbox') {
+      content.appendChild(this.createCheckboxEditor(element, index));
+    }
+    
+    elementDiv.appendChild(header);
+    elementDiv.appendChild(content);
+    
+    return elementDiv;
+  }
+  
+  createDropdownEditor(element, index) {
+    const container = document.createElement('div');
+    
+    // Basic fields
+    container.appendChild(this.createField('Label', element.label, (value) => {
+      this.updateElementField(index, 'label', value);
+    }));
+    
+    container.appendChild(this.createField('ID', element.id, (value) => {
+      this.updateElementField(index, 'id', value);
+    }));
+    
+    // Options
+    const optionsLabel = document.createElement('label');
+    optionsLabel.textContent = 'Optionen:';
+    container.appendChild(optionsLabel);
+    
+    const optionsContainer = document.createElement('div');
+    optionsContainer.className = 'options-container';
+    
+    element.options.forEach((option, optionIndex) => {
+      const optionDiv = this.createOptionEditor(option, index, optionIndex);
+      optionsContainer.appendChild(optionDiv);
+    });
+    
+    container.appendChild(optionsContainer);
+    
+    // Add option button
+    const addBtn = document.createElement('button');
+    addBtn.textContent = '+ Option hinzufügen';
+    addBtn.className = 'btn-secondary';
+    addBtn.addEventListener('click', () => this.addOption(index));
+    container.appendChild(addBtn);
+    
+    return container;
+  }
+  
+  createOptionEditor(option, elementIndex, optionIndex) {
+    const container = document.createElement('div');
+    container.className = 'option-editor';
+    container.style.border = '1px solid var(--border)';
+    container.style.borderRadius = 'var(--radius-small)';
+    container.style.padding = '12px';
+    container.style.marginBottom = '8px';
+    
+    container.appendChild(this.createField('Label', option.label, (value) => {
+      this.updateOptionField(elementIndex, optionIndex, 'label', value);
+    }));
+    
+    container.appendChild(this.createField('Prompt-Text', option.value, (value) => {
+      this.updateOptionField(elementIndex, optionIndex, 'value', value);
+    }, 'textarea'));
+    
+    container.appendChild(this.createField('ID', option.id, (value) => {
+      this.updateOptionField(elementIndex, optionIndex, 'id', value);
+    }));
+    
+    // Delete option button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Option löschen';
+    deleteBtn.className = 'btn-secondary btn-danger';
+    deleteBtn.style.marginTop = '8px';
+    deleteBtn.addEventListener('click', () => this.deleteOption(elementIndex, optionIndex));
+    container.appendChild(deleteBtn);
+    
+    return container;
+  }
+  
+  createInputEditor(element, index) {
+    const container = document.createElement('div');
+    
+    container.appendChild(this.createField('Label', element.label, (value) => {
+      this.updateElementField(index, 'label', value);
+    }));
+    
+    container.appendChild(this.createField('ID', element.id, (value) => {
+      this.updateElementField(index, 'id', value);
+    }));
+    
+    container.appendChild(this.createField('Text davor', element.valueBefore, (value) => {
+      this.updateElementField(index, 'valueBefore', value);
+    }));
+    
+    container.appendChild(this.createField('Text danach', element.valueAfter, (value) => {
+      this.updateElementField(index, 'valueAfter', value);
+    }));
+    
+    return container;
+  }
+  
+  createCheckboxEditor(element, index) {
+    const container = document.createElement('div');
+    
+    container.appendChild(this.createField('Label', element.label, (value) => {
+      this.updateElementField(index, 'label', value);
+    }));
+    
+    container.appendChild(this.createField('ID', element.id, (value) => {
+      this.updateElementField(index, 'id', value);
+    }));
+    
+    container.appendChild(this.createField('Prompt-Text', element.value, (value) => {
+      this.updateElementField(index, 'value', value);
+    }, 'textarea'));
+    
+    return container;
+  }
+  
+  createField(label, value, onChange, type = 'input') {
+    const field = document.createElement('div');
+    field.className = 'visual-field';
+    
+    const labelEl = document.createElement('label');
+    labelEl.textContent = label;
+    field.appendChild(labelEl);
+    
+    const input = document.createElement(type);
+    input.value = value || '';
+    input.addEventListener('input', (e) => {
+      onChange(e.target.value);
+      this.onContentChanged();
+    });
+    
+    field.appendChild(input);
+    return field;
+  }
+  
+  updateElementField(elementIndex, field, value) {
+    if (this.parsedData && this.parsedData.elements[elementIndex]) {
+      this.parsedData.elements[elementIndex][field] = value;
+      this.syncVisualToCode();
+    }
+  }
+  
+  updateOptionField(elementIndex, optionIndex, field, value) {
+    if (this.parsedData && 
+        this.parsedData.elements[elementIndex] && 
+        this.parsedData.elements[elementIndex].options &&
+        this.parsedData.elements[elementIndex].options[optionIndex]) {
+      this.parsedData.elements[elementIndex].options[optionIndex][field] = value;
+      this.syncVisualToCode();
+    }
+  }
+  
+  addOption(elementIndex) {
+    if (this.parsedData && this.parsedData.elements[elementIndex]) {
+      const newOption = {
+        id: '',
+        label: 'Neue Option',
+        value: '',
+        additionals: '',
+        additionalsHide: ''
+      };
+      
+      this.parsedData.elements[elementIndex].options.push(newOption);
+      this.renderVisualElements();
+      this.syncVisualToCode();
+    }
+  }
+  
+  deleteOption(elementIndex, optionIndex) {
+    if (this.parsedData && 
+        this.parsedData.elements[elementIndex] && 
+        this.parsedData.elements[elementIndex].options) {
+      this.parsedData.elements[elementIndex].options.splice(optionIndex, 1);
+      this.renderVisualElements();
+      this.syncVisualToCode();
+    }
+  }
+  
+  deleteVisualElement(index) {
+    if (this.parsedData && this.parsedData.elements[index]) {
+      this.parsedData.elements.splice(index, 1);
+      this.renderVisualElements();
+      this.syncVisualToCode();
+    }
+  }
+  
+  addVisualElement(type) {
+    if (!this.parsedData) {
+      this.parsedData = { type: type, elements: [] };
+    }
+    
+    let newElement;
+    
+    if (type === 'dropdown') {
+      newElement = {
+        type: 'dropdown',
+        id: '',
+        label: 'Neuer Dropdown',
+        options: [{
+          id: '',
+          label: 'Option 1',
+          value: '',
+          additionals: '',
+          additionalsHide: ''
+        }]
+      };
+    } else if (type === 'input') {
+      newElement = {
+        type: 'input',
+        id: '',
+        label: 'Neues Input',
+        class: 'prompt-generator-input',
+        valueBefore: '',
+        valueAfter: ''
+      };
+    } else if (type === 'checkbox') {
+      newElement = {
+        type: 'checkbox',
+        id: '',
+        label: 'Neue Checkbox',
+        value: '',
+        additionals: '',
+        additionalsHide: ''
+      };
+    }
+    
+    this.parsedData.elements.push(newElement);
+    this.renderVisualElements();
+    this.syncVisualToCode();
+  }
+  
+  syncVisualToCode() {
+    if (!this.parsedData || !this.isVisualMode) return;
+    
+    const xmlContent = this.generateXMLFromParsedData();
+    
+    if (this.editor && this.getEditorContent() !== xmlContent) {
+      this.setEditorContent(xmlContent);
+    }
+  }
+  
+  generateXMLFromParsedData() {
+    if (!this.parsedData) return '';
+    
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<data>\n';
+    
+    if (this.parsedData.type === 'dropdown') {
+      xml += '  <dropdowns>\n';
+      this.parsedData.elements.forEach(element => {
+        xml += '    <dropdown>\n';
+        xml += `      <label>${this.escapeXML(element.label)}</label>\n`;
+        xml += `      <id>${this.escapeXML(element.id)}</id>\n`;
+        xml += '      <options>\n';
+        
+        element.options.forEach(option => {
+          xml += '        <option>\n';
+          xml += `          <label>${this.escapeXML(option.label)}</label>\n`;
+          xml += `          <value>${this.escapeXML(option.value)}</value>\n`;
+          xml += `          <id>${this.escapeXML(option.id)}</id>\n`;
+          xml += `          <additionals>${this.escapeXML(option.additionals)}</additionals>\n`;
+          xml += '          <additionalsHide />\n';
+          xml += '        </option>\n';
+        });
+        
+        xml += '      </options>\n';
+        xml += '    </dropdown>\n';
+      });
+      xml += '  </dropdowns>\n';
+      
+    } else if (this.parsedData.type === 'input') {
+      xml += '  <inputs>\n';
+      this.parsedData.elements.forEach(element => {
+        xml += '    <input>\n';
+        xml += `      <label>${this.escapeXML(element.label)}</label>\n`;
+        xml += `      <id>${this.escapeXML(element.id)}</id>\n`;
+        xml += `      <class>${this.escapeXML(element.class)}</class>\n`;
+        xml += `      <valueBefore>${this.escapeXML(element.valueBefore)}</valueBefore>\n`;
+        xml += `      <valueAfter>${this.escapeXML(element.valueAfter)}</valueAfter>\n`;
+        xml += '    </input>\n';
+      });
+      xml += '  </inputs>\n';
+      
+    } else if (this.parsedData.type === 'checkbox') {
+      xml += '  <checkboxes>\n';
+      this.parsedData.elements.forEach(element => {
+        xml += '    <checkbox>\n';
+        xml += `      <label>${this.escapeXML(element.label)}</label>\n`;
+        xml += `      <id>${this.escapeXML(element.id)}</id>\n`;
+        xml += `      <value>${this.escapeXML(element.value)}</value>\n`;
+        xml += `      <additionals>${this.escapeXML(element.additionals)}</additionals>\n`;
+        xml += '      <additionalsHide />\n';
+        xml += '    </checkbox>\n';
+      });
+      xml += '  </checkboxes>\n';
+    }
+    
+    xml += '</data>';
+    return xml;
+  }
+  
+  escapeXML(text) {
+    if (!text) return '';
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  
+  testPrompt() {
+    const previewPanel = document.getElementById('live-preview-panel');
+    previewPanel.style.display = 'flex';
+    
+    this.updateLivePreview();
+  }
+  
+  updateLivePreview() {
+    if (!this.parsedData) return;
+    
+    const previewText = document.getElementById('preview-text');
+    let prompt = 'Beispiel-Prompt:\n\n';
+    
+    this.parsedData.elements.forEach(element => {
+      if (element.type === 'dropdown' && element.options.length > 0) {
+        const firstOption = element.options[0];
+        if (firstOption.value) {
+          prompt += firstOption.value + '\n\n';
+        }
+      } else if (element.type === 'input') {
+        prompt += `${element.valueBefore}[${element.label}]${element.valueAfter}\n\n`;
+      } else if (element.type === 'checkbox') {
+        if (element.value) {
+          prompt += element.value + '\n\n';
+        }
+      }
+    });
+    
+    previewText.textContent = prompt.trim() || 'Keine Vorschau verfügbar';
+  }
+  
+  closeLivePreview() {
+    const previewPanel = document.getElementById('live-preview-panel');
+    previewPanel.style.display = 'none';
   }
 }
 
