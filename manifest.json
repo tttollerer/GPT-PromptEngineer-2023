@@ -13,9 +13,11 @@
     "activeTab",
     "storage"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
-    "default_popup": "popup.html",
-    "default_title": "PromptEngineer XML Editor",
+    "default_title": "PromptEngineer - Klicken für XML Editor",
     "default_icon": {
       "16": "Images/icon16.png",
       "48": "Images/icon48.png",
@@ -75,7 +77,8 @@
       "Images/icon48.png",
       "Images/icon16.png",
       "Images/OnOff.png",
-      "engine/content_script.js"],
+      "engine/content_script.js",
+      "background.js"],
     "run_at": "document_idle",
     "use_dynamic_url": false,
     "matches": [

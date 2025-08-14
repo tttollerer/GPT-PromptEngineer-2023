@@ -1,6 +1,7 @@
 let firstDropdownsUnhidable = 6;
 let dropdownsAdded = false;
 let initCalled = false;
+let isInitializing = true; // Flag to prevent unwanted updateTextfieldContent calls during init
 let container;
 let toggleButtonAdded = false;
 let xmlData;
@@ -9,6 +10,16 @@ let activePrompts = {
   checkboxes: [],
   dropdowns: [],
   inputs: []
+};
+
+// Separate tracking for user's own text
+let userOwnText = '';
+
+// Prompt history for exact tracking
+let promptHistory = {
+  all: new Set(),      // All prompts ever used
+  active: new Set(),   // Currently active prompts
+  lastKnownContent: '' // Last known full content for comparison
 };
 
 // Track resources for cleanup
@@ -107,10 +118,144 @@ function createSettingsPanel() {
   settingItem2.appendChild(label2);
   settingItem2.appendChild(description2);
   
+  // XML Editor Button Section
+  const editorSection = document.createElement('div');
+  editorSection.className = 'settings-section';
+  editorSection.style.cssText = 'margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);';
+  
+  const editorTitle = document.createElement('h4');
+  editorTitle.textContent = 'XML Editor';
+  editorTitle.style.cssText = 'margin-bottom: 10px; color: var(--white);';
+  
+  const editorButtons = document.createElement('div');
+  editorButtons.style.cssText = 'display: flex; gap: 10px; flex-wrap: wrap;';
+  
+  // Open in Popup Button
+  const openEditorButton = document.createElement('button');
+  openEditorButton.className = 'btn-primary';
+  openEditorButton.innerHTML = `
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+      <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    </svg>
+    XML Editor öffnen
+  `;
+  openEditorButton.style.cssText = `
+    padding: 8px 16px;
+    background: var(--light-green);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+  `;
+  openEditorButton.onmouseover = () => openEditorButton.style.background = '#0056cc';
+  openEditorButton.onmouseout = () => openEditorButton.style.background = 'var(--light-green)';
+  
+  // Open in Window Button
+  const openInWindowButton = document.createElement('button');
+  openInWindowButton.className = 'btn-secondary';
+  openInWindowButton.innerHTML = `
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+      <polyline points="15,3 21,3 21,9"/>
+      <line x1="10" y1="14" x2="21" y2="3"/>
+    </svg>
+    In neuem Fenster öffnen
+  `;
+  openInWindowButton.style.cssText = `
+    padding: 8px 16px;
+    background: transparent;
+    color: var(--white);
+    border: 1px solid var(--light-green);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+  `;
+  openInWindowButton.onmouseover = () => openInWindowButton.style.background = 'rgba(1, 107, 255, 0.1)';
+  openInWindowButton.onmouseout = () => openInWindowButton.style.background = 'transparent';
+  
+  const editorDescription = document.createElement('div');
+  editorDescription.className = 'setting-description';
+  editorDescription.style.cssText = 'margin-top: 10px;';
+  editorDescription.textContent = 'Bearbeite die XML-Dateien für Dropdown-Optionen, Input-Felder und Checkboxen';
+  
+  const editorStatus = document.createElement('div');
+  editorStatus.id = 'editor-open-status';
+  editorStatus.style.cssText = 'margin-top: 5px; font-size: 11px; color: var(--light-green); display: none;';
+  
+  editorButtons.appendChild(openEditorButton);
+  editorButtons.appendChild(openInWindowButton);
+  editorSection.appendChild(editorTitle);
+  editorSection.appendChild(editorButtons);
+  editorSection.appendChild(editorDescription);
+  editorSection.appendChild(editorStatus);
+  
+  // Event Listeners for Editor Buttons
+  openEditorButton.addEventListener('click', async () => {
+    try {
+      const statusDiv = document.getElementById('editor-open-status');
+      statusDiv.style.display = 'block';
+      statusDiv.style.color = 'var(--light-green)';
+      statusDiv.textContent = '⏳ Öffne XML Editor...';
+      
+      const response = await chrome.runtime.sendMessage({ action: 'openXMLEditor' });
+      
+      if (response.success) {
+        statusDiv.textContent = '✓ XML Editor geöffnet';
+        setTimeout(() => {
+          statusDiv.style.display = 'none';
+        }, 2000);
+      } else if (response.fallback) {
+        statusDiv.style.color = '#ff9800';
+        statusDiv.innerHTML = '⚠ Bitte klicke auf das Extension-Icon <img src="' + chrome.runtime.getURL('Images/icon16.png') + '" style="width: 16px; height: 16px; vertical-align: middle; margin: 0 4px;"> in der Chrome-Toolbar';
+      } else {
+        statusDiv.style.color = '#f44336';
+        statusDiv.textContent = '❌ Fehler: ' + response.message;
+      }
+    } catch (error) {
+      console.error('Error opening XML Editor:', error);
+      const statusDiv = document.getElementById('editor-open-status');
+      statusDiv.style.display = 'block';
+      statusDiv.style.color = '#f44336';
+      statusDiv.textContent = '❌ Fehler beim Öffnen des Editors';
+    }
+  });
+  
+  openInWindowButton.addEventListener('click', async () => {
+    try {
+      const statusDiv = document.getElementById('editor-open-status');
+      statusDiv.style.display = 'block';
+      statusDiv.style.color = 'var(--light-green)';
+      statusDiv.textContent = '⏳ Öffne XML Editor in neuem Fenster...';
+      
+      const response = await chrome.runtime.sendMessage({ action: 'openInNewWindow' });
+      
+      if (response.success) {
+        statusDiv.textContent = '✓ XML Editor in neuem Fenster geöffnet';
+        setTimeout(() => {
+          statusDiv.style.display = 'none';
+        }, 2000);
+      } else {
+        statusDiv.style.color = '#f44336';
+        statusDiv.textContent = '❌ Fehler: ' + response.message;
+      }
+    } catch (error) {
+      console.error('Error opening XML Editor in window:', error);
+      const statusDiv = document.getElementById('editor-open-status');
+      statusDiv.style.display = 'block';
+      statusDiv.style.color = '#f44336';
+      statusDiv.textContent = '❌ Fehler beim Öffnen des Editor-Fensters';
+    }
+  });
+  
   // Assemble everything
   settingsContent.appendChild(settingsHeader);
   settingsContent.appendChild(settingItem1);
   settingsContent.appendChild(settingItem2);
+  settingsContent.appendChild(editorSection);
   settingsPanel.appendChild(settingsContent);
   
   // Event listeners
@@ -203,6 +348,16 @@ function hideSettingsPanel() {
 
 // Make functions available globally for TopBar
 window.toggleSettingsPanel = toggleSettingsPanel;
+
+// Listen for messages from background script
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'openSettingsPanel') {
+    console.log('[ContentScript] Received request to open settings panel from:', message.source);
+    toggleSettingsPanel();
+    sendResponse({ success: true });
+    return true;
+  }
+});
 
 // ProseMirror styling observer
 let proseMirrorObserver = null;
@@ -299,6 +454,41 @@ function setupProseMirrorObserver(targetNode, extensionPrompts) {
   });
 }
 
+// Helper function to escape regex special characters
+function escapeRegex(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Function to remove a specific prompt from content
+function removePromptFromContent(content, promptToRemove) {
+  if (!content || !promptToRemove) return content;
+  
+  // Create regex that handles the prompt with surrounding whitespace/newlines
+  // This ensures clean removal without leaving extra blank lines
+  const escapedPrompt = escapeRegex(promptToRemove);
+  
+  // Try different patterns to ensure clean removal
+  const patterns = [
+    new RegExp(escapedPrompt + '\\s*\\n\\s*\\n', 'g'),  // Prompt with double newline after
+    new RegExp(escapedPrompt + '\\s*\\n', 'g'),         // Prompt with single newline after
+    new RegExp('\\n\\s*' + escapedPrompt + '\\s*\\n', 'g'), // Prompt with newlines before and after
+    new RegExp(escapedPrompt, 'g')                      // Just the prompt itself as fallback
+  ];
+  
+  let cleanedContent = content;
+  for (const pattern of patterns) {
+    const beforeLength = cleanedContent.length;
+    cleanedContent = cleanedContent.replace(pattern, '\n');
+    if (cleanedContent.length < beforeLength) {
+      // Successfully removed, clean up any multiple newlines
+      cleanedContent = cleanedContent.replace(/\n{3,}/g, '\n\n').trim();
+      break;
+    }
+  }
+  
+  return cleanedContent;
+}
+
 // Universal helper functions for different element types
 function getElementContent(element) {
   if (!element) return '';
@@ -364,135 +554,161 @@ function highlightDetectedTextfield() {
 }
 
 function updateTextfieldContent() {
+  // Prevent execution during initialization phase
+  if (isInitializing) {
+    if (window.errorHandler && window.errorHandler.debugMode) {
+      console.log("⚠️ updateTextfieldContent: Skipped during initialization");
+    }
+    return;
+  }
+  
   const targetNode = document.querySelector(window.getSelector());
   if (!targetNode) {
-    console.log("⚠️ updateTextfieldContent: Kein targetNode gefunden");
+    if (window.errorHandler && window.errorHandler.debugMode) {
+      console.log("⚠️ updateTextfieldContent: Kein targetNode gefunden");
+    }
     return;
   }
 
   if (window.errorHandler && window.errorHandler.debugMode) {
     console.log("🔄 updateTextfieldContent: Starte Update...");
-    console.log("📋 Element:", targetNode);
     console.log("📊 Active prompts:", activePrompts);
+    console.log("📦 Prompt history active:", Array.from(promptHistory.active));
   }
 
-  // Get current content and extract user text (preserve user content)
+  // Get current content
   let currentContent = getElementContent(targetNode);
-  let userText = extractUserText(currentContent);
+  
+  // Extract and preserve user's own text
+  // We do this by removing all known extension prompts from the current content
+  let cleanedContent = currentContent;
+  
+  // Remove all known extension prompts (both active and inactive) to isolate user text
+  promptHistory.all.forEach(knownPrompt => {
+    cleanedContent = removePromptFromContent(cleanedContent, knownPrompt);
+  });
+  
+  // What remains is the user's own text
+  userOwnText = cleanedContent.trim();
   
   if (window.errorHandler && window.errorHandler.debugMode) {
-    console.log("📄 Current content:", currentContent);
-    console.log("👤 User text:", userText);
+    console.log("👤 Extracted user text:", userOwnText);
   }
   
-  // Build extension prompts
-  let extensionPrompts = [];
+  // Build list of currently active extension prompts
+  let activeExtensionPrompts = [];
   
   // Add dropdown prompts
   activePrompts.dropdowns.forEach(promptObj => {
     if (promptObj.text && promptObj.text.trim()) {
-      extensionPrompts.push(promptObj.text);
+      const prompt = promptObj.text.trim();
+      activeExtensionPrompts.push(prompt);
+      promptHistory.all.add(prompt);
+      promptHistory.active.add(prompt);
     }
   });
   
   // Add checkbox prompts
   activePrompts.checkboxes.forEach(prompt => {
-    if (prompt.trim()) extensionPrompts.push(prompt);
+    if (prompt && prompt.trim()) {
+      const trimmedPrompt = prompt.trim();
+      activeExtensionPrompts.push(trimmedPrompt);
+      promptHistory.all.add(trimmedPrompt);
+      promptHistory.active.add(trimmedPrompt);
+    }
   });
   
   // Add input prompts
-  activePrompts.inputs.forEach(prompt => {
-    if (prompt.trim()) extensionPrompts.push(prompt);
+  activePrompts.inputs.forEach(promptObj => {
+    if (promptObj.text && promptObj.text.trim()) {
+      const prompt = promptObj.text.trim();
+      activeExtensionPrompts.push(prompt);
+      promptHistory.all.add(prompt);
+      promptHistory.active.add(prompt);
+    }
+  });
+  
+  // Clean up prompt history - remove inactive prompts
+  promptHistory.active.forEach(prompt => {
+    const isStillActive = activeExtensionPrompts.includes(prompt);
+    if (!isStillActive) {
+      promptHistory.active.delete(prompt);
+    }
   });
   
   if (window.errorHandler && window.errorHandler.debugMode) {
-    console.log("🎯 Extension prompts:", extensionPrompts);
-    console.log("🔧 DEBUG - extensionPrompts.length:", extensionPrompts.length);
-    console.log("🔧 DEBUG - extensionSettings.highlightPrompts:", extensionSettings.highlightPrompts);
-    console.log("🔧 DEBUG - targetNode.contentEditable:", targetNode.contentEditable);
+    console.log("🎯 Active extension prompts:", activeExtensionPrompts);
   }
   
-  // Combine prompts with user text
+  // Build new content: Extension prompts + User text
   let newContent = '';
   
-  if (extensionPrompts.length > 0) {
+  if (activeExtensionPrompts.length > 0) {
     if (extensionSettings.highlightPrompts && targetNode.contentEditable === 'true') {
-      // Apply highlighting for contenteditable elements - SAFELY
-      // Clear the target node first
+      // Apply highlighting for contenteditable elements
       targetNode.textContent = '';
       
-      // Create highlighted elements safely
-      extensionPrompts.forEach((prompt, index) => {
+      // Add extension prompts with highlighting
+      activeExtensionPrompts.forEach((prompt, index) => {
         const className = index % 2 === 0 ? 'even' : 'odd';
         
-        // Create span element safely
         const span = document.createElement('span');
         span.className = `prompt-highlight ${className}`;
         span.textContent = prompt;
-        
-        // Apply styles directly for better control
         span.style.color = className === 'even' ? '#4A9EFF' : '#1E7CE8';
         span.style.fontWeight = 'bold';
         
         targetNode.appendChild(span);
         
-        // Add line breaks between prompts
-        if (index < extensionPrompts.length - 1) {
+        if (index < activeExtensionPrompts.length - 1) {
           targetNode.appendChild(document.createElement('br'));
           targetNode.appendChild(document.createElement('br'));
         }
       });
       
-      // Add line breaks after all prompts
-      targetNode.appendChild(document.createElement('br'));
-      targetNode.appendChild(document.createElement('br'));
-      
-      // Add user text if present
-      if (userText.trim()) {
-        targetNode.appendChild(document.createTextNode(userText));
+      // Add separator between extension prompts and user text
+      if (userOwnText) {
+        targetNode.appendChild(document.createElement('br'));
+        targetNode.appendChild(document.createElement('br'));
+        targetNode.appendChild(document.createTextNode(userOwnText));
       }
       
       if (window.errorHandler && window.errorHandler.debugMode) {
-        console.log("✨ Applied highlighting to prompts:", extensionPrompts.length);
+        console.log("✨ Applied highlighting to prompts:", activeExtensionPrompts.length);
       }
       
-      // Set up observer to maintain styling if ProseMirror removes it
-      if (targetNode.classList.contains('ProseMirror')) {
-        setupProseMirrorObserver(targetNode, extensionPrompts);
+      // Set up observer for ProseMirror if needed (only after initialization)
+      if (!isInitializing && targetNode.classList.contains('ProseMirror')) {
+        setupProseMirrorObserver(targetNode, activeExtensionPrompts);
       }
     } else {
-      // No highlighting or textarea element
-      newContent = extensionPrompts.join('\n\n') + '\n\n';
-      if (userText.trim()) {
-        newContent += userText;
+      // No highlighting or textarea element - use plain text
+      if (activeExtensionPrompts.length > 0) {
+        newContent = activeExtensionPrompts.join('\n\n');
       }
       
-      if (extensionSettings.highlightPrompts && targetNode.contentEditable !== 'true') {
-        if (window.errorHandler && window.errorHandler.debugMode) {
-          console.log("⚠️ Highlighting is enabled but not supported for this element type:", targetNode.tagName, "- highlighting only works with contentEditable elements");
+      if (userOwnText) {
+        if (newContent) {
+          newContent += '\n\n' + userOwnText;
+        } else {
+          newContent = userOwnText;
         }
       }
       
-      // Use normal content setting
+      // Set the combined content
       setElementContent(targetNode, newContent);
     }
   } else {
-    // No extension prompts, just set user text
-    if (userText.trim()) {
-      setElementContent(targetNode, userText);
-    }
-  }
-  
-  if (window.errorHandler && window.errorHandler.debugMode) {
-    console.log("📝 Content updated");
-    console.log("🎨 Highlighting enabled:", extensionSettings.highlightPrompts);
-    console.log("🎯 Target element type:", targetNode.tagName, "contentEditable:", targetNode.contentEditable);
+    // No extension prompts active, just restore user text
+    setElementContent(targetNode, userOwnText);
   }
   
   // Trigger appropriate events
   triggerElementUpdate(targetNode);
   
-  console.log("✅ updateTextfieldContent: Update abgeschlossen");
+  if (window.errorHandler && window.errorHandler.debugMode) {
+    console.log("✅ updateTextfieldContent: Update abgeschlossen");
+  }
 }
 
 function extractUserText(content) {
@@ -595,8 +811,30 @@ async function init() {
 
 
 
+  // Ensure activePrompts are empty during initialization
+  activePrompts = {
+    checkboxes: [],
+    dropdowns: [],
+    inputs: []
+  };
+  
+  // Clear prompt history to ensure clean state
+  promptHistory = {
+    all: new Set(),
+    active: new Set(),
+    lastKnownContent: ''
+  };
+  userOwnText = '';
+
   window.buildUI(xmlData);
   addEventListeners(container);
+  
+  // Mark initialization as complete and make flag globally available
+  isInitializing = false;
+  window.isInitializing = false;
+  if (window.errorHandler && window.errorHandler.debugMode) {
+    console.log("✅ Extension initialization completed - user interactions now enabled");
+  }
 }
 
 
@@ -720,32 +958,44 @@ function addEventListeners(container) {
 
   // Handle checkbox styling and live prompt updates
   container.addEventListener("change", function (event) {
-    console.log("🎯 Extension Change Event triggered:", event.target.type, event.target);
+    if (window.errorHandler && window.errorHandler.debugMode) {
+      console.log("🎯 Extension Change Event triggered:", event.target.type, event.target);
+    }
     
     if (event.target.type === 'checkbox') {
-      console.log("📋 Checkbox Event - ID:", event.target.id, "Checked:", event.target.checked, "Value:", event.target.value);
+      if (window.errorHandler && window.errorHandler.debugMode) {
+        console.log("📋 Checkbox Event - ID:", event.target.id, "Checked:", event.target.checked, "Value:", event.target.value);
+      }
       
       const checkboxLabel = event.target.parentElement;
+      const checkboxValue = event.target.value;
+      
       if (event.target.checked) {
         checkboxLabel.classList.add('active');
         // Add checkbox prompt to active prompts
-        const checkboxValue = event.target.value;
-        console.log("➕ Adding checkbox prompt:", checkboxValue);
         if (checkboxValue && !activePrompts.checkboxes.includes(checkboxValue)) {
           activePrompts.checkboxes.push(checkboxValue);
+          if (window.errorHandler && window.errorHandler.debugMode) {
+            console.log("➕ Adding checkbox prompt:", checkboxValue);
+          }
         }
       } else {
         checkboxLabel.classList.remove('active');
         // Remove checkbox prompt from active prompts
-        const checkboxValue = event.target.value;
-        console.log("➖ Removing checkbox prompt:", checkboxValue);
         activePrompts.checkboxes = activePrompts.checkboxes.filter(prompt => prompt !== checkboxValue);
+        if (window.errorHandler && window.errorHandler.debugMode) {
+          console.log("➖ Removing checkbox prompt:", checkboxValue);
+        }
       }
       
-      console.log("📊 Updated activePrompts.checkboxes:", activePrompts.checkboxes);
-      console.log("🔄 Calling updateTextfieldContent...");
+      if (window.errorHandler && window.errorHandler.debugMode) {
+        console.log("📊 Updated activePrompts.checkboxes:", activePrompts.checkboxes);
+        console.log("🔄 Calling updateTextfieldContent...");
+      }
       updateTextfieldContent();
-      console.log("✅ Checkbox event handling completed");
+      if (window.errorHandler && window.errorHandler.debugMode) {
+        console.log("✅ Checkbox event handling completed");
+      }
       return;
     }
 
@@ -760,8 +1010,10 @@ function addEventListeners(container) {
     const dropdownId = event.target.id;
     const selectedText = selectedOption.dataset.text;
     
-    console.log("🔽 Dropdown Event - ID:", dropdownId, "Selected text:", selectedText);
-    console.log("📋 Selected option:", selectedOption);
+    if (window.errorHandler && window.errorHandler.debugMode) {
+      console.log("🔽 Dropdown Event - ID:", dropdownId, "Selected text:", selectedText);
+      console.log("📋 Selected option:", selectedOption);
+    }
     
     if (selectedText) {
       // Find and update or add dropdown prompt
@@ -775,22 +1027,32 @@ function addEventListeners(container) {
       
       const promptObj = { id: dropdownId, text: selectedText };
       if (foundIndex >= 0) {
-        console.log("🔄 Updating existing dropdown prompt at index:", foundIndex);
+        if (window.errorHandler && window.errorHandler.debugMode) {
+          console.log("🔄 Updating existing dropdown prompt at index:", foundIndex);
+        }
         activePrompts.dropdowns[foundIndex] = promptObj;
       } else {
-        console.log("➕ Adding new dropdown prompt:", promptObj);
+        if (window.errorHandler && window.errorHandler.debugMode) {
+          console.log("➕ Adding new dropdown prompt:", promptObj);
+        }
         activePrompts.dropdowns.push(promptObj);
       }
     } else {
-      console.log("➖ Removing dropdown prompt for ID:", dropdownId);
+      if (window.errorHandler && window.errorHandler.debugMode) {
+        console.log("➖ Removing dropdown prompt for ID:", dropdownId);
+      }
       // Remove prompt if no selection
       activePrompts.dropdowns = activePrompts.dropdowns.filter(prompt => prompt.id !== dropdownId);
     }
     
-    console.log("📊 Updated activePrompts.dropdowns:", activePrompts.dropdowns);
-    console.log("🔄 Calling updateTextfieldContent...");
+    if (window.errorHandler && window.errorHandler.debugMode) {
+      console.log("📊 Updated activePrompts.dropdowns:", activePrompts.dropdowns);
+      console.log("🔄 Calling updateTextfieldContent...");
+    }
     updateTextfieldContent();
-    console.log("✅ Dropdown event handling completed");
+    if (window.errorHandler && window.errorHandler.debugMode) {
+      console.log("✅ Dropdown event handling completed");
+    }
 
     if (selectedOption.dataset && selectedOption.dataset.additionals) {
       const ids = selectedOption.dataset.additionals.split(',');
@@ -842,7 +1104,9 @@ function addEventListeners(container) {
   // Handle input field changes for highlighting updates
   container.addEventListener("input", function (event) {
     if (event.target.type === 'text' && event.target.classList.contains('prompt-generator-input')) {
-      console.log("📝 Input Event - ID:", event.target.id, "Value:", event.target.value);
+      if (window.errorHandler && window.errorHandler.debugMode) {
+        console.log("📝 Input Event - ID:", event.target.id, "Value:", event.target.value);
+      }
       
       const inputId = event.target.id;
       const inputValue = event.target.value.trim();
@@ -867,29 +1131,39 @@ function addEventListeners(container) {
       if (completePrompt) {
         const promptObj = { id: inputId, text: completePrompt };
         if (foundIndex >= 0) {
-          console.log("🔄 Updating existing input prompt at index:", foundIndex);
+          if (window.errorHandler && window.errorHandler.debugMode) {
+            console.log("🔄 Updating existing input prompt at index:", foundIndex);
+          }
           activePrompts.inputs[foundIndex] = promptObj;
         } else {
-          console.log("➕ Adding new input prompt:", promptObj);
+          if (window.errorHandler && window.errorHandler.debugMode) {
+            console.log("➕ Adding new input prompt:", promptObj);
+          }
           activePrompts.inputs.push(promptObj);
         }
       } else {
         // Remove prompt if input is empty
         if (foundIndex >= 0) {
-          console.log("➖ Removing input prompt for ID:", inputId);
+          if (window.errorHandler && window.errorHandler.debugMode) {
+            console.log("➖ Removing input prompt for ID:", inputId);
+          }
           activePrompts.inputs.splice(foundIndex, 1);
         }
       }
       
-      console.log("📊 Updated activePrompts.inputs:", activePrompts.inputs);
-      console.log("🔄 Calling updateTextfieldContent...");
+      if (window.errorHandler && window.errorHandler.debugMode) {
+        console.log("📊 Updated activePrompts.inputs:", activePrompts.inputs);
+        console.log("🔄 Calling updateTextfieldContent...");
+      }
       updateTextfieldContent();
-      console.log("✅ Input event handling completed");
+      if (window.errorHandler && window.errorHandler.debugMode) {
+        console.log("✅ Input event handling completed");
+      }
     }
   });
 
   dropdownsAdded = true;
-  updateUI();
+  // updateUI() removed - it was causing double initialization and unwanted text insertion
 }
 
 if (document.readyState === 'loading') {

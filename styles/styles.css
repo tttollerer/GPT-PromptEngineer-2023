@@ -9,8 +9,10 @@
 #prompt-generator-container {
   position: fixed;
   bottom: 0;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  max-width: 800px;
+  width: calc(100% - 40px);
   background-color: var(--dark-grey);
   color: var(--white);
   padding: 0 20px 20px 20px !important;
@@ -23,7 +25,6 @@
   max-height: 70vh;
   overflow-y: auto;
   box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
-  transform: translateY(100%);
 }
 
 
@@ -538,11 +539,11 @@ input:focus::placeholder {
 
 
 #prompt-generator-container.hidden {
-  transform: translateY(100%) !important;
+  transform: translateX(-50%) translateY(100%) !important;
 }
 
 #prompt-generator-container:not(.hidden) {
-  transform: translateY(0) !important;
+  transform: translateX(-50%) translateY(0) !important;
 }
 
 

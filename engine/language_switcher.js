@@ -60,13 +60,23 @@ async function updateUI(lang) {
     lang = selectedLanguage || initialLang;
   }
 
+  // Temporarily set initialization flag during UI rebuild to prevent unwanted text insertion
+  if (typeof window.isInitializing !== 'undefined') {
+    window.isInitializing = true;
+  }
+
   const xmlData = await window.fetchDropdownData(lang);
   const container = document.getElementById('prompt-generator-container');
   clearContainer(container);
   await buildUI(xmlData);
   
   // Language dropdown is now handled in TopBar
-  updateLanguageDropdown(lang); 
+  updateLanguageDropdown(lang);
+  
+  // Re-enable user interactions after language switch
+  if (typeof window.isInitializing !== 'undefined') {
+    window.isInitializing = false;
+  }
 }
 
 

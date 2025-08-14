@@ -13,9 +13,16 @@
       <div class="header-content">
         <img src="Images/icon48.png" alt="PromptEngineer" class="header-icon">
         <h1 class="header-title">XML Editor</h1>
-        <div class="header-status" id="connection-status">
-          <span class="status-indicator" id="status-dot"></span>
-          <span class="status-text" id="status-text">Verbindung...</span>
+        <div class="header-controls">
+          <button class="btn-icon" id="theme-toggle" title="Theme wechseln">
+            <svg viewBox="0 0 24 24" width="16" height="16" id="theme-icon">
+              <path d="M12,18V6A6,6 0 0,1 18,12A6,6 0 0,1 12,18M20,15.31L23.31,12L20,8.69V4H15.31L12,0.69L8.69,4H4V8.69L0.69,12L4,15.31V20H8.69L12,23.31L15.31,20H20V15.31Z" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="header-status" id="connection-status">
+            <span class="status-indicator" id="status-dot"></span>
+            <span class="status-text" id="status-text">Verbindung...</span>
+          </div>
         </div>
       </div>
     </header>
@@ -42,7 +49,12 @@
         <div class="editor-header">
           <div class="editor-tabs">
             <span class="editor-tab active" id="current-file-tab">
-              <span class="tab-icon">📄</span>
+              <span class="tab-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                </svg>
+              </span>
               <span class="tab-name">Keine Datei ausgewählt</span>
               <button class="tab-close" title="Schließen">×</button>
             </span>
@@ -66,7 +78,12 @@
         <!-- Editor Container -->
         <div class="editor-container" id="editor-container">
           <div class="editor-placeholder">
-            <div class="placeholder-icon">📝</div>
+            <div class="placeholder-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </div>
             <h3>Wähle eine XML-Datei zum Bearbeiten</h3>
             <p>Klicke auf eine Datei in der linken Liste, um sie im Editor zu öffnen.</p>
           </div>
