@@ -517,13 +517,26 @@ class PromptSearchUI {
     const searchFieldWrapper = document.createElement('div');
     searchFieldWrapper.className = 'prompt-search-field-wrapper';
     
+    // Search icon
+    const searchIcon = document.createElement('div');
+    searchIcon.className = 'search-icon';
+    const searchSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    searchSvg.setAttribute('viewBox', '0 0 24 24');
+    searchSvg.setAttribute('fill', 'none');
+    searchSvg.setAttribute('stroke', 'currentColor');
+    searchSvg.setAttribute('stroke-width', '2');
+    const searchPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    searchPath.setAttribute('d', 'm21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z');
+    searchSvg.appendChild(searchPath);
+    searchIcon.appendChild(searchSvg);
+    
     // Search input
     this.searchInput = document.createElement('input');
     this.searchInput.type = 'text';
     this.searchInput.className = 'prompt-search-input';
-    this.searchInput.placeholder = '🔍 Prompts durchsuchen...';
+    this.searchInput.placeholder = 'Prompts durchsuchen...';
     
-    // Search icon (already in placeholder, but could be separate)
+    searchFieldWrapper.appendChild(searchIcon);
     searchFieldWrapper.appendChild(this.searchInput);
     
     // Results container

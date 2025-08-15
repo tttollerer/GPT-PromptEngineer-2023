@@ -77,13 +77,14 @@
    COMPONENT THEMING
    ======================================== */
 
-/* Main Container */
+/* Main Container - Sidebar Styling */
 #prompt-generator-container {
   background-color: var(--color-background-main);
   color: var(--color-text-primary);
-  padding: 0 var(--spacing-xl) var(--spacing-xl) var(--spacing-xl) !important;
+  padding: var(--spacing-xl) !important;
   border: 1px solid var(--color-border-accent);
-  box-shadow: var(--shadow-large);
+  border-right: none; /* No right border for sidebar */
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3); /* Left shadow for depth */
 }
 
 /* Title */
@@ -207,34 +208,53 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Language Selector */
-#language-selector {
-  background: var(--color-surface);
+/* Header Icon Buttons */
+.header-icon-button {
+  background: transparent;
+  border: 1px solid transparent;
   color: var(--color-text-primary);
-  border: 1px solid var(--color-surface);
-  font-size: var(--font-size-sm);
-  font-family: var(--font-family-base);
 }
 
-#language-selector:hover {
+.header-icon-button:hover {
+  background: rgba(1, 107, 255, 0.1);
   border-color: var(--color-border-focus);
 }
 
-#language-selector option {
-  font-size: 1.5rem !important;
+/* Language Icon */
+#language-icon .current-language-flag {
+  color: var(--color-text-primary);
 }
 
-/* Settings Icon */
-#settings-icon {
-  opacity: 0.8;
-}
-
-#settings-icon:hover {
-  opacity: 1;
-}
-
-#settings-icon svg {
+/* Icon SVGs */
+#settings-icon svg,
+#xml-editor-icon svg {
   fill: var(--color-text-primary);
+}
+
+/* Search Icon */
+.search-icon svg {
+  color: var(--color-text-secondary);
+}
+
+/* Language Menu Theming */
+.language-menu {
+  background: var(--color-background-main);
+  border: 1px solid var(--color-border-focus);
+  color: var(--color-text-primary);
+}
+
+.language-menu-item {
+  color: var(--color-text-primary);
+  font-family: var(--font-family-base);
+}
+
+.language-menu-item:hover:not(.disabled) {
+  background: rgba(1, 107, 255, 0.1);
+  color: var(--color-primary);
+}
+
+.language-menu-item.disabled {
+  color: var(--color-text-secondary);
 }
 
 /* Settings Panel */
@@ -281,13 +301,20 @@
   color: gray;
 }
 
-/* Toggle Button */
+/* Toggle Button - Sidebar Position */
 .toggle-button {
   box-shadow: var(--shadow-medium);
+  background: var(--color-background-main);
+  border: 2px solid var(--color-border-accent);
 }
 
 .toggle-button:hover {
   box-shadow: 0 0 15px rgba(10, 98, 212, 0.8);
+  border-color: var(--color-primary);
+}
+
+.toggle-button img {
+  filter: brightness(0.9);
 }
 
 /* Prompt Highlighting */

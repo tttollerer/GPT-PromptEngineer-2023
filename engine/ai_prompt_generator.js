@@ -304,11 +304,15 @@ class AIPromptGenerator {
       this.currentRequest = Date.now();
       const requestId = this.currentRequest;
       
+      // Get custom system prompt if configured
+      const systemPrompt = window.getCurrentSystemPrompt ? await window.getCurrentSystemPrompt() : null;
+      
       const response = await window.apiManager.generatePrompt(userInput, {
         provider: providerSelect.value,
         model: modelSelect.value,
         maxTokens: 800,
-        temperature: 0.7
+        temperature: 0.7,
+        systemPrompt: systemPrompt
       });
       
       // Check if request is still current
@@ -533,6 +537,143 @@ class AIPromptGenerator {
       this.closeGenerator();
       document.removeEventListener('keydown', this.handleEscapeKey.bind(this));
     }
+  }
+
+  /**
+   * Improve existing prompt from the input field
+   */
+  async improveExistingPrompt() {
+    // Check if AI features are available
+    if (!this.isAvailable()) {
+      this.showNotification('Bitte konfiguriere zuerst einen API-Key in den Einstellungen.', 'error');
+      return;
+    }
+    
+    // Get current text from ChatGPT input field
+    const targetNode = document.querySelector(window.getSelector());
+    if (!targetNode) {
+      this.showNotification('Eingabefeld nicht gefunden.', 'error');
+      return;
+    }
+    
+    const existingText = window.textUtils.getElementContent(targetNode).trim();
+    if (!existingText) {
+      this.showNotification('Bitte gib zuerst einen Text ein, den du verbessern möchtest.', 'warning');
+      return;
+    }
+    
+    // Show improvement notification
+    const notification = this.showNotification('Prompt wird verbessert...', 'loading');
+    
+    try {
+      if (window.errorHandler && window.errorHandler.debugMode) {
+        console.log("🔧 Starting prompt improvement for:", existingText);
+      }
+      
+      // Call API to improve the prompt
+      const improvedPrompt = await window.apiManager.improvePrompt(existingText, {
+        maxTokens: 800,
+        temperature: 0.7
+      });
+      
+      if (improvedPrompt && improvedPrompt.trim()) {
+        // Replace the content in the input field
+        window.textUtils.setElementContent(targetNode, improvedPrompt.trim());
+        
+        // Update notification
+        this.updateNotification(notification, 'Prompt wurde erfolgreich verbessert!', 'success');
+        
+        if (window.errorHandler && window.errorHandler.debugMode) {
+          console.log("✅ Prompt improvement completed");
+        }
+      } else {
+        this.updateNotification(notification, 'Keine Verbesserung erhalten. Bitte versuche es erneut.', 'error');
+      }
+      
+    } catch (error) {
+      console.error("❌ Failed to improve prompt:", error);
+      this.updateNotification(notification, `Fehler bei der Prompt-Verbesserung: ${error.message}`, 'error');
+    }
+  }
+
+  /**
+   * Show notification to user
+   */
+  showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `ai-notification ai-notification-${type}`;
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${type === 'error' ? '#f44336' : type === 'success' ? '#4CAF50' : type === 'warning' ? '#ff9800' : '#2196F3'};
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10000;
+      font-size: 14px;
+      max-width: 300px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    `;
+    
+    if (type === 'loading') {
+      notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          ${message}
+        </div>
+      `;
+    } else {
+      notification.textContent = message;
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Fade in
+    setTimeout(() => {
+      notification.style.opacity = '1';
+    }, 100);
+    
+    // Auto remove (except loading notifications)
+    if (type !== 'loading') {
+      setTimeout(() => {
+        this.removeNotification(notification);
+      }, type === 'error' ? 5000 : 3000);
+    }
+    
+    return notification;
+  }
+
+  /**
+   * Update existing notification
+   */
+  updateNotification(notification, message, type) {
+    if (!notification || !notification.parentNode) return;
+    
+    notification.className = `ai-notification ai-notification-${type}`;
+    notification.style.background = type === 'error' ? '#f44336' : type === 'success' ? '#4CAF50' : type === 'warning' ? '#ff9800' : '#2196F3';
+    notification.textContent = message;
+    
+    // Auto remove
+    setTimeout(() => {
+      this.removeNotification(notification);
+    }, type === 'error' ? 5000 : 3000);
+  }
+
+  /**
+   * Remove notification
+   */
+  removeNotification(notification) {
+    if (!notification || !notification.parentNode) return;
+    
+    notification.style.opacity = '0';
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 300);
   }
 
   /**

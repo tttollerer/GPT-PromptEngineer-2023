@@ -26,15 +26,14 @@
    CONTAINER ANIMATIONS
    ======================================== */
 
-/* Main Container Slide Animation */
+/* Sidebar Slide Animation */
 #prompt-generator-container {
-  transition: transform var(--transition-normal) var(--ease-in-out), 
-              opacity var(--transition-normal) var(--ease-in-out);
+  transition: right var(--transition-normal) var(--ease-in-out);
 }
 
-.prompt-generator-container {
-  transition: opacity var(--transition-very-slow) var(--ease-standard), 
-              transform var(--transition-very-slow) var(--ease-standard);
+/* Body padding transition for content adjustment */
+body {
+  transition: padding-right var(--transition-normal) var(--ease-in-out);
 }
 
 /* Container Glow Animation */
@@ -78,13 +77,10 @@
   transition: all var(--transition-slow) var(--ease-in-out);
 }
 
-/* Settings Icon Rotation */
+/* Settings Icon - No Rotation */
 #settings-icon {
-  transition: all var(--transition-normal) var(--ease-standard);
-}
-
-#settings-icon:hover {
-  transform: rotate(90deg);
+  transition: background-color var(--transition-fast) var(--ease-standard),
+              border-color var(--transition-fast) var(--ease-standard);
 }
 
 /* Language Selector Transition */
@@ -130,18 +126,19 @@
    TOGGLE BUTTON ANIMATIONS
    ======================================== */
 
-/* Toggle Button */
+/* Toggle Button - Sidebar Positioning */
 .toggle-button {
   transition: all var(--transition-normal) var(--ease-in-out);
-  transform: rotate(0deg);
+  transform: translateY(-50%) rotate(0deg);
 }
 
 .toggle-button:hover {
-  transition: box-shadow var(--transition-fast) var(--ease-standard);
+  transition: box-shadow var(--transition-fast) var(--ease-standard),
+              border-color var(--transition-fast) var(--ease-standard);
 }
 
 .toggle-button.rotated {
-  transform: rotate(180deg);
+  transform: translateY(-50%) rotate(180deg);
 }
 
 /* ========================================

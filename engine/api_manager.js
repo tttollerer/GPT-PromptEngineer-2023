@@ -400,6 +400,64 @@ class APIManager {
   }
 
   /**
+   * Improve an existing prompt using the configured system prompt
+   */
+  async improvePrompt(existingPrompt, options = {}) {
+    const provider = options.provider || this.settings.selectedProvider;
+    const apiKey = options.apiKey || await this.getAPIKey(provider);
+    const model = options.model || this.settings.selectedModel || this.providers[provider].defaultModel;
+    
+    if (!apiKey) {
+      throw new Error(`No API key configured for ${this.providers[provider].name}`);
+    }
+
+    // Get custom system prompt from settings if available, otherwise use default improvement prompt
+    let systemPrompt = options.systemPrompt;
+    if (!systemPrompt && window.getCurrentSystemPrompt) {
+      try {
+        systemPrompt = await window.getCurrentSystemPrompt();
+      } catch (error) {
+        console.warn('Failed to get custom system prompt:', error);
+      }
+    }
+    
+    // Fallback to default improvement system prompt if no custom system prompt is configured
+    if (!systemPrompt) {
+      systemPrompt = `You are an expert prompt engineer. Your task is to improve the given prompt to make it more effective, clear, and detailed while preserving the original intent.
+
+Guidelines for improvement:
+1. Make the prompt more specific and actionable
+2. Add relevant context if missing
+3. Improve structure and clarity
+4. Suggest better phrasing where appropriate
+5. Maintain the original purpose and tone
+6. Only respond with the improved prompt, no explanations
+
+Please improve the following prompt:`;
+    }
+    
+    // Create the improvement instruction
+    const improvementInstruction = `${systemPrompt}\n\nOriginal prompt: "${existingPrompt}"\n\nImproved prompt:`;
+    
+    if (window.errorHandler && window.errorHandler.debugMode) {
+      console.log(`🔧 Improving prompt with ${provider}:`, { existingPrompt, model });
+    }
+
+    switch (provider) {
+      case 'openai':
+        return await this.callOpenAI(apiKey, model, 'You are a helpful assistant that improves prompts.', improvementInstruction, options);
+      case 'claude':
+        return await this.callClaude(apiKey, model, 'You are a helpful assistant that improves prompts.', improvementInstruction, options);
+      case 'gemini':
+        return await this.callGemini(apiKey, model, 'You are a helpful assistant that improves prompts.', improvementInstruction, options);
+      case 'openrouter':
+        return await this.callOpenRouter(apiKey, model, 'You are a helpful assistant that improves prompts.', improvementInstruction, options);
+      default:
+        throw new Error(`Unsupported provider: ${provider}`);
+    }
+  }
+
+  /**
    * Call OpenAI API
    */
   async callOpenAI(apiKey, model, systemPrompt, userInput, options) {

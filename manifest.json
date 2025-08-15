@@ -42,6 +42,13 @@
         "engine/api_manager.js",
         "engine/prompt_search.js",
         "engine/ai_prompt_generator.js",
+        "engine/core/extension_state.js",
+        "engine/settings/settings_manager.js",
+        "engine/settings/ai_settings.js",
+        "engine/text/text_utils.js",
+        "engine/text/prosemirror_observer.js",
+        "engine/text/content_updater.js",
+        "engine/core/container_manager.js",
         "engine/build_ui.js",
         "engine/language_switcher.js",
         "engine/content_script.js"

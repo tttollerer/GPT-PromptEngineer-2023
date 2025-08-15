@@ -1,5 +1,92 @@
 // translations.js
 const translations = {
+  "en": {
+    "AdditionalCompanyInformation":"Additional Company Information",
+    "Clients": "RW Clients",
+    "Short Answer": "Short Answer",
+    "Formate Text": "Formatting",
+    "Bullet Points": "Bullet Points",
+    "Queries": "Queries",
+    "100% Human": "100% Human",
+    "Simple As Possible": "Simple As Possible",
+    "DAN Mode (no morals no ethics)": "DAN Mode (no morals no ethics)",
+    "Employees": "Employees",
+    "Andrew Tate": "Andrew Tate",
+    "Programmers": "Programmers",
+    "SEO Expert": "SEO Expert",
+    "Google Ads Specialist": "Google Ads Specialist",
+    "Business Coach": "Business Coach",
+    "Marketing and advertising professional": "Marketing and advertising professional",
+    "Social Media Expert": "Social Media Expert",
+    "Copy Writer": "Copy Writer",
+    "Project summary": "Project summary",
+    "ProductGPT - Product Assistant": "ProductGPT - Product Assistant",
+    "Lawyer": "Lawyer",
+    "Task": "Task",
+    "Summary": "Summary",
+    "Read correction": "Read correction",
+    "Twitter Post": "Twitter Post",
+    "Check Repository": "Check Repository",
+    "Check Repository (working)": "Check Repository (working)",
+    "Check GPT Plugin": "Check GPT Plugin",
+    "GPT Plugin description": "GPT Plugin description",
+    "Monolog": "Monolog",
+    "GPT Prompt generieren": "Generate GPT Prompt",
+    "Business Letter": "Business Letter",
+    "Social Media Post": "Social Media Post",
+    "Blog Post": "Blog Post",
+    "Code / Programming": "Code / Programming",
+    "Generate Midjourney5 Prompt": "Generate Midjourney5 Prompt",
+    "Compare code": "Compare code",
+    "Keywords from text": "Keywords from text",
+    "Step-by-step instructions": "Step-by-step instructions",
+    "Special cases": "Special cases",
+    "Generate GPT/LLM Prompt": "Generate GPT/LLM Prompt",
+    "Summarize YT Transcript": "Summarize YT Transcript",
+    "Scope": "Scope",
+    "Twitter Tweet 240 Characters": "Twitter Tweet 240 Characters",
+    "29 Characters (Google Ads Title)": "29 Characters (Google Ads Title)",
+    "90 Characters (Google Ads Description)": "90 Characters (Google Ads Description)",
+    "Short and  Precise": "Short and Precise",
+    "10 Bullet Points": "10 Bullet Points",
+    "2000 Word Post": "2000 Word Post",
+    "Google Ads Title - 29 characters": "Google Ads Title - 29 characters",
+    "Google Ads Description - 90 characters": "Google Ads Description - 90 characters",
+    "Formatting": "Formatting",
+    "Easy to Read and Clean Formatting": "Easy to Read and Clean Formatting",
+    "Introductory 6-Point Summary": "Introductory 6-Point Summary",
+    "Formatting with highlighted keywords": "Formatting with highlighted keywords",
+    "Code": "Code",
+    "Code Fast": "Code Fast",
+    "Creativity": "Creativity",
+    "Creativ (0.9)": "Creative (0.9)",
+    "Balanced (0.5)": "Balanced (0.5)",
+    "temperatureMedium": "Medium Creativity",
+    "Default (0.8)": "Default (0.8)",
+    "temperatureDefault": "Default Creativity",
+    "Exact / Strict (0.2)": "Exact / Strict (0.2)",
+    "temperatureHigh": "High Creativity",
+    "Type of Input (e.g. business letter, code, coordinates)": "Type of Input (e.g. business letter, code, coordinates)",
+    "URL / Link / Repository": "URL / Link / Repository",
+    "Plugin Name": "Plugin Name",
+    "Country": "Country",
+    "Practice Area": "Practice Area",
+    "Input data (e.g. entire business letter)": "Input data (e.g. entire business letter)",
+    "The Target Group": "The Target Group",
+    "Describe The Author": "Describe The Author",
+    "The Keywords": "The Keywords",
+    "Code I": "Code I",
+    "Code II": "Code II",
+    "Programming Language": "Programming Language",
+    "My Text": "My Text",
+    "Person": "Person",
+    "Topic": "Topic",
+    "Input Language": "Input Language",
+    "AI Create Prompt": "AI Create Prompt",
+    "AI Improve Prompt": "AI Improve Prompt",
+    "Quick Access": "Quick Access",
+    "Prompt Categories": "Prompt Categories"
+  },
   "de": {
     "AdditionalCompanyInformation":"Zusätzliche Firmeninformationen",
     "Clients": "RW Kunden",
@@ -81,7 +168,11 @@ const translations = {
     "My Text": "Mein Text",
     "Person": "Person",
     "Topic": "Thema",
-    "Input Language": "Sprache"
+    "Input Language": "Sprache",
+    "AI Create Prompt": "KI-Prompt erstellen",
+    "AI Improve Prompt": "Prompt verbessern",
+    "Quick Access": "Schnellzugriff",
+    "Prompt Categories": "Prompt Kategorien"
   },
   "es": {
     "AdditionalCompanyInformation":"Información adicional sobre la empresa",
@@ -163,7 +254,11 @@ const translations = {
     "My Text": "Mi texto",
     "Person": "Persona",
     "Topic": "Tema",
-    "Input Language": "Idioma de entrada"
+    "Input Language": "Idioma de entrada",
+    "AI Create Prompt": "Crear Prompt AI",
+    "AI Improve Prompt": "Mejorar Prompt",
+    "Quick Access": "Acceso Rápido",
+    "Prompt Categories": "Categorías de Prompt"
   },
   "fr": {
     "Short Answer": "Réponse Brève",
@@ -244,7 +339,11 @@ const translations = {
     "My Text": "Mon Texte",
     "Person": "Personne",
     "Topic": "Sujet",
-    "Input Language": "Langue d'Entrée"
+    "Input Language": "Langue d'Entrée",
+    "AI Create Prompt": "Créer un Prompt IA",
+    "AI Improve Prompt": "Améliorer le Prompt",
+    "Quick Access": "Accès Rapide",
+    "Prompt Categories": "Catégories de Prompt"
   },
   "it": {
     "Short Answer": "Risposta breve",
@@ -325,7 +424,11 @@ const translations = {
     "My Text": "Il mio testo",
     "Person": "Persona",
     "Topic": "Argomento",
-    "Input Language": "Lingua di input"
+    "Input Language": "Lingua di input",
+    "AI Create Prompt": "Creare Prompt AI",
+    "AI Improve Prompt": "Migliora Prompt",
+    "Quick Access": "Accesso Rapido",
+    "Prompt Categories": "Categorie di Prompt"
   },
   "zh": {
     "Short Answer": "简短回答",
@@ -406,7 +509,11 @@ const translations = {
     "My Text": "我的文本",
     "Person": "人物",
     "Topic": "主题",
-    "Input Language": "输入语言"
+    "Input Language": "输入语言",
+    "AI Create Prompt": "创建AI提示",
+    "AI Improve Prompt": "改进提示",
+    "Quick Access": "快速访问",
+    "Prompt Categories": "提示类别"
   },
   "ru": {
     "Short Answer": "Краткий ответ",
@@ -487,7 +594,11 @@ const translations = {
     "My Text": "Мой текст",
     "Person": "Человек",
     "Topic": "Тема",
-    "Input Language": "Язык ввода"
+    "Input Language": "Язык ввода",
+    "AI Create Prompt": "Создать AI-Промпт",
+    "AI Improve Prompt": "Улучшить Промпт",
+    "Quick Access": "Быстрый доступ",
+    "Prompt Categories": "Категории промптов"
   },
   "th": {
     "Short Answer": "คำตอบสั้น ๆ",
@@ -568,7 +679,11 @@ const translations = {
     "My Text": "ข้อความของฉัน",
     "Person": "บุคคล",
     "Topic": "หัวข้อ",
-    "Input Language": "ภาษาอินพุต"
+    "Input Language": "ภาษาอินพุต",
+    "AI Create Prompt": "สร้างคำสั่ง AI",
+    "AI Improve Prompt": "ปรับปรุงคำสั่ง",
+    "Quick Access": "การเข้าถึงด่วน",
+    "Prompt Categories": "หมวดหมู่พรอมต์"
   }
 };
 

@@ -1,11 +1,106 @@
 window.attributionHTML = attributionHTML;
 
+// Translation helper function
+function getTranslation(key, fallback = key) {
+  const currentLanguage = localStorage.getItem('selectedLanguage') || 'de';
+  
+  if (window.translations && 
+      window.translations[currentLanguage] && 
+      window.translations[currentLanguage][key]) {
+    return window.translations[currentLanguage][key];
+  }
+  
+  // Fallback to English if current language doesn't have the key
+  if (window.translations && 
+      window.translations['en'] && 
+      window.translations['en'][key]) {
+    return window.translations['en'][key];
+  }
+  
+  // Ultimate fallback to the key itself or provided fallback
+  return fallback;
+}
+
+// Language flag mapping
+const languageFlags = {
+  'en': '🇺🇸', 'zh': '🇨🇳', 'es': '🇪🇸', 'hi': '🇮🇳', 
+  'fr': '🇫🇷', 'de': '🇩🇪', 'ru': '🇷🇺', 'pt': '🇵🇹', 
+  'it': '🇮🇹', 'th': '🇹🇭', 'ch': '🇨🇭', 'by': '🔠', 'sch': '🇩🇪'
+};
+
+// Language menu functionality
+function showLanguageMenu(languageIcon, currentLangFlag) {
+  // Remove existing menu
+  const existingMenu = document.querySelector('.language-menu');
+  if (existingMenu) {
+    existingMenu.remove();
+    return;
+  }
+  
+  const menu = document.createElement('div');
+  menu.className = 'language-menu';
+  
+  const languages = [
+    { value: 'en', text: '🇺🇸 English' },
+    { value: 'zh', text: '🇨🇳 Chinese' },
+    { value: 'es', text: '🇪🇸 Spanish' },
+    { value: 'hi', text: '🇮🇳 Hindi' },
+    { value: 'fr', text: '🇫🇷 French' },
+    { value: 'de', text: '🇩🇪 German' },
+    { value: 'ru', text: '🇷🇺 Russian' },
+    { value: 'pt', text: '🇵🇹 Portuguese' },
+    { value: 'it', text: '🇮🇹 Italian' },
+    { value: 'th', text: '🇹🇭 Thai' },
+    { value: '', text: '── Dialects ──', disabled: true },
+    { value: 'ch', text: '🇨🇭 Switzerdütsch' },
+    { value: 'by', text: '🔠 Bayrisch' },
+    { value: 'sch', text: '🇩🇪 Schwäbisch' }
+  ];
+  
+  languages.forEach(lang => {
+    const item = document.createElement('div');
+    item.className = 'language-menu-item';
+    if (lang.disabled) {
+      item.classList.add('disabled');
+    }
+    item.textContent = lang.text;
+    
+    if (!lang.disabled) {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Update current flag
+        currentLangFlag.textContent = languageFlags[lang.value] || '🌍';
+        // Trigger language change
+        localStorage.setItem('selectedLanguage', lang.value);
+        updateUI(lang.value);
+        // Update AI button texts when language changes
+        if (window.updateAIGeneratorButtonText) {
+          window.updateAIGeneratorButtonText();
+        }
+        menu.remove();
+      });
+    }
+    
+    menu.appendChild(item);
+  });
+  
+  // Position menu
+  languageIcon.appendChild(menu);
+  
+  // Close menu when clicking outside
+  setTimeout(() => {
+    document.addEventListener('click', () => {
+      menu.remove();
+    }, { once: true });
+  }, 10);
+}
+
 // TopBar creation functions
 function createTopBar(container) {
   const topBar = document.createElement('div');
   topBar.className = 'extension-topbar';
   
-  // Logo section
+  // Logo section - centered
   const logoSection = document.createElement('div');
   logoSection.className = 'extension-logo';
   const logoImg = document.createElement('img');
@@ -13,16 +108,61 @@ function createTopBar(container) {
   logoImg.alt = 'PromptEngineer Logo';
   logoSection.appendChild(logoImg);
   
-  // Controls section
+  // Controls section - right aligned
   const controlsSection = document.createElement('div');
   controlsSection.className = 'extension-controls';
   
-  // Language selector
+  // Language selector as icon button
+  const languageIcon = document.createElement('div');
+  languageIcon.id = 'language-icon';
+  languageIcon.className = 'header-icon-button';
+  languageIcon.title = 'Select Language';
+  
+  // Current language flag (default German)
+  const currentLangFlag = document.createElement('span');
+  currentLangFlag.className = 'current-language-flag';
+  currentLangFlag.textContent = '🇩🇪'; // Default flag
+  languageIcon.appendChild(currentLangFlag);
+  
+  // Hidden language selector
   const languageSelector = createLanguageDropdown();
+  languageSelector.style.display = 'none';
+  languageIcon.appendChild(languageSelector);
+  
+  // Click handler for language icon
+  languageIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Create temporary dropdown menu
+    showLanguageMenu(languageIcon, currentLangFlag);
+  });
+  
+  // XML Editor icon
+  const xmlEditorIcon = document.createElement('div');
+  xmlEditorIcon.id = 'xml-editor-icon';
+  xmlEditorIcon.className = 'header-icon-button';
+  xmlEditorIcon.title = 'XML Editor';
+  
+  // Create XML icon SVG
+  const xmlSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  xmlSvg.setAttribute('viewBox', '0 0 24 24');
+  
+  const xmlPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  xmlPath.setAttribute('d', 'M12.89,3L14.85,3.4L11.11,21L9.15,20.6L12.89,3M19.59,12L16,8.41V5.58L22.42,12L16,18.41V15.58L19.59,12M1.58,12L8,5.58V8.41L4.41,12L8,15.58V18.41L1.58,12Z');
+  
+  xmlSvg.appendChild(xmlPath);
+  xmlEditorIcon.appendChild(xmlSvg);
+  xmlEditorIcon.addEventListener('click', () => {
+    // Open XML Editor in new tab
+    if (chrome && chrome.runtime) {
+      chrome.runtime.sendMessage({ action: 'openPopup' });
+    }
+  });
   
   // Settings icon
   const settingsIcon = document.createElement('div');
   settingsIcon.id = 'settings-icon';
+  settingsIcon.className = 'header-icon-button';
+  settingsIcon.title = 'Settings';
   
   // Create SVG element safely
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -34,14 +174,14 @@ function createTopBar(container) {
   svg.appendChild(path);
   settingsIcon.appendChild(svg);
   settingsIcon.addEventListener('click', () => {
-    // Call the settings panel toggle function from content_script
     if (window.toggleSettingsPanel) {
       window.toggleSettingsPanel();
     }
   });
   
   // Add to controls
-  controlsSection.appendChild(languageSelector);
+  controlsSection.appendChild(languageIcon);
+  controlsSection.appendChild(xmlEditorIcon);
   controlsSection.appendChild(settingsIcon);
   
   // Add to topbar
@@ -51,7 +191,11 @@ function createTopBar(container) {
   // Add as first child of container
   container.appendChild(topBar);
   
-  return { languageSelector, settingsIcon };
+  // Set initial language flag from localStorage
+  const savedLanguage = localStorage.getItem('selectedLanguage') || 'de';
+  currentLangFlag.textContent = languageFlags[savedLanguage] || '🇩🇪';
+  
+  return { languageSelector: languageSelector, settingsIcon, languageIcon, currentLangFlag };
 }
 
 (async function() {
@@ -257,13 +401,27 @@ toggleButtonAdded = true;
     // Create AI Prompt Generator button
     const aiGeneratorButton = document.createElement('button');
     aiGeneratorButton.className = 'ai-generator-button';
+    
+    // Get current language for translation
+    const currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
+    let buttonText = 'AI Create Prompt'; // Default fallback
+    
+    // Safely access translations with multiple fallbacks
+    if (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage]["AI Create Prompt"]) {
+      buttonText = window.translations[currentLanguage]["AI Create Prompt"];
+    } else if (window.translations && window.translations['en'] && window.translations['en']["AI Create Prompt"]) {
+      buttonText = window.translations['en']["AI Create Prompt"];
+    } else if (window.translations && window.translations['de'] && window.translations['de']["AI Create Prompt"]) {
+      buttonText = window.translations['de']["AI Create Prompt"]; // German fallback since it was originally German
+    }
+    
     aiGeneratorButton.innerHTML = `
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-        <path d="M2 17l10 5 10-5"/>
-        <path d="M2 12l10 5 10-5"/>
+        <path d="m12 2 3 7s4 1 4 5.5c0 2.8-2.2 5.5-5 5.5s-5-2.7-5-5.5c0-4.5 4-5.5 4-5.5z"/>
+        <path d="M5 3L4 6l7 6 1-3z"/>
+        <circle cx="12" cy="17" r="1"/>
       </svg>
-      🤖 KI-Prompt erstellen
+      ${buttonText}
     `;
     aiGeneratorButton.addEventListener('click', () => {
       if (window.aiPromptGenerator) {
@@ -272,7 +430,49 @@ toggleButtonAdded = true;
         console.warn('⚠️ AI Prompt Generator not loaded yet');
       }
     });
-    container.appendChild(aiGeneratorButton);
+    
+    // Create AI Prompt Improver button
+    const aiImproverButton = document.createElement('button');
+    aiImproverButton.className = 'ai-improver-button';
+    
+    // Get translation for improver button
+    let improverButtonText = 'AI Improve Prompt'; // Default fallback
+    
+    // Safely access translations with multiple fallbacks for improver button
+    if (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage]["AI Improve Prompt"]) {
+      improverButtonText = window.translations[currentLanguage]["AI Improve Prompt"];
+    } else if (window.translations && window.translations['en'] && window.translations['en']["AI Improve Prompt"]) {
+      improverButtonText = window.translations['en']["AI Improve Prompt"];
+    } else if (window.translations && window.translations['de'] && window.translations['de']["AI Improve Prompt"]) {
+      improverButtonText = window.translations['de']["AI Improve Prompt"];
+    }
+    
+    aiImproverButton.innerHTML = `
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      </svg>
+      ${improverButtonText}
+    `;
+    aiImproverButton.addEventListener('click', () => {
+      if (window.aiPromptGenerator && window.aiPromptGenerator.improveExistingPrompt) {
+        window.aiPromptGenerator.improveExistingPrompt();
+      } else {
+        console.warn('⚠️ AI Prompt Improver not loaded yet');
+      }
+    });
+    
+    // Create container for both AI buttons
+    const aiButtonsContainer = document.createElement('div');
+    aiButtonsContainer.className = 'ai-buttons-container';
+    aiButtonsContainer.appendChild(aiGeneratorButton);
+    aiButtonsContainer.appendChild(aiImproverButton);
+    container.appendChild(aiButtonsContainer);
+
+    // Quick Access headline before checkboxes
+    const quickAccessHeadline = document.createElement('h3');
+    quickAccessHeadline.className = 'section-headline quick-access-headline';
+    quickAccessHeadline.textContent = getTranslation('Quick Access', 'Quick Access');
+    container.appendChild(quickAccessHeadline);
 
     const checkboxContainer = document.createElement('div');
     checkboxContainer.classList.add('prompt-generator-checkbox-container');
@@ -289,6 +489,12 @@ toggleButtonAdded = true;
       const checkboxElement = inputFieldCreation.createCheckbox(checkboxData);
       checkboxContainer.appendChild(checkboxElement);
     });
+
+    // Prompt Categories headline before dropdowns
+    const promptCategoriesHeadline = document.createElement('h3');
+    promptCategoriesHeadline.className = 'section-headline prompt-categories-headline';
+    promptCategoriesHeadline.textContent = getTranslation('Prompt Categories', 'Prompt Categories');
+    container.appendChild(promptCategoriesHeadline);
 
     const dropdownContainer = document.createElement('div');
     dropdownContainer.classList.add('prompt-generator-dropdown-container');
@@ -507,7 +713,59 @@ Array.from(inputs).forEach((input) => {
   
 
 
-  window.buildUI = buildUI;
+  // Function to update AI button texts when language changes
+function updateAIGeneratorButtonText() {
+  const aiGeneratorButton = document.querySelector('.ai-generator-button');
+  const aiImproverButton = document.querySelector('.ai-improver-button');
+  const currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
+  
+  // Update AI Generator button
+  if (aiGeneratorButton) {
+    let buttonText = 'AI Create Prompt'; // Default fallback
+    
+    // Safely access translations with multiple fallbacks
+    if (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage]["AI Create Prompt"]) {
+      buttonText = window.translations[currentLanguage]["AI Create Prompt"];
+    } else if (window.translations && window.translations['en'] && window.translations['en']["AI Create Prompt"]) {
+      buttonText = window.translations['en']["AI Create Prompt"];
+    } else if (window.translations && window.translations['de'] && window.translations['de']["AI Create Prompt"]) {
+      buttonText = window.translations['de']["AI Create Prompt"]; // German fallback since it was originally German
+    }
+    
+    aiGeneratorButton.innerHTML = `
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+        <path d="m12 2 3 7s4 1 4 5.5c0 2.8-2.2 5.5-5 5.5s-5-2.7-5-5.5c0-4.5 4-5.5 4-5.5z"/>
+        <path d="M5 3L4 6l7 6 1-3z"/>
+        <circle cx="12" cy="17" r="1"/>
+      </svg>
+      ${buttonText}
+    `;
+  }
+  
+  // Update AI Improver button
+  if (aiImproverButton) {
+    let improverButtonText = 'AI Improve Prompt'; // Default fallback
+    
+    // Safely access translations with multiple fallbacks for improver button
+    if (window.translations && window.translations[currentLanguage] && window.translations[currentLanguage]["AI Improve Prompt"]) {
+      improverButtonText = window.translations[currentLanguage]["AI Improve Prompt"];
+    } else if (window.translations && window.translations['en'] && window.translations['en']["AI Improve Prompt"]) {
+      improverButtonText = window.translations['en']["AI Improve Prompt"];
+    } else if (window.translations && window.translations['de'] && window.translations['de']["AI Improve Prompt"]) {
+      improverButtonText = window.translations['de']["AI Improve Prompt"];
+    }
+    
+    aiImproverButton.innerHTML = `
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      </svg>
+      ${improverButtonText}
+    `;
+  }
+}
+
+window.buildUI = buildUI;
+window.updateAIGeneratorButtonText = updateAIGeneratorButtonText;
 
 })();
 
@@ -521,16 +779,23 @@ function toggleContainer() {
   const container = document.getElementById('prompt-generator-container');
   const containerVisible = !container.classList.contains('hidden');
   const toggleButton = document.querySelector('.toggle-button');
+  
   if (containerVisible) {
+    // Hide sidebar - synchronize both changes in same frame
     container.classList.add('hidden');
-    toggleButton.classList.add('rotated'); 
-
+    document.body.classList.remove('prompt-engineer-active');
+    if (toggleButton) {
+      toggleButton.classList.add('rotated');
+    }
   } else {
+    // Show sidebar - synchronize both changes in same frame
     const selectedLanguage = localStorage.getItem('selectedLanguage') || initialLang;
     updateUI(selectedLanguage); 
     container.classList.remove('hidden');
-    toggleButton.classList.remove('rotated'); 
-
+    document.body.classList.add('prompt-engineer-active');
+    if (toggleButton) {
+      toggleButton.classList.remove('rotated');
+    }
   }
 }
 

@@ -4,28 +4,66 @@
  * DO NOT add colors, fonts, or decorative styles here
  */
 
-/* Main Container Structure */
+/* Main Container Structure - Right Sidebar Layout */
 #prompt-generator-container {
   position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%) translateY(100%);
-  max-width: 800px;
-  width: calc(100% - 40px);
+  top: 0;
+  right: -400px;
+  width: 380px;
+  height: 100vh;
   display: block;
   z-index: 10000;
-  max-height: 70vh;
   overflow-y: auto;
-  border-radius: 12px 12px 0 0;
-  border-bottom: none;
+  border-radius: 12px 0 0 12px;
+  transition: right 0.3s ease-in-out;
 }
 
 #prompt-generator-container.hidden {
-  transform: translateX(-50%) translateY(100%) !important;
+  right: -400px !important;
 }
 
 #prompt-generator-container:not(.hidden) {
-  transform: translateX(-50%) translateY(0) !important;
+  right: 0 !important;
+}
+
+/* Body padding management for content space */
+body.prompt-engineer-active {
+  padding-right: 380px;
+  transition: padding-right 0.3s ease-in-out;
+  box-sizing: border-box;
+}
+
+/* Responsive sidebar widths */
+@media (max-width: 1200px) {
+  #prompt-generator-container {
+    width: 320px;
+    right: -340px;
+  }
+  
+  #prompt-generator-container.hidden {
+    right: -340px !important;
+  }
+  
+  body.prompt-engineer-active {
+    padding-right: 320px;
+  }
+}
+
+@media (max-width: 768px) {
+  #prompt-generator-container {
+    width: 100%;
+    right: -100%;
+    border-radius: 0;
+  }
+  
+  #prompt-generator-container.hidden {
+    right: -100% !important;
+  }
+  
+  /* No body padding on mobile - overlay mode */
+  body.prompt-engineer-active {
+    padding-right: 0;
+  }
 }
 
 /* Layout Components */
@@ -131,55 +169,137 @@
   display: none;
 }
 
-/* TopBar Structure */
+/* TopBar Structure - Sidebar Layout */
 .extension-topbar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 0;
-  margin-bottom: 15px;
-  position: relative;
+  flex-direction: column;
+  padding: 15px 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .extension-logo {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
 }
 
 .extension-logo img {
-  height: 20px;
+  height: 24px;
   width: auto;
+  object-fit: contain;
 }
 
 .extension-controls {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-left: auto;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Header Icon Buttons */
+.header-icon-button {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 6px;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.header-icon-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Language Icon Styling */
+#language-icon .current-language-flag {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Icon SVG Styling */
+#settings-icon svg,
+#xml-editor-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Language Menu */
+.language-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-background-main);
+  border: 1px solid var(--color-border-accent);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  min-width: 180px;
+  z-index: 10002;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 5px;
+}
+
+.language-menu-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.language-menu-item:last-child {
+  border-bottom: none;
+}
+
+.language-menu-item:hover:not(.disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.language-menu-item.disabled {
+  opacity: 0.5;
+  cursor: default;
+  font-style: italic;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+/* Old Language Selector (hidden) */
+#language-selector {
+  display: none;
+}
+
+/* Search Field Wrapper */
+.prompt-search-field-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
   z-index: 1;
 }
 
-/* Language Selector Structure */
-#language-selector {
-  padding: 5px 8px;
-  border-radius: 6px;
-  text-align: center;
-  font-size: 12px;
-  cursor: pointer;
+.search-icon svg {
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
 }
 
-/* Settings Icon Structure */
-#settings-icon {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-
-#settings-icon svg {
-  width: 100%;
-  height: 100%;
+.prompt-search-input {
+  padding-left: 40px !important; /* Make room for icon */
 }
 
 /* Settings Panel Structure */
@@ -204,7 +324,8 @@
   border-radius: 12px;
   padding: 30px;
   width: 90%;
-  max-width: 400px;
+  max-width: 500px;
+  min-width: 400px;
 }
 
 .settings-header {
@@ -259,6 +380,26 @@
   margin-left: 30px;
 }
 
+/* Section Headlines */
+.section-headline {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 20px 0 12px 0;
+  padding: 0;
+  text-align: center;
+  border: none;
+  background: none;
+}
+
+.section-headline.quick-access-headline {
+  margin-top: 15px;
+}
+
+.section-headline.prompt-categories-headline {
+  margin-top: 20px;
+}
+
 /* Attribution */
 #prompt-generator-container .prompt-generator-attribution {
   font-size: 11px;
@@ -266,19 +407,71 @@
   text-align: center;
 }
 
-/* Toggle Button Structure */
+/* Toggle Button - Integrated into Sidebar Edge */
 .toggle-button {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 64px;
-  height: 64px;
+  top: 50%;
+  right: -20px;
+  width: 40px;
+  height: 80px;
   border: none;
   outline: none;
   cursor: pointer;
-  border-radius: 50%;
+  border-radius: 20px 0 0 20px;
   z-index: 10001;
-  background: transparent;
+  background: var(--color-primary, #4A90E2);
+  transform: translateY(-50%);
+  transition: right 0.3s ease-in-out, background-color 0.2s ease;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.toggle-button:hover {
+  background: var(--color-primary-hover, #357ABD);
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-button img {
+  width: 24px;
+  height: 24px;
+  opacity: 0.9;
+  transition: transform 0.3s ease;
+}
+
+/* Toggle button positioning - synchronized with sidebar state */
+body.prompt-engineer-active .toggle-button {
+  right: 380px;
+}
+
+body.prompt-engineer-active .toggle-button img {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 1200px) {
+  body.prompt-engineer-active .toggle-button {
+    right: 320px;
+  }
+}
+
+@media (max-width: 768px) {
+  .toggle-button {
+    right: -15px;
+    width: 35px;
+    height: 70px;
+    border-radius: 15px 0 0 15px;
+  }
+  
+  .toggle-button img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  body.prompt-engineer-active .toggle-button {
+    right: -15px; /* Stay at edge on mobile overlay */
+  }
 }
 
 /* Speech Button Structure */

@@ -13,6 +13,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true; // Keep the message channel open for async response
   }
   
+  if (request.action === 'openPopup') {
+    // Open XML Editor in a new window (triggered by the XML Editor button)
+    openXMLEditorInWindow(sendResponse);
+    return true;
+  }
+  
   if (request.action === 'openInNewWindow') {
     // Open XML Editor in a new window for resizable interface
     openXMLEditorInWindow(sendResponse);

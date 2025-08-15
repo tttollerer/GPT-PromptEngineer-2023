@@ -733,9 +733,6 @@ class XMLEditor {
     if (this.editor && this.editor.getValue) {
       // AdvancedXMLEditor or fallback editor
       return this.editor.getValue();
-    } else if (this.editor && this.editor.state) {
-      // Legacy CodeMirror 6 (unlikely to be used now)
-      return this.editor.state.doc.toString();
     }
     return '';
   }
@@ -744,11 +741,6 @@ class XMLEditor {
     if (this.editor && this.editor.setValue) {
       // AdvancedXMLEditor or fallback editor
       this.editor.setValue(content);
-    } else if (this.editor && this.editor.dispatch) {
-      // Legacy CodeMirror 6 (unlikely to be used now)
-      this.editor.dispatch({
-        changes: { from: 0, to: this.editor.state.doc.length, insert: content }
-      });
     }
   }
   
@@ -1367,17 +1359,13 @@ class XMLEditor {
       }
     });
     
-    // Jump to element position in CodeMirror editor
+    // Jump to element position in AdvancedXMLEditor
     if (this.editor && element) {
       try {
         const position = this.findElementPositionInEditor(element);
         if (position !== -1) {
-          // Move cursor to the element
-          const { EditorView } = window.CM;
-          this.editor.dispatch({
-            selection: { anchor: position, head: position },
-            effects: EditorView.scrollIntoView(position, { y: "center" })
-          });
+          // Move cursor to the element position
+          this.editor.setCursorPosition(position);
           
           // Focus the editor
           this.editor.focus();
