@@ -107,7 +107,7 @@ class AIPromptGenerator {
     
     const closeButton = document.createElement('button');
     closeButton.className = 'ai-generator-close';
-    closeButton.innerHTML = '×';
+    closeButton.textContent = '×';
     closeButton.addEventListener('click', () => this.closeGenerator());
     
     header.appendChild(title);

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3-Level Navigation Test</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/category_navigation.css">
+    
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        #prompt-generator-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #2a2a2a;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #3a3a3a;
+        }
+        
+        h1 {
+            color: #ff6b35;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .section-headline {
+            color: #4caf50;
+            font-size: 16px;
+            margin: 20px 0 15px 0;
+        }
+        
+        .test-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .test-button {
+            padding: 8px 16px;
+            background: #444;
+            border: 1px solid #555;
+            border-radius: 6px;
+            color: #e0e0e0;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .test-button:hover {
+            background: #555;
+        }
+        
+        /* Mock target input field */
+        #mock-target {
+            width: 100%;
+            min-height: 100px;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 12px;
+            color: #e0e0e0;
+            font-family: monospace;
+            font-size: 12px;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 3-Level Navigation Test</h1>
+    
+    <div id="prompt-generator-container">
+        <h3 class="section-headline">Mock Output:</h3>
+        <textarea id="mock-target" placeholder="Generated prompts will appear here..."></textarea>
+        
+        <h3 class="section-headline prompt-categories-headline">Prompt Categories</h3>
+        <!-- Navigation will be generated here -->
+        
+        <div class="test-buttons">
+            <button class="test-button" onclick="initTest()">🔄 Initialize</button>
+            <button class="test-button" onclick="debugState()">🔍 Debug State</button>
+            <button class="test-button" onclick="resetTest()">🗑️ Reset</button>
+        </div>
+    </div>
+
+    <!-- Mock XML Data -->
+    <script>
+        // Mock navigation state
+        window.navigationState = {
+            currentLayer: 1,
+            selectedCategory: null,
+            selectedPrompt: null,
+            availablePrompts: [],
+            requiredInputs: [],
+            categoryData: {},
+            inputDefinitions: {}
+        };
+        
+        // Mock extension state
+        window.getExtensionState = function() {
+            return {
+                activePrompts: {
+                    categories: {}
+                }
+            };
+        };
+        
+        // Mock content updater
+        window.contentUpdater = {
+            updateTextfieldContent: function() {
+                const state = window.getExtensionState();
+                const prompts = Object.values(state.activePrompts.categories);
+                const output = prompts.map(p => {
+                    let text = p.value;
+                    if (p.additionalInputs) {
+                        Object.entries(p.additionalInputs).forEach(([key, value]) => {
+                            text = text.replace(new RegExp(`{{${key}}}`, 'g'), value);
+                        });
+                    }
+                    return text;
+                }).join('\n\n');
+                
+                document.getElementById('mock-target').value = output;
+                console.log('📝 Updated target with:', output);
+            }
+        };
+        
+        // Mock error handler
+        window.errorHandler = {
+            debugMode: true
+        };
+        
+        // Mock fetchData function for loading input definitions
+        window.fetchData = async function(filename) {
+            if (filename === 'data_inputs.xml') {
+                const parser = new DOMParser();
+                const xmlString = `
+                    <data>
+                        <inputs>
+                            <input>
+                                <label>URL / Link / Repository</label>
+                                <id>LinkOrURL</id>
+                                <valueBefore>Here is the URL: "</valueBefore>
+                                <valueAfter>". </valueAfter>
+                            </input>
+                            <input>
+                                <label>My Text</label>
+                                <id>text</id>
+                                <valueBefore>Here is the Text: "</valueBefore>
+                                <valueAfter>". </valueAfter>
+                            </input>
+                            <input>
+                                <label>Plugin Name</label>
+                                <id>PluginName</id>
+                                <valueBefore>The plugin is: "</valueBefore>
+                                <valueAfter>". </valueAfter>
+                            </input>
+                        </inputs>
+                    </data>
+                `;
+                return parser.parseFromString(xmlString, 'text/xml');
+            }
+            return null;
+        };
+        
+        // Test functions
+        function initTest() {
+            console.log('🚀 Initializing 3-Level Navigation Test');
+            
+            // Create mock XML data
+            const parser = new DOMParser();
+            const xmlString = `
+                <data>
+                    <dropdowns>
+                        <dropdown>
+                            <label>Task</label>
+                            <id>task</id>
+                            <options>
+                                <option>
+                                    <label>Summary</label>
+                                    <value>Write a well-structured summary about {{text}} from {{LinkOrURL}}.</value>
+                                    <id>summary</id>
+                                    <additionals>text, LinkOrURL</additionals>
+                                </option>
+                                <option>
+                                    <label>Simple Task</label>
+                                    <value>This is a simple task without additionals.</value>
+                                    <id>simple</id>
+                                    <additionals></additionals>
+                                </option>
+                                <option>
+                                    <label>Plugin Check</label>
+                                    <value>Check the {{PluginName}} plugin functionality.</value>
+                                    <id>plugin</id>
+                                    <additionals>PluginName</additionals>
+                                </option>
+                            </options>
+                        </dropdown>
+                        <dropdown>
+                            <label>Formatting</label>
+                            <id>formatting</id>
+                            <options>
+                                <option>
+                                    <label>Clean Format</label>
+                                    <value>Format the text cleanly and structured.</value>
+                                    <id>clean</id>
+                                    <additionals></additionals>
+                                </option>
+                            </options>
+                        </dropdown>
+                    </dropdowns>
+                </data>
+            `;
+            
+            const xmlData = parser.parseFromString(xmlString, 'text/xml');
+            
+            // Initialize category navigation
+            if (window.categoryNavigation) {
+                window.categoryNavigation.init(xmlData);
+                console.log('✅ Category navigation initialized');
+            } else {
+                console.error('❌ Category navigation not loaded');
+            }
+        }
+        
+        function debugState() {
+            console.log('🔍 Current Navigation State:', window.navigationState);
+            console.log('🎯 Extension State:', window.getExtensionState());
+        }
+        
+        function resetTest() {
+            // Reset state
+            window.navigationState.currentLayer = 1;
+            window.navigationState.selectedCategory = null;
+            window.navigationState.selectedPrompt = null;
+            window.navigationState.requiredInputs = [];
+            window.getExtensionState().activePrompts.categories = {};
+            
+            // Clear UI
+            const containers = [
+                '.categories-layer-container',
+                '.prompts-layer-container', 
+                '.additionals-layer-container'
+            ];
+            
+            containers.forEach(selector => {
+                const element = document.querySelector(selector);
+                if (element) element.remove();
+            });
+            
+            document.getElementById('mock-target').value = '';
+            console.log('🗑️ Test reset');
+        }
+    </script>
+    
+    <!-- Load navigation system -->
+    <script src="engine/category_navigation.js"></script>
+    
+    <script>
+        // Auto-initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📚 Page loaded, ready for testing');
+            setTimeout(() => {
+                initTest();
+            }, 100);
+        });
+    </script>
+</body>
+</html>

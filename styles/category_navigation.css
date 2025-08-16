@@ -1,0 +1,509 @@
+/**
+ * CATEGORY NAVIGATION STYLES
+ * Styles for the two-layer category navigation system
+ */
+
+/* ===== LAYER 1: CATEGORIES CONTAINER ===== */
+.categories-layer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+  transition: all 0.3s ease;
+}
+
+.categories-layer-container.hidden {
+  display: none;
+}
+
+/* Category buttons - full width */
+.category-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #2C2C2C 0%, #3A3A3A 100%);
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: #E0E0E0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+.category-button:hover {
+  background: linear-gradient(135deg, #3A3A3A 0%, #484848 100%);
+  border-color: #555;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.category-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Category button content */
+.category-button .category-icon {
+  margin-right: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.category-button .category-icon svg {
+  color: #E0E0E0;
+}
+
+.category-button .category-label {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+}
+
+.category-button .category-count {
+  background: #4A9EFF;
+  color: white;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 24px;
+  text-align: center;
+  margin-left: 8px;
+}
+
+/* Specific category colors */
+.category-employees:hover {
+  border-color: #4CAF50;
+}
+
+.category-task:hover {
+  border-color: #2196F3;
+}
+
+.category-scope:hover {
+  border-color: #FF9800;
+}
+
+.category-formatting:hover {
+  border-color: #9C27B0;
+}
+
+/* Default category hover */
+.category-button:hover {
+  border-color: #FF6B35;
+}
+
+/* ===== LAYER 3: ADDITIONALS CONTAINER ===== */
+.additionals-layer-container {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  margin: 16px 0;
+  transition: all 0.3s ease;
+}
+
+.additionals-layer-container.show {
+  display: flex;
+}
+
+/* Back button to prompts */
+.back-to-prompts-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: #1A1A1A;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #B0B0B0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.back-to-prompts-button:hover {
+  background: #2A2A2A;
+  border-color: #444;
+  color: #E0E0E0;
+}
+
+/* Prompt title for additionals */
+.prompt-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #4CAF50;
+  margin: 8px 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prompt-title .title-text {
+  font-weight: 700;
+}
+
+/* Instructions text */
+.additionals-instructions {
+  color: #B0B0B0;
+  font-size: 14px;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+/* Input fields container */
+.additionals-input-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Individual input field groups */
+.additional-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.additional-input-label {
+  color: #E0E0E0;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.additional-input-field {
+  width: 100%;
+  padding: 12px 16px;
+  background: #2A2A2A;
+  border: 1px solid #3A3A3A;
+  border-radius: 6px;
+  color: #E0E0E0;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.additional-input-field:focus {
+  outline: none;
+  border-color: #4CAF50;
+  background: #333;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.additional-input-field::placeholder {
+  color: #777;
+}
+
+/* Complete button */
+.complete-prompt-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #4CAF50 0%, #45A049 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+
+.complete-prompt-button:hover {
+  background: linear-gradient(135deg, #45A049 0%, #3E8E41 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.complete-prompt-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(76, 175, 80, 0.4);
+}
+
+.complete-prompt-button svg {
+  color: white;
+}
+
+/* ===== LAYER 2: PROMPTS CONTAINER ===== */
+.prompts-layer-container {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0;
+  transition: all 0.3s ease;
+}
+
+.prompts-layer-container.show {
+  display: flex;
+}
+
+/* Back button - icon only */
+.back-to-categories-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: #1A1A1A;
+  border: 1px solid #333;
+  border-radius: 6px;
+  color: #B0B0B0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+.back-to-categories-button:hover {
+  background: #2A2A2A;
+  border-color: #444;
+  color: #E0E0E0;
+}
+
+.back-to-categories-button svg {
+  color: inherit;
+}
+
+/* Category title */
+.category-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FF6B35;
+  margin: 8px 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-title .title-icon {
+  display: flex;
+  align-items: center;
+}
+
+.category-title .title-icon svg {
+  color: #FF6B35;
+}
+
+.category-title .title-text {
+  font-weight: 700;
+}
+
+/* Prompts list - no internal scrolling, let sidebar scroll */
+.prompts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  /* Removed max-height and overflow-y to allow sidebar scrolling */
+}
+
+/* Individual prompt buttons */
+.prompt-item-button {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  background: #2A2A2A;
+  border: 1px solid #3A3A3A;
+  border-radius: 6px;
+  color: #D0D0D0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  text-align: left;
+  line-height: 1.4;
+  position: relative;
+}
+
+.prompt-item-button:hover {
+  background: #3A3A3A;
+  border-color: #FF6B35;
+  color: #FFFFFF;
+  transform: translateX(2px);
+}
+
+.prompt-item-button:active {
+  transform: translateX(0);
+  background: #FF6B35;
+  color: white;
+}
+
+/* Prompt selection feedback */
+.prompt-selected-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(76, 175, 80, 0.3);
+  z-index: 10000;
+  animation: slideInFromRight 0.3s ease, fadeOut 0.3s ease 1.7s forwards;
+}
+
+.prompt-selected-notification .notification-icon {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Layer transition animations */
+.categories-layer-container {
+  animation: fadeInScale 0.3s ease;
+}
+
+.prompts-layer-container {
+  animation: slideInFromLeft 0.3s ease;
+}
+
+.additionals-layer-container {
+  animation: slideInFromBottom 0.3s ease;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .category-button {
+    padding: 10px 12px;
+    font-size: 13px;
+    min-height: 44px;
+  }
+  
+  .category-button .category-icon {
+    font-size: 16px;
+    margin-right: 10px;
+  }
+  
+  .prompt-item-button {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  
+  .prompts-list {
+    max-height: 250px;
+  }
+  
+  .additional-input-field {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  
+  .complete-prompt-button {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+.category-button:focus,
+.prompt-item-button:focus,
+.back-to-categories-button:focus,
+.back-to-prompts-button:focus,
+.additional-input-field:focus,
+.complete-prompt-button:focus {
+  outline: 2px solid #FF6B35;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .category-button {
+    border-width: 2px;
+  }
+  
+  .prompt-item-button {
+    border-width: 2px;
+  }
+  
+  .additional-input-field {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .category-button,
+  .prompt-item-button,
+  .back-to-categories-button,
+  .back-to-prompts-button,
+  .additional-input-field,
+  .complete-prompt-button,
+  .categories-layer-container,
+  .prompts-layer-container,
+  .additionals-layer-container {
+    transition: none;
+    animation: none;
+  }
+}

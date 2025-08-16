@@ -365,24 +365,7 @@ if (topBarElements.languageSelector) {
 
 
 
-if (!toggleButtonAdded) {
-/* On Off Button */
-const toggleButton = document.createElement('button');
-toggleButton.classList.add('toggle-button');
-toggleButton.onclick = toggleContainer;
-
-const toggleButtonImage = document.createElement('img');
-toggleButtonImage.src = chrome.runtime.getURL('Images/OnOff.png');
-toggleButtonImage.width = 128;
-toggleButtonImage.height = 128;
-toggleButton.appendChild(toggleButtonImage);
-
-// Add toggle button as floating element to body
-document.body.appendChild(toggleButton);
-toggleButtonAdded = true;
-
-
-}
+// Modern toggle button is now handled by modern_toggle.js
 
 
 
@@ -415,14 +398,38 @@ toggleButtonAdded = true;
       buttonText = window.translations['de']["AI Create Prompt"]; // German fallback since it was originally German
     }
     
-    aiGeneratorButton.innerHTML = `
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-        <path d="m12 2 3 7s4 1 4 5.5c0 2.8-2.2 5.5-5 5.5s-5-2.7-5-5.5c0-4.5 4-5.5 4-5.5z"/>
-        <path d="M5 3L4 6l7 6 1-3z"/>
-        <circle cx="12" cy="17" r="1"/>
-      </svg>
-      ${buttonText}
-    `;
+    // Clear button content
+    aiGeneratorButton.textContent = '';
+    
+    // Create SVG element safely
+    const svg1 = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg1.setAttribute('viewBox', '0 0 24 24');
+    svg1.setAttribute('width', '16');
+    svg1.setAttribute('height', '16');
+    svg1.setAttribute('fill', 'none');
+    svg1.setAttribute('stroke', 'currentColor');
+    svg1.setAttribute('stroke-width', '2');
+    svg1.setAttribute('stroke-linecap', 'round');
+    svg1.setAttribute('stroke-linejoin', 'round');
+    svg1.style.marginRight = '6px';
+    
+    const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path1.setAttribute('d', 'm12 2 3 7s4 1 4 5.5c0 2.8-2.2 5.5-5 5.5s-5-2.7-5-5.5c0-4.5 4-5.5 4-5.5z');
+    svg1.appendChild(path1);
+    
+    const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path2.setAttribute('d', 'M5 3L4 6l7 6 1-3z');
+    svg1.appendChild(path2);
+    
+    const circle1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle1.setAttribute('cx', '12');
+    circle1.setAttribute('cy', '17');
+    circle1.setAttribute('r', '1');
+    svg1.appendChild(circle1);
+    
+    aiGeneratorButton.appendChild(svg1);
+    aiGeneratorButton.appendChild(document.createTextNode(buttonText));
+    
     aiGeneratorButton.addEventListener('click', () => {
       if (window.aiPromptGenerator) {
         window.aiPromptGenerator.openGenerator();
@@ -447,12 +454,28 @@ toggleButtonAdded = true;
       improverButtonText = window.translations['de']["AI Improve Prompt"];
     }
     
-    aiImproverButton.innerHTML = `
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-      </svg>
-      ${improverButtonText}
-    `;
+    // Clear button content
+    aiImproverButton.textContent = '';
+    
+    // Create SVG element safely
+    const svg2 = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg2.setAttribute('viewBox', '0 0 24 24');
+    svg2.setAttribute('width', '16');
+    svg2.setAttribute('height', '16');
+    svg2.setAttribute('fill', 'none');
+    svg2.setAttribute('stroke', 'currentColor');
+    svg2.setAttribute('stroke-width', '2');
+    svg2.setAttribute('stroke-linecap', 'round');
+    svg2.setAttribute('stroke-linejoin', 'round');
+    svg2.style.marginRight = '6px';
+    
+    const path3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path3.setAttribute('d', 'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z');
+    svg2.appendChild(path3);
+    
+    aiImproverButton.appendChild(svg2);
+    aiImproverButton.appendChild(document.createTextNode(improverButtonText));
+    
     aiImproverButton.addEventListener('click', () => {
       if (window.aiPromptGenerator && window.aiPromptGenerator.improveExistingPrompt) {
         window.aiPromptGenerator.improveExistingPrompt();
@@ -468,14 +491,14 @@ toggleButtonAdded = true;
     aiButtonsContainer.appendChild(aiImproverButton);
     container.appendChild(aiButtonsContainer);
 
-    // Quick Access headline before checkboxes
+    // Quick Access headline (collapsible) before checkboxes
     const quickAccessHeadline = document.createElement('h3');
-    quickAccessHeadline.className = 'section-headline quick-access-headline';
+    quickAccessHeadline.className = 'section-headline quick-access-headline quick-access-header';
     quickAccessHeadline.textContent = getTranslation('Quick Access', 'Quick Access');
     container.appendChild(quickAccessHeadline);
 
     const checkboxContainer = document.createElement('div');
-    checkboxContainer.classList.add('prompt-generator-checkbox-container');
+    checkboxContainer.className = 'prompt-generator-checkbox-container quick-access-content';
     container.appendChild(checkboxContainer);
 
     Array.from(checkboxes).forEach((checkbox) => {
@@ -490,37 +513,45 @@ toggleButtonAdded = true;
       checkboxContainer.appendChild(checkboxElement);
     });
 
-    // Prompt Categories headline before dropdowns
+    // Prompt Categories headline before category navigation
     const promptCategoriesHeadline = document.createElement('h3');
     promptCategoriesHeadline.className = 'section-headline prompt-categories-headline';
     promptCategoriesHeadline.textContent = getTranslation('Prompt Categories', 'Prompt Categories');
     container.appendChild(promptCategoriesHeadline);
 
-    const dropdownContainer = document.createElement('div');
-    dropdownContainer.classList.add('prompt-generator-dropdown-container');
-    container.appendChild(dropdownContainer);
+    // Initialize category navigation instead of dropdowns
+    if (window.categoryNavigation) {
+      window.categoryNavigation.init(xmlData);
+    } else {
+      console.warn('Category navigation not loaded, falling back to dropdowns');
+      
+      // Fallback: Create traditional dropdowns if category navigation fails
+      const dropdownContainer = document.createElement('div');
+      dropdownContainer.classList.add('prompt-generator-dropdown-container');
+      container.appendChild(dropdownContainer);
 
-    Array.from(dropdowns).forEach((dropdown) => {
-  const options = dropdown.querySelectorAll('options option');
-  const idElement = dropdown.querySelector('id');
-  const labelElement = dropdown.querySelector('label');
-  const dropdownData = {
-    id: idElement ? idElement.textContent : '',
-    label: labelElement ? labelElement.textContent : '',
-    options: Array.from(options).map((option) => {
-      const optionLabelElement = option.querySelector('label');
-      const optionValueElement = option.querySelector('value');
-      const optionAdditionalsElement = option.querySelector('additionals');
-      return {
-        label: optionLabelElement ? optionLabelElement.textContent : '',
-        text: optionValueElement ? optionValueElement.textContent : '',
-        additionals: optionAdditionalsElement ? optionAdditionalsElement.textContent : null,
-      };
-    }),
-  };
-  const dropdownElement = inputFieldCreation.createDropdown(dropdownData);
-  dropdownContainer.appendChild(dropdownElement);
-});
+      Array.from(dropdowns).forEach((dropdown) => {
+        const options = dropdown.querySelectorAll('options option');
+        const idElement = dropdown.querySelector('id');
+        const labelElement = dropdown.querySelector('label');
+        const dropdownData = {
+          id: idElement ? idElement.textContent : '',
+          label: labelElement ? labelElement.textContent : '',
+          options: Array.from(options).map((option) => {
+            const optionLabelElement = option.querySelector('label');
+            const optionValueElement = option.querySelector('value');
+            const optionAdditionalsElement = option.querySelector('additionals');
+            return {
+              label: optionLabelElement ? optionLabelElement.textContent : '',
+              text: optionValueElement ? optionValueElement.textContent : '',
+              additionals: optionAdditionalsElement ? optionAdditionalsElement.textContent : null,
+            };
+          }),
+        };
+        const dropdownElement = inputFieldCreation.createDropdown(dropdownData);
+        dropdownContainer.appendChild(dropdownElement);
+      });
+    }
 
 
 /*funktioniert */
@@ -610,6 +641,31 @@ Array.from(inputs).forEach((input) => {
     getInputTexts(xmlData);
   
     container.appendChild(attribution);
+    
+    // Initialize collapsible functionality for Quick Access
+    if (window.collapsibleSections) {
+      // Short delay to ensure DOM is ready
+      setTimeout(() => {
+        const success = window.collapsibleSections.init('quick-access', {
+          defaultCollapsed: false, // Default expanded
+          accessibility: {
+            expandedLabel: getTranslation('Quick Access expanded, click to collapse', 'Quick Access expanded, click to collapse'),
+            collapsedLabel: getTranslation('Quick Access collapsed, click to expand', 'Quick Access collapsed, click to expand')
+          },
+          onToggle: (collapsed, sectionId) => {
+            if (window.errorHandler && window.errorHandler.debugMode) {
+              console.log(`🔧 Quick Access ${collapsed ? 'collapsed' : 'expanded'}`);
+            }
+          }
+        });
+        
+        if (success && window.errorHandler && window.errorHandler.debugMode) {
+          console.log('✅ Quick Access collapsible functionality initialized');
+        }
+      }, 100);
+    } else {
+      console.warn('⚠️ Collapsible sections not loaded - Quick Access will not be collapsible');
+    }
     
     } catch (error) {
       console.error('❌ buildUI Error:', error);
@@ -732,14 +788,37 @@ function updateAIGeneratorButtonText() {
       buttonText = window.translations['de']["AI Create Prompt"]; // German fallback since it was originally German
     }
     
-    aiGeneratorButton.innerHTML = `
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-        <path d="m12 2 3 7s4 1 4 5.5c0 2.8-2.2 5.5-5 5.5s-5-2.7-5-5.5c0-4.5 4-5.5 4-5.5z"/>
-        <path d="M5 3L4 6l7 6 1-3z"/>
-        <circle cx="12" cy="17" r="1"/>
-      </svg>
-      ${buttonText}
-    `;
+    // Clear button content
+    aiGeneratorButton.textContent = '';
+    
+    // Create SVG element safely
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', '16');
+    svg.setAttribute('height', '16');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.style.marginRight = '6px';
+    
+    const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path1.setAttribute('d', 'm12 2 3 7s4 1 4 5.5c0 2.8-2.2 5.5-5 5.5s-5-2.7-5-5.5c0-4.5 4-5.5 4-5.5z');
+    svg.appendChild(path1);
+    
+    const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path2.setAttribute('d', 'M5 3L4 6l7 6 1-3z');
+    svg.appendChild(path2);
+    
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', '12');
+    circle.setAttribute('cy', '17');
+    circle.setAttribute('r', '1');
+    svg.appendChild(circle);
+    
+    aiGeneratorButton.appendChild(svg);
+    aiGeneratorButton.appendChild(document.createTextNode(buttonText));
   }
   
   // Update AI Improver button
@@ -755,12 +834,27 @@ function updateAIGeneratorButtonText() {
       improverButtonText = window.translations['de']["AI Improve Prompt"];
     }
     
-    aiImproverButton.innerHTML = `
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;">
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-      </svg>
-      ${improverButtonText}
-    `;
+    // Clear button content
+    aiImproverButton.textContent = '';
+    
+    // Create SVG element safely
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', '16');
+    svg.setAttribute('height', '16');
+    svg.setAttribute('fill', 'none');
+    svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '2');
+    svg.setAttribute('stroke-linecap', 'round');
+    svg.setAttribute('stroke-linejoin', 'round');
+    svg.style.marginRight = '6px';
+    
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z');
+    svg.appendChild(path);
+    
+    aiImproverButton.appendChild(svg);
+    aiImproverButton.appendChild(document.createTextNode(improverButtonText));
   }
 }
 
@@ -771,33 +865,7 @@ window.updateAIGeneratorButtonText = updateAIGeneratorButtonText;
 
    
 
-/*container öffnen schliessen */
-
-let containerVisible = true;
-
-function toggleContainer() {
-  const container = document.getElementById('prompt-generator-container');
-  const containerVisible = !container.classList.contains('hidden');
-  const toggleButton = document.querySelector('.toggle-button');
-  
-  if (containerVisible) {
-    // Hide sidebar - synchronize both changes in same frame
-    container.classList.add('hidden');
-    document.body.classList.remove('prompt-engineer-active');
-    if (toggleButton) {
-      toggleButton.classList.add('rotated');
-    }
-  } else {
-    // Show sidebar - synchronize both changes in same frame
-    const selectedLanguage = localStorage.getItem('selectedLanguage') || initialLang;
-    updateUI(selectedLanguage); 
-    container.classList.remove('hidden');
-    document.body.classList.add('prompt-engineer-active');
-    if (toggleButton) {
-      toggleButton.classList.remove('rotated');
-    }
-  }
-}
+// Legacy toggle functionality moved to modern_toggle.js
 
 function resetInputFields() {
   const container = document.getElementById('prompt-generator-container');

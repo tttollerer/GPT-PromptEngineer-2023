@@ -81,6 +81,18 @@ window.contentUpdater = {
         state.promptHistory.active.add(prompt);
       }
     });
+
+    // Add category prompts
+    if (state.activePrompts.categories) {
+      Object.values(state.activePrompts.categories).forEach(promptObj => {
+        if (promptObj.value && promptObj.value.trim()) {
+          const prompt = promptObj.value.trim();
+          activeExtensionPrompts.push(prompt);
+          state.promptHistory.all.add(prompt);
+          state.promptHistory.active.add(prompt);
+        }
+      });
+    }
     
     // Clean up prompt history - remove inactive prompts
     state.promptHistory.active.forEach(prompt => {

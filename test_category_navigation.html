@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Navigation Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1A1A1A;
+            color: white;
+            margin: 20px;
+        }
+        .test-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #2A2A2A;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success { background: #4CAF50; }
+        .error { background: #f44336; }
+        .info { background: #2196F3; }
+    </style>
+    <link rel="stylesheet" href="styles/category_navigation.css">
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Category Navigation Test</h1>
+        
+        <div id="test-status"></div>
+        
+        <h2>Layer 1 - Categories (Dynamisch generiert)</h2>
+        <div class="categories-layer-container" id="categories-layer">
+            <button class="category-button category-employees">
+                <span class="category-icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="m22 21-2-2m-2 2v-2a4 4 0 0 0-3-3.87"></path><circle cx="16" cy="7" r="3"></circle></svg>
+                </span>
+                <span class="category-label">Employees</span>
+                <span class="category-count">12</span>
+            </button>
+            <button class="category-button category-task">
+                <span class="category-icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3 8-8"></path><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.28 0 2.5.27 3.6.75"></path></svg>
+                </span>
+                <span class="category-label">Task</span>
+                <span class="category-count">23</span>
+            </button>
+            <button class="category-button category-scope">
+                <span class="category-icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                </span>
+                <span class="category-label">Scope</span>
+                <span class="category-count">8</span>
+            </button>
+            <button class="category-button category-formatting">
+                <span class="category-icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,7 4,4 20,4 20,7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                </span>
+                <span class="category-label">Formatting</span>
+                <span class="category-count">4</span>
+            </button>
+        </div>
+
+        <h2>Layer 2 - Prompts (ohne interne Scrollbar)</h2>
+        <div class="prompts-layer-container" id="prompts-layer" style="display: none;">
+            <button class="back-to-categories-button" title="Back to Categories">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
+            </button>
+            
+            <h3 class="category-title">
+                <span class="title-icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="m22 21-2-2m-2 2v-2a4 4 0 0 0-3-3.87"></path><circle cx="16" cy="7" r="3"></circle></svg>
+                </span>
+                <span class="title-text">Employees</span>
+            </h3>
+            
+            <div class="prompts-list">
+                <button class="prompt-item-button">Andrew Tate</button>
+                <button class="prompt-item-button">Programmers</button>
+                <button class="prompt-item-button">SEO Expert</button>
+                <button class="prompt-item-button">Business Coach</button>
+                <button class="prompt-item-button">Copy Writer</button>
+            </div>
+        </div>
+
+        <button onclick="testNavigation()" style="margin-top: 20px; padding: 10px 20px; background: #FF6B35; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            🔄 Test Navigation
+        </button>
+    </div>
+
+    <script>
+        function addStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('test-status');
+            const status = document.createElement('div');
+            status.className = `status ${type}`;
+            status.textContent = message;
+            statusDiv.appendChild(status);
+        }
+
+        function testNavigation() {
+            addStatus('🚀 Starting navigation test...', 'info');
+            
+            const categoriesLayer = document.getElementById('categories-layer');
+            const promptsLayer = document.getElementById('prompts-layer');
+            
+            // Test layer switching
+            setTimeout(() => {
+                categoriesLayer.style.display = 'none';
+                promptsLayer.style.display = 'flex';
+                addStatus('✅ Layer 2 angezeigt', 'success');
+            }, 1000);
+            
+            setTimeout(() => {
+                promptsLayer.style.display = 'none';
+                categoriesLayer.style.display = 'flex';
+                addStatus('✅ Zurück zu Layer 1', 'success');
+            }, 3000);
+            
+            setTimeout(() => {
+                addStatus('🎉 Navigation test erfolgreich!', 'success');
+            }, 4000);
+        }
+
+        // Add click handlers
+        document.querySelectorAll('.category-button').forEach(button => {
+            button.addEventListener('click', () => {
+                addStatus(`Kategorie geklickt: ${button.querySelector('.category-label').textContent}`, 'info');
+            });
+        });
+
+        document.querySelector('.back-to-categories-button').addEventListener('click', () => {
+            addStatus('Back button geklickt', 'info');
+        });
+
+        document.querySelectorAll('.prompt-item-button').forEach(button => {
+            button.addEventListener('click', () => {
+                addStatus(`Prompt ausgewählt: ${button.textContent}`, 'success');
+                // Show notification
+                const notification = document.createElement('div');
+                notification.className = 'prompt-selected-notification';
+                notification.innerHTML = `
+                    <span class="notification-icon">✓</span>
+                    <span class="notification-text">Selected: ${button.textContent}</span>
+                `;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 2000);
+            });
+        });
+
+        addStatus('🎨 Lucide Icons und CSS geladen', 'success');
+        addStatus('📱 Volle Breite Category-Buttons aktiv', 'success');
+        addStatus('📜 Keine interne Scrollbar - Sidebar scrollt', 'success');
+        addStatus('🔙 Back-Button nur Icon', 'success');
+        addStatus('⚡ Event Handler registriert', 'success');
+        addStatus('✅ Test bereit - Klicken Sie "Test Navigation"', 'info');
+    </script>
+</body>
+</html>

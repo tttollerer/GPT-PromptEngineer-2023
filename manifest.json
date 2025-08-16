@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ChatGPT PromptEngineer 2023",
   "version": "1.3",
-  "description": "WRITE LESS, GET MORE, PER CLICK - Specify U´r Topic | Share U´ŕ Needs | Receive Personalized No Random Results | A Lot Languages",
+  "description": "Enhanced prompt engineering for ChatGPT, Gemini & Bing - Create structured prompts with dynamic forms",
   "icons": {
     "16": "Images/icon16.png",
     "48": "Images/icon48.png",
@@ -27,12 +27,15 @@
   "content_scripts": [
     {
       "matches": [
+        "https://chat.openai.com/*",
         "https://chatgpt.com/*",
+        "https://gemini.google.com/*",
         "https://bard.google.com/*",
         "https://www.bing.com/*"
       ],
       "js": [
         "settings/settings.js", 
+        "engine/dom_utils.js",
         "engine/dom_helpers.js",
         "engine/error_handler.js",
         "engine/resource_manager.js",
@@ -49,6 +52,9 @@
         "engine/text/prosemirror_observer.js",
         "engine/text/content_updater.js",
         "engine/core/container_manager.js",
+        "engine/core/modern_toggle.js",
+        "engine/ui/collapsible_sections.js",
+        "engine/category_navigation.js",
         "engine/build_ui.js",
         "engine/language_switcher.js",
         "engine/content_script.js"
@@ -58,7 +64,10 @@
         "styles/theme.css",
         "styles/animations.css",
         "styles/search.css",
-        "styles/ai_generator.css"
+        "styles/ai_generator.css",
+        "styles/category_navigation.css",
+        "styles/modern_toggle.css",
+        "styles/collapsible_sections.css"
       ],
       "run_at": "document_idle"
     }
@@ -75,12 +84,16 @@
       "popup.js",
       "xml-editor.js",
       "settings/settings.js", 
+      "engine/dom_utils.js",
       "engine/dom_helpers.js",
       "engine/error_handler.js",
       "engine/resource_manager.js",
       "engine/api_manager.js",
       "engine/prompt_search.js",
       "engine/ai_prompt_generator.js",
+      "engine/category_navigation.js",
+      "engine/core/modern_toggle.js",
+      "engine/ui/collapsible_sections.js",
       "translation/translations.js",
       "engine/input_field_creation.js", 
       "data_en.xml",
@@ -101,7 +114,9 @@
     "run_at": "document_idle",
     "use_dynamic_url": false,
     "matches": [
+      "https://chat.openai.com/*",
       "https://chatgpt.com/*",
+      "https://gemini.google.com/*",
       "https://bard.google.com/*",
       "https://www.bing.com/*"]
   }]

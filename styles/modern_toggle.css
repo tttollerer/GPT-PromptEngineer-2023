@@ -1,0 +1,312 @@
+/**
+ * MODERN TOGGLE BUTTON STYLES
+ * Floating Action Button (FAB) design with animations and micro-interactions
+ */
+
+/* ===== MAIN TOGGLE BUTTON ===== */
+.modern-toggle-button {
+  /* Positioning */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10001;
+  
+  /* Size & Shape */
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  
+  /* Appearance */
+  background: #4A9EFF;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  
+  /* Shadows & Effects */
+  box-shadow: 0 4px 16px rgba(74, 158, 255, 0.3);
+  
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Animations */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  
+  /* Overflow for ripple effect */
+  overflow: hidden;
+}
+
+/* ===== HOVER STATES ===== */
+.modern-toggle-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(74, 158, 255, 0.4);
+  background: #3A8EFF;
+}
+
+.modern-toggle-button:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* ===== STATE VARIATIONS ===== */
+.modern-toggle-button.open {
+  background: #2E7BFF;
+}
+
+.modern-toggle-button.open:hover {
+  background: #1E6BEF;
+}
+
+/* ===== ICON CONTAINER ===== */
+.toggle-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon-container svg {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  fill: none;
+}
+
+/* Icon rotation for state changes */
+.modern-toggle-button.open .toggle-icon-container {
+  transform: rotate(180deg);
+}
+
+/* ===== LOADING STATE ===== */
+.toggle-icon-container.loading {
+  animation: toggleSpin 1s linear infinite;
+}
+
+@keyframes toggleSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ===== RIPPLE EFFECT ===== */
+.toggle-ripple-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.toggle-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0);
+  animation: toggleRipple 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes toggleRipple {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* ===== RESPONSIVE POSITIONING ===== */
+
+/* Large screens - adjust for wider sidebars */
+@media (min-width: 1400px) {
+  .modern-toggle-button {
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.2s ease,
+                box-shadow 0.3s ease;
+  }
+}
+
+/* Medium screens */
+@media (max-width: 1200px) {
+  .modern-toggle-button {
+    bottom: 16px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+  }
+  
+  .toggle-icon-container svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Small screens / Mobile */
+@media (max-width: 768px) {
+  .modern-toggle-button {
+    bottom: 16px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+  }
+  
+  .toggle-icon-container svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+
+/* Focus states for keyboard navigation */
+.modern-toggle-button:focus {
+  outline: 2px solid #4A9EFF;
+  outline-offset: 2px;
+}
+
+.modern-toggle-button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .modern-toggle-button,
+  .toggle-icon-container,
+  .toggle-ripple {
+    transition: none;
+    animation: none;
+  }
+  
+  .modern-toggle-button:hover {
+    transform: none;
+  }
+  
+  .modern-toggle-button:active {
+    transform: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .modern-toggle-button {
+    border: 2px solid currentColor;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+  
+  .modern-toggle-button:hover {
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
+/* ===== POSITION TRANSITIONS ===== */
+
+/* Smooth positioning when sidebar opens/closes */
+.modern-toggle-button {
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.2s ease,
+              box-shadow 0.3s ease;
+}
+
+/* ===== DARK MODE SUPPORT ===== */
+@media (prefers-color-scheme: dark) {
+  .modern-toggle-button {
+    box-shadow: 0 4px 16px rgba(74, 158, 255, 0.4);
+  }
+  
+  .modern-toggle-button:hover {
+    box-shadow: 0 6px 20px rgba(74, 158, 255, 0.5);
+  }
+}
+
+/* ===== MICRO-INTERACTIONS ===== */
+
+/* Pulse effect for attention */
+.modern-toggle-button.pulse {
+  animation: togglePulse 2s infinite;
+}
+
+@keyframes togglePulse {
+  0% {
+    box-shadow: 0 4px 16px rgba(74, 158, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(74, 158, 255, 0.6), 
+                0 0 0 8px rgba(74, 158, 255, 0.2);
+  }
+  100% {
+    box-shadow: 0 4px 16px rgba(74, 158, 255, 0.3);
+  }
+}
+
+/* Bounce effect for feedback */
+.modern-toggle-button.bounce {
+  animation: toggleBounce 0.6s ease-in-out;
+}
+
+@keyframes toggleBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.1);
+  }
+  60% {
+    transform: scale(1.05);
+  }
+}
+
+/* ===== LOADING STATES ===== */
+.modern-toggle-button.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.modern-toggle-button.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== THEME INTEGRATION ===== */
+
+/* Integration with existing extension theme */
+.modern-toggle-button {
+  --toggle-primary: #4A9EFF;
+  --toggle-primary-hover: #3A8EFF;
+  --toggle-primary-active: #2E7BFF;
+  --toggle-shadow: rgba(74, 158, 255, 0.3);
+  --toggle-shadow-hover: rgba(74, 158, 255, 0.4);
+}
+
+/* Use CSS custom properties for easy theming */
+.modern-toggle-button {
+  background: var(--toggle-primary);
+  box-shadow: 0 4px 16px var(--toggle-shadow);
+}
+
+.modern-toggle-button:hover {
+  background: var(--toggle-primary-hover);
+  box-shadow: 0 6px 20px var(--toggle-shadow-hover);
+}
+
+.modern-toggle-button.open {
+  background: var(--toggle-primary-active);
+}
+
+/* ===== LEGACY CLEANUP ===== */
+
+/* Hide old toggle button if it still exists */
+.toggle-button {
+  display: none !important;
+}

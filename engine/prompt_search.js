@@ -592,7 +592,10 @@ class PromptSearchUI {
    * Display search results
    */
   displayResults(results) {
-    this.resultsContainer.innerHTML = '';
+    // Clear existing results safely
+    while (this.resultsContainer.firstChild) {
+      this.resultsContainer.removeChild(this.resultsContainer.firstChild);
+    }
     
     if (results.length === 0) {
       if (this.searchInput.value.trim().length >= 2) {
@@ -739,7 +742,10 @@ class PromptSearchUI {
    */
   clear() {
     this.searchInput.value = '';
-    this.resultsContainer.innerHTML = '';
+    // Clear results safely
+    while (this.resultsContainer.firstChild) {
+      this.resultsContainer.removeChild(this.resultsContainer.firstChild);
+    }
     this.hideResults();
   }
 }

@@ -117,15 +117,24 @@ function setHTMLSafe(element, html) {
     return;
   }
   
-  // For structured content, parse and rebuild safely
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = html;
+  // For structured content, parse and rebuild safely using DOMParser
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  
+  // Check for parsing errors
+  if (doc.querySelector('parsererror')) {
+    console.warn('HTML parsing error, falling back to textContent');
+    element.textContent = html;
+    return;
+  }
+  
+  const bodyContent = doc.body || doc.documentElement;
   
   // Clear element
   element.textContent = '';
   
   // Rebuild content safely
-  Array.from(tempDiv.childNodes).forEach(node => {
+  Array.from(bodyContent.childNodes).forEach(node => {
     if (node.nodeType === Node.TEXT_NODE) {
       element.appendChild(document.createTextNode(node.textContent));
     } else if (node.nodeType === Node.ELEMENT_NODE) {

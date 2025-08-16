@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Toggle Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1A1A1A;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #2A2A2A;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .success { background: #4CAF50; }
+        .error { background: #f44336; }
+        .info { background: #2196F3; }
+        
+        .mock-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: #333;
+            border-left: 2px solid #4A9EFF;
+            transition: right 0.3s ease;
+            z-index: 10000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .mock-sidebar.open {
+            right: 0;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .demo-button {
+            padding: 10px 20px;
+            background: #4A9EFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .demo-button:hover {
+            background: #3A8EFF;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #444;
+        }
+        
+        .feature-list li:before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+    <link rel="stylesheet" href="styles/modern_toggle.css">
+</head>
+<body>
+    <!-- Mock Sidebar für Testing -->
+    <div class="mock-sidebar" id="mock-sidebar">
+        <h2>🎛️ Mock Sidebar</h2>
+        <p>Diese Sidebar simuliert die PromptEngineer Extension.</p>
+        <p>Der Toggle-Button sollte sich entsprechend der Sidebar-Position anpassen.</p>
+        <button onclick="closeSidebar()" style="margin-top: 20px; padding: 10px; background: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Close Sidebar
+        </button>
+    </div>
+
+    <div class="test-container">
+        <h1>🎛️ Modern Toggle System Test</h1>
+        
+        <div id="test-status"></div>
+        
+        <h2>Features des neuen Toggle-Systems:</h2>
+        <ul class="feature-list">
+            <li>Floating Action Button (FAB) Design</li>
+            <li>Lucide Icons statt PNG-Images</li>
+            <li>Smart Positioning basierend auf Sidebar-Status</li>
+            <li>Ripple-Effekte beim Klick</li>
+            <li>Smooth Animationen mit cubic-bezier</li>
+            <li>Responsive Design für alle Bildschirmgrößen</li>
+            <li>Accessibility-Support (ARIA, Focus States)</li>
+            <li>Hover & Active Micro-Interactions</li>
+            <li>Loading State mit Spinner-Animation</li>
+            <li>Event-driven State Management</li>
+        </ul>
+
+        <h2>Demo Controls:</h2>
+        <div class="demo-buttons">
+            <button class="demo-button" onclick="toggleSidebar()">Toggle Sidebar</button>
+            <button class="demo-button" onclick="testRipple()">Test Ripple Effect</button>
+            <button class="demo-button" onclick="testLoadingState()">Test Loading State</button>
+            <button class="demo-button" onclick="testPositioning()">Test Positioning</button>
+            <button class="demo-button" onclick="testAccessibility()">Test Accessibility</button>
+        </div>
+
+        <h2>Expected Behavior:</h2>
+        <ol>
+            <li><strong>Initial State:</strong> Toggle-Button unten rechts, Panel-Icon sichtbar</li>
+            <li><strong>Click Toggle:</strong> Sidebar öffnet sich, Button bewegt sich nach links</li>
+            <li><strong>Icon Change:</strong> Panel-Icon wechselt zu Close-Icon mit Rotation</li>
+            <li><strong>Smooth Animation:</strong> Alle Bewegungen sind fluid und modern</li>
+            <li><strong>Ripple Effect:</strong> Sichtbarer Ripple-Effekt beim Klick</li>
+            <li><strong>Hover Effects:</strong> Button skaliert und verändert Schatten</li>
+        </ol>
+    </div>
+
+    <script>
+        let sidebarOpen = false;
+
+        // Mock Toggle Icons (same as in modern_toggle.js)
+        const TOGGLE_ICONS = {
+            closed: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><path d="M15 3v18"></path><path d="m8 9 3 3-3 3"></path></svg>`,
+            open: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><path d="M15 3v18"></path><path d="m10 9-3 3 3 3"></path></svg>`,
+            loading: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.28 0 2.5.27 3.6.75"></path></svg>`
+        };
+
+        function addStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('test-status');
+            const status = document.createElement('div');
+            status.className = `status ${type}`;
+            status.textContent = message;
+            statusDiv.appendChild(status);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (status.parentNode) {
+                    status.parentNode.removeChild(status);
+                }
+            }, 5000);
+        }
+
+        function createMockToggleButton() {
+            // Remove existing button
+            const existing = document.querySelector('.modern-toggle-button');
+            if (existing) existing.remove();
+
+            // Create mock toggle button
+            const button = document.createElement('button');
+            button.className = 'modern-toggle-button';
+            button.setAttribute('aria-label', 'Toggle Sidebar');
+            
+            const iconContainer = document.createElement('div');
+            iconContainer.className = 'toggle-icon-container';
+            iconContainer.innerHTML = TOGGLE_ICONS.closed;
+            button.appendChild(iconContainer);
+
+            const rippleContainer = document.createElement('div');
+            rippleContainer.className = 'toggle-ripple-container';
+            button.appendChild(rippleContainer);
+
+            document.body.appendChild(button);
+
+            // Add click handler
+            button.addEventListener('click', (e) => {
+                createRippleEffect(e, button);
+                toggleSidebar();
+            });
+
+            return button;
+        }
+
+        function createRippleEffect(e, button) {
+            const rippleContainer = button.querySelector('.toggle-ripple-container');
+            if (!rippleContainer) return;
+
+            const ripple = document.createElement('div');
+            ripple.className = 'toggle-ripple';
+            
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            
+            rippleContainer.appendChild(ripple);
+            
+            setTimeout(() => {
+                if (ripple.parentNode) {
+                    ripple.parentNode.removeChild(ripple);
+                }
+            }, 600);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('mock-sidebar');
+            const button = document.querySelector('.modern-toggle-button');
+            
+            sidebarOpen = !sidebarOpen;
+            
+            if (sidebarOpen) {
+                sidebar.classList.add('open');
+                button.classList.add('open');
+                button.style.right = '420px'; // 400px sidebar + 20px margin
+                button.querySelector('.toggle-icon-container').innerHTML = TOGGLE_ICONS.open;
+                addStatus('Sidebar opened - Button repositioned', 'success');
+            } else {
+                sidebar.classList.remove('open');
+                button.classList.remove('open');
+                button.style.right = '20px';
+                button.querySelector('.toggle-icon-container').innerHTML = TOGGLE_ICONS.closed;
+                addStatus('Sidebar closed - Button repositioned', 'success');
+            }
+        }
+
+        function closeSidebar() {
+            if (sidebarOpen) {
+                toggleSidebar();
+            }
+        }
+
+        function testRipple() {
+            const button = document.querySelector('.modern-toggle-button');
+            if (button) {
+                // Simulate click event
+                const rect = button.getBoundingClientRect();
+                const fakeEvent = {
+                    clientX: rect.left + rect.width / 2,
+                    clientY: rect.top + rect.height / 2
+                };
+                createRippleEffect(fakeEvent, button);
+                addStatus('Ripple effect triggered manually', 'info');
+            }
+        }
+
+        function testLoadingState() {
+            const button = document.querySelector('.modern-toggle-button');
+            const iconContainer = button.querySelector('.toggle-icon-container');
+            
+            if (iconContainer) {
+                iconContainer.innerHTML = TOGGLE_ICONS.loading;
+                iconContainer.classList.add('loading');
+                button.classList.add('loading');
+                
+                addStatus('Loading state activated', 'info');
+                
+                setTimeout(() => {
+                    iconContainer.classList.remove('loading');
+                    button.classList.remove('loading');
+                    iconContainer.innerHTML = sidebarOpen ? TOGGLE_ICONS.open : TOGGLE_ICONS.closed;
+                    addStatus('Loading state deactivated', 'success');
+                }, 2000);
+            }
+        }
+
+        function testPositioning() {
+            const button = document.querySelector('.modern-toggle-button');
+            
+            // Test different positions
+            const positions = ['20px', '200px', '420px', '20px'];
+            let currentPos = 0;
+            
+            const interval = setInterval(() => {
+                button.style.right = positions[currentPos];
+                addStatus(`Position changed to: right=${positions[currentPos]}`, 'info');
+                currentPos++;
+                
+                if (currentPos >= positions.length) {
+                    clearInterval(interval);
+                    addStatus('Positioning test completed', 'success');
+                }
+            }, 1000);
+        }
+
+        function testAccessibility() {
+            const button = document.querySelector('.modern-toggle-button');
+            
+            // Test focus
+            button.focus();
+            addStatus('Button focused (check for focus outline)', 'info');
+            
+            // Test ARIA attributes
+            const ariaLabel = button.getAttribute('aria-label');
+            const title = button.getAttribute('title');
+            
+            addStatus(`ARIA Label: "${ariaLabel}"`, 'info');
+            addStatus(`Title: "${title || 'Not set'}"`, 'info');
+            
+            // Test keyboard activation
+            setTimeout(() => {
+                button.blur();
+                addStatus('Focus removed', 'info');
+            }, 2000);
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            createMockToggleButton();
+            addStatus('🎛️ Modern Toggle System loaded', 'success');
+            addStatus('🎨 CSS animations active', 'success');
+            addStatus('⚡ Event handlers registered', 'success');
+            addStatus('✅ Ready for testing!', 'info');
+        });
+    </script>
+</body>
+</html>

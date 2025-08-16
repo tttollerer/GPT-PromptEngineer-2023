@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collapsible Quick Access Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1A1A1A;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #2A2A2A;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .success { background: #4CAF50; }
+        .error { background: #f44336; }
+        .info { background: #2196F3; }
+        
+        .demo-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .demo-button {
+            padding: 10px 20px;
+            background: #4A9EFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .demo-button:hover {
+            background: #3A8EFF;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #444;
+        }
+        
+        .feature-list li:before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        /* Mock Extension Styling */
+        .mock-container {
+            background: #2c2c2c;
+            border-radius: 8px;
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #4A9EFF;
+        }
+        
+        .section-headline {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            margin: 20px 0 12px 0;
+            padding: 0;
+        }
+        
+        .section-headline.quick-access-headline {
+            margin-top: 15px;
+        }
+        
+        .prompt-generator-checkbox-container {
+            background: #333;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 6px;
+            background: #444;
+            border-radius: 4px;
+        }
+        
+        .checkbox-item input {
+            margin-right: 10px;
+        }
+        
+        .checkbox-item label {
+            color: #fff;
+            cursor: pointer;
+        }
+        
+        /* CSS Variables for consistency */
+        :root {
+            --color-primary: #4A9EFF;
+            --color-text-primary: #ffffff;
+            --color-text-secondary: #888;
+        }
+    </style>
+    <link rel="stylesheet" href="styles/collapsible_sections.css">
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Collapsible Quick Access Test</h1>
+        
+        <div id="test-status"></div>
+        
+        <h2>Features des Collapsible Quick Access Systems:</h2>
+        <ul class="feature-list">
+            <li>Clickable Header mit Lucide ChevronDown/ChevronUp Icons</li>
+            <li>Smooth CSS Animations für Collapse/Expand</li>
+            <li>Persistent State im localStorage</li>
+            <li>Accessibility Support (ARIA, Focus States)</li>
+            <li>Hover Effects und Micro-Interactions</li>
+            <li>Keyboard Navigation (Enter/Space)</li>
+            <li>Wiederverwendbare Komponenten-Architektur</li>
+            <li>Reduced Motion Support</li>
+            <li>High Contrast Mode Kompatibilität</li>
+            <li>Event-driven State Management</li>
+        </ul>
+
+        <h2>Demo Controls:</h2>
+        <div class="demo-buttons">
+            <button class="demo-button" onclick="toggleQuickAccess()">Toggle Quick Access</button>
+            <button class="demo-button" onclick="expandQuickAccess()">Expand Quick Access</button>
+            <button class="demo-button" onclick="collapseQuickAccess()">Collapse Quick Access</button>
+            <button class="demo-button" onclick="checkState()">Check State</button>
+            <button class="demo-button" onclick="clearStorage()">Clear Storage</button>
+        </div>
+
+        <h2>Mock Extension Container:</h2>
+        <div class="mock-container">
+            <!-- Quick Access Section -->
+            <h3 class="section-headline quick-access-headline quick-access-header">Quick Access</h3>
+            
+            <div class="prompt-generator-checkbox-container quick-access-content">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mock1">
+                    <label for="mock1">Translate to German</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mock2">
+                    <label for="mock2">Professional tone</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mock3">
+                    <label for="mock3">Add examples</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mock4">
+                    <label for="mock4">Format as list</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="mock5">
+                    <label for="mock5">Include sources</label>
+                </div>
+            </div>
+            
+            <h3 class="section-headline">Other Section (Not Collapsible)</h3>
+            <div style="background: #333; padding: 15px; border-radius: 6px;">
+                <p>This section is not collapsible and serves as a reference.</p>
+                <p>Only the Quick Access section above should be collapsible.</p>
+            </div>
+        </div>
+
+        <h2>Expected Behavior:</h2>
+        <ol>
+            <li><strong>Initial State:</strong> Quick Access expanded with ChevronDown icon</li>
+            <li><strong>Click Header:</strong> Section collapses with smooth animation</li>
+            <li><strong>Icon Change:</strong> ChevronDown rotates to ChevronRight</li>
+            <li><strong>State Persistence:</strong> Refresh page keeps collapsed state</li>
+            <li><strong>Hover Effects:</strong> Header highlights on hover</li>
+            <li><strong>Keyboard Navigation:</strong> Enter/Space key toggles section</li>
+            <li><strong>Smooth Animation:</strong> Content fades out/in with height transition</li>
+            <li><strong>Accessibility:</strong> Screen reader announces state changes</li>
+        </ol>
+        
+        <h2>Debug Info:</h2>
+        <div id="debug-info" style="background: #333; padding: 15px; border-radius: 6px; margin: 10px 0;">
+            <p>Collapsible System Status: <span id="system-status">Loading...</span></p>
+            <p>Quick Access State: <span id="qa-state">Unknown</span></p>
+            <p>LocalStorage: <span id="storage-info">Checking...</span></p>
+        </div>
+    </div>
+
+    <script src="engine/ui/collapsible_sections.js"></script>
+    <script>
+        let debugInterval;
+
+        function addStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('test-status');
+            const status = document.createElement('div');
+            status.className = `status ${type}`;
+            status.textContent = message;
+            statusDiv.appendChild(status);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (status.parentNode) {
+                    status.parentNode.removeChild(status);
+                }
+            }, 5000);
+        }
+
+        function updateDebugInfo() {
+            const systemStatus = document.getElementById('system-status');
+            const qaState = document.getElementById('qa-state');
+            const storageInfo = document.getElementById('storage-info');
+            
+            // System status
+            systemStatus.textContent = window.collapsibleSections ? 'Loaded ✅' : 'Not Loaded ❌';
+            
+            // Quick Access state
+            if (window.collapsibleSections) {
+                const isCollapsed = window.collapsibleSections.isCollapsed('quick-access');
+                qaState.textContent = isCollapsed ? 'Collapsed' : 'Expanded';
+            } else {
+                qaState.textContent = 'System not ready';
+            }
+            
+            // Storage info
+            try {
+                const stored = localStorage.getItem('promptEngineer_quick-access_collapsed');
+                storageInfo.textContent = stored !== null ? `Stored: ${stored}` : 'No stored state';
+            } catch (error) {
+                storageInfo.textContent = 'Storage error';
+            }
+        }
+
+        function toggleQuickAccess() {
+            if (window.collapsibleSections) {
+                window.collapsibleSections.toggle('quick-access');
+                addStatus('Quick Access toggled', 'success');
+            } else {
+                addStatus('Collapsible system not ready', 'error');
+            }
+        }
+
+        function expandQuickAccess() {
+            if (window.collapsibleSections) {
+                window.collapsibleSections.expand('quick-access');
+                addStatus('Quick Access expanded', 'success');
+            } else {
+                addStatus('Collapsible system not ready', 'error');
+            }
+        }
+
+        function collapseQuickAccess() {
+            if (window.collapsibleSections) {
+                window.collapsibleSections.collapse('quick-access');
+                addStatus('Quick Access collapsed', 'success');
+            } else {
+                addStatus('Collapsible system not ready', 'error');
+            }
+        }
+
+        function checkState() {
+            if (window.collapsibleSections) {
+                const isCollapsed = window.collapsibleSections.isCollapsed('quick-access');
+                addStatus(`Quick Access is ${isCollapsed ? 'collapsed' : 'expanded'}`, 'info');
+            } else {
+                addStatus('Collapsible system not ready', 'error');
+            }
+        }
+
+        function clearStorage() {
+            try {
+                localStorage.removeItem('promptEngineer_quick-access_collapsed');
+                addStatus('Storage cleared - reload to see default state', 'info');
+            } catch (error) {
+                addStatus('Failed to clear storage', 'error');
+            }
+        }
+
+        // Initialize when ready
+        window.addEventListener('load', () => {
+            addStatus('🔧 Collapsible Quick Access Test loaded', 'success');
+            
+            // Initialize collapsible functionality
+            if (window.collapsibleSections) {
+                const success = window.collapsibleSections.init('quick-access', {
+                    defaultCollapsed: false,
+                    accessibility: {
+                        expandedLabel: 'Quick Access expanded, click to collapse',
+                        collapsedLabel: 'Quick Access collapsed, click to expand'
+                    },
+                    onToggle: (collapsed, sectionId) => {
+                        addStatus(`Quick Access ${collapsed ? 'collapsed' : 'expanded'} via callback`, 'info');
+                    }
+                });
+                
+                if (success) {
+                    addStatus('✅ Quick Access collapsible functionality initialized', 'success');
+                } else {
+                    addStatus('❌ Failed to initialize collapsible functionality', 'error');
+                }
+            } else {
+                addStatus('❌ Collapsible sections system not loaded', 'error');
+            }
+            
+            // Start debug info updates
+            debugInterval = setInterval(updateDebugInfo, 1000);
+            updateDebugInfo();
+        });
+
+        // Listen for collapsible events
+        document.addEventListener('collapsibleSectionToggle', (e) => {
+            const { sectionId, collapsed, animated } = e.detail;
+            addStatus(`Event: ${sectionId} ${collapsed ? 'collapsed' : 'expanded'} (animated: ${animated})`, 'info');
+        });
+
+        // Cleanup
+        window.addEventListener('beforeunload', () => {
+            if (debugInterval) {
+                clearInterval(debugInterval);
+            }
+        });
+    </script>
+</body>
+</html>

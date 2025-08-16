@@ -12,7 +12,6 @@ if (!window.extensionState) {
   dropdownsAdded: false,
   initCalled: false,
   isInitializing: true, // Flag to prevent unwanted updateTextfieldContent calls during init
-  toggleButtonAdded: false,
   
   // Core objects
   container: null,
@@ -23,7 +22,8 @@ if (!window.extensionState) {
   activePrompts: {
     checkboxes: [],
     dropdowns: [],
-    inputs: []
+    inputs: [],
+    categories: {}  // New: Category-based prompts
   },
   
   // Separate tracking for user's own text
@@ -58,7 +58,6 @@ if (typeof firstDropdownsUnhidable === 'undefined') {
   var initCalled = window.extensionState.initCalled;
   var isInitializing = window.extensionState.isInitializing;
   var container = window.extensionState.container;
-  var toggleButtonAdded = window.extensionState.toggleButtonAdded;
   var xmlData = window.extensionState.xmlData;
   var combinedText = window.extensionState.combinedText;
   var activePrompts = window.extensionState.activePrompts;
@@ -75,7 +74,8 @@ window.extensionState.resetPromptState = function() {
   this.activePrompts = {
     checkboxes: [],
     dropdowns: [],
-    inputs: []
+    inputs: [],
+    categories: {}  // Reset category prompts
   };
   
   this.promptHistory = {

@@ -482,39 +482,64 @@ window.aiSettings = {
 
   // Save system prompt selection
   saveSystemPromptSelection: function(selectedKey) {
-    if (window.settingsManager) {
-      window.settingsManager.updateSetting('aiSystemPromptType', selectedKey);
-    } else {
+    try {
+      // Save to both storage systems for redundancy
+      if (window.settingsManager) {
+        window.settingsManager.updateSetting('aiSystemPromptType', selectedKey);
+      }
       localStorage.setItem('ai-system-prompt-type', selectedKey);
+      console.log('System prompt selection saved:', selectedKey);
+    } catch (error) {
+      console.error('Failed to save system prompt selection:', error);
     }
   },
 
   // Save custom system prompt
   saveCustomSystemPrompt: function(promptText) {
-    if (window.settingsManager) {
-      window.settingsManager.updateSetting('aiCustomSystemPrompt', promptText);
-    } else {
+    try {
+      // Save to both storage systems for redundancy
+      if (window.settingsManager) {
+        window.settingsManager.updateSetting('aiCustomSystemPrompt', promptText);
+      }
       localStorage.setItem('ai-custom-system-prompt', promptText);
+      console.log('Custom system prompt saved:', promptText ? 'Custom prompt set' : 'Empty prompt');
+    } catch (error) {
+      console.error('Failed to save custom system prompt:', error);
     }
   },
 
   // Load system prompt settings
   loadSystemPromptSettings: function(selectElement, textarea) {
-    const selectedType = window.settingsManager 
-      ? window.settingsManager.getSetting('aiSystemPromptType')
-      : localStorage.getItem('ai-system-prompt-type');
-    
-    const customPrompt = window.settingsManager
-      ? window.settingsManager.getSetting('aiCustomSystemPrompt')
-      : localStorage.getItem('ai-custom-system-prompt');
-    
-    if (selectedType) {
-      selectElement.value = selectedType;
-      this.handleSystemPromptSelection(selectedType, textarea, document.getElementById('ai-system-prompt-preview'));
-    }
-    
-    if (customPrompt) {
-      textarea.value = customPrompt;
+    try {
+      // Try to load from both storage systems, prefer settingsManager
+      let selectedType = null;
+      let customPrompt = null;
+      
+      if (window.settingsManager) {
+        selectedType = window.settingsManager.getSetting('aiSystemPromptType');
+        customPrompt = window.settingsManager.getSetting('aiCustomSystemPrompt');
+      }
+      
+      // Fallback to localStorage if settingsManager doesn't have the data
+      if (!selectedType) {
+        selectedType = localStorage.getItem('ai-system-prompt-type');
+      }
+      if (!customPrompt) {
+        customPrompt = localStorage.getItem('ai-custom-system-prompt');
+      }
+      
+      console.log('Loading system prompt settings:', { selectedType, hasCustomPrompt: !!customPrompt });
+      
+      if (selectedType && selectElement) {
+        selectElement.value = selectedType;
+        this.handleSystemPromptSelection(selectedType, textarea, document.getElementById('ai-system-prompt-preview'));
+      }
+      
+      if (customPrompt && textarea) {
+        textarea.value = customPrompt;
+      }
+    } catch (error) {
+      console.error('Failed to load system prompt settings:', error);
     }
   },
 
